@@ -817,6 +817,7 @@ QtObject {
         { section: "appearance", group: "App colours", label: "Chrome and Chromium", path: "appearance.wallpaperTheming.enableChrome", kind: "switch", fallback: true },
         { section: "appearance", group: "App colours", label: "VS Code", path: "appearance.wallpaperTheming.enableVSCode", kind: "switch", fallback: true },
         { section: "appearance", group: "App colours", label: "Zed", path: "appearance.wallpaperTheming.enableZed", kind: "switch", fallback: true },
+        { section: "appearance", group: "App colours", label: "Obsidian", path: "appearance.wallpaperTheming.enableObsidian", kind: "switch", fallback: true, keywords: ["obsidian", "markdown", "notes", "notas", "vault", "editor"] },
         { section: "appearance", group: "App colours", label: "Spotify (Spicetify)", path: "appearance.wallpaperTheming.enableSpicetify", kind: "switch", fallback: false, keywords: ["spotify", "music", "musica"] },
         { section: "appearance", group: "App colours", label: "Spotify theme", path: "appearance.wallpaperTheming.spicetifyTheme", visibleWhen: "appearance.wallpaperTheming.enableSpicetify", kind: "choice", fallback: "Inir", choices: [{label:"iNiR",value:"Inir"},{label:"Text (TUI)",value:"InirTUI"}] },
         { section: "appearance", group: "App colours", label: "YouTube Music (Pear Desktop)", path: "appearance.wallpaperTheming.enablePearDesktop", kind: "switch", fallback: true, keywords: ["youtube", "ytmusic", "pear", "music", "musica"] },

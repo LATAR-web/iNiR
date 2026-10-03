@@ -212,6 +212,18 @@ ContentPage {
                 }
             }
             SettingsSwitch {
+                buttonIcon: "edit_note"
+                text: Translation.tr("Obsidian")
+                checked: Config.options?.appearance?.wallpaperTheming?.enableObsidian ?? true
+                onCheckedChanged: {
+                    Config.setNestedValue("appearance.wallpaperTheming.enableObsidian", checked);
+                    colorRegenTimer.restart();
+                }
+                StyledToolTip {
+                    text: Translation.tr("Obsidian notes app follows your wallpaper and active theme colours")
+                }
+            }
+            SettingsSwitch {
                 buttonIcon: "code"
                 text: Translation.tr("VSCode editors")
                 checked: Config.options?.appearance?.wallpaperTheming?.enableVSCode ?? true

@@ -248,6 +248,7 @@
             "enableVesktop": true,
             "enableZed": true,
             "enableVSCode": true,
+            "enableObsidian": true,
             "enableChrome": true,
             "enableSpicetify": false,
             "spicetifyTheme": "Inir",

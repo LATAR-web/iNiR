@@ -852,6 +852,14 @@ WSettingsPage {
         }
 
         WSettingsSwitch {
+            label: Translation.tr("Obsidian")
+            icon: "edit-3"
+            description: Translation.tr("Apply Material You theme snippet to Obsidian notes vaults")
+            checked: Config.options?.appearance?.wallpaperTheming?.enableObsidian ?? true
+            onCheckedChanged: Config.setNestedValue("appearance.wallpaperTheming.enableObsidian", checked)
+        }
+
+        WSettingsSwitch {
             label: Translation.tr("VSCode editors")
             icon: "terminal"
             description: Translation.tr("Generate theme for VSCode and its forks from wallpaper colors")

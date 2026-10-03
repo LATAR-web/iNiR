@@ -1,0 +1,9 @@
+{
+  "id": "obsidian",
+  "label": "Obsidian",
+  "module": "32-obsidian.sh",
+  "category": "editor",
+  "inputs": ["app-palette.json", "palette.json", "theme-meta.json"],
+  "description": "Generate and apply Material You adaptive theme snippet for Obsidian vaults. Runs when off too, to take it back (enableObsidian).",
+  "configKey": "appearance.wallpaperTheming.enableObsidian"
+}

@@ -1042,6 +1042,7 @@ Singleton {
                     property bool enableVesktop: true
                     property bool enableZed: true
                     property bool enableVSCode: true
+                    property bool enableObsidian: true
                     property bool enableChrome: true
                     property bool enableSpicetify: false
                     property string spicetifyTheme: "Inir"
