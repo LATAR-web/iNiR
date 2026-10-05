@@ -346,6 +346,42 @@ QtObject {
     readonly property color bodyClip: Qt.rgba(0, 0, 0, 0.004)
     readonly property color placeSurface: root.glassy ? ColorUtils.applyAlpha(root.surfaceOpaque, root.glassTint) : root.surface
     readonly property real glassLip: 0
+    readonly property bool afterglow: String(root.appearance?.texture ?? "solid") === "afterglow"
+    readonly property var afterglowOptions: root.appearance?.afterglow ?? ({})
+    function afterglowPercent(name: string, fallback: real): real {
+        const value = Number(root.afterglowOptions?.[name] ?? fallback)
+        return Math.max(0, Math.min(100, isNaN(value) ? fallback : value)) / 100
+    }
+    // iris-literal: each grade is a fixed colour grade (shadow hue, key light, bloom), not a theme colour.
+    readonly property var afterglowGrades: ({
+        dusk: { label: "Dusk", shadow: "#0f4a42", light: "#ffbe73", bloom: "#ff9442" },
+        cyber: { label: "Cyber", shadow: "#0d2f66", light: "#cfefff", bloom: "#55c8ff" },
+        fog: { label: "Fog", shadow: "#33402a", light: "#e6efc4", bloom: "#bcd98c" }
+    })
+    readonly property string afterglowGrade: ["dusk", "cyber", "fog", "wallpaper"].includes(String(root.afterglowOptions?.grade ?? ""))
+        ? root.afterglowOptions.grade : "dusk"
+    function afterglowColours(grade: string): var {
+        if (grade !== "wallpaper") return root.afterglowGrades[grade] ?? root.afterglowGrades.dusk
+        const seed = Qt.color(Appearance.wallpaperDominantColor)
+        const hue = seed.hslHue < 0 ? 0.5 : seed.hslHue
+        return { shadow: Qt.hsla((hue + 0.5) % 1, 0.62, 0.17, 1), light: Qt.hsla(hue, 0.85, 0.8, 1),
+            bloom: root.vividHighlight(seed, root.afterglowGrades.dusk.bloom) }
+    }
+    readonly property var afterglowPalette: root.afterglowColours(root.afterglowGrade)
+    readonly property real afterglowAtmosphere: root.afterglowPercent("atmosphere", 60)
+    readonly property real afterglowChrome: root.afterglowPercent("chrome", 65)
+    readonly property real afterglowBloom: root.afterglowPercent("bloom", 50)
+    readonly property real afterglowSignal: root.afterglowPercent("signal", 35)
+    readonly property real afterglowBloomRadius: Math.round(9 * root.density)
+    // How far past a silhouette the field draws: the bloom's tail.
+    readonly property real afterglowReach: root.afterglow && root.afterglowBloom > 0 ? 3.5 * root.afterglowBloomRadius : 0
+    readonly property bool afterglowWallpaper: root.afterglow && (root.afterglowOptions?.wallpaper ?? true)
+    function colourVector(c: color, w: real): vector4d { return Qt.vector4d(c.r, c.g, c.b, w) }
+    readonly property vector4d afterglowMix: Qt.vector4d(root.afterglow ? 1 : 0, root.afterglowChrome, root.afterglowBloom, root.afterglowSignal)
+    readonly property vector4d afterglowShadow: root.colourVector(Qt.color(root.afterglowPalette.shadow), root.light ? 1 : 0)
+    readonly property vector4d afterglowLight: root.colourVector(Qt.color(root.afterglowPalette.light), root.afterglowAtmosphere)
+    readonly property vector4d afterglowBloomInk: root.colourVector(Qt.color(root.afterglowPalette.bloom), root.afterglowBloomRadius)
+    readonly property vector4d afterglowShape: Qt.vector4d(Math.round(8 * root.density), 3, 1.25 * root.density, 0)
     // The cut edge of Blur glass (IrisField.frag): lit where it faces up, a line elsewhere.
     readonly property real glassEdgeLight: Math.max(0, Math.min(1, Number(root.glassOptions?.edgeLight ?? 34) / 100))
     readonly property real glassEdgeLine: Math.max(0, Math.min(0.6, Number(root.glassOptions?.edgeLine ?? 10) / 100))
@@ -362,10 +398,11 @@ QtObject {
         ? Math.max(0.22, Math.min(0.72, root.legibleVeil("glass", IrisMood.luminance, IrisMood.contrast * 0.5, 0.6))) : 0.22
     // A lit layer on glass: on paper, lit is lighter than the frost, never a grey film over it (as Apple's light materials).
     readonly property color litLayer: root.light ? ColorUtils.mix(root.surfaceOpaque, Qt.color("#ffffff"), root.ink ? 0.4 : 0.18) : root.fillInk
-    readonly property color surfaceHigh: root.glassy ? (root.light ? ColorUtils.applyAlpha(root.litLayer, root.fillAlpha(0.36))
+    // Groups are sheer over glass and over Afterglow's graded material: an opaque grey plate would cut the light.
+    readonly property color surfaceHigh: root.glassy || root.afterglow ? (root.light ? ColorUtils.applyAlpha(root.litLayer, root.fillAlpha(0.36))
         : ColorUtils.applyAlpha(root.fillInk, root.fillAlpha(0.07)))
         : root.tinted(root.surfaceHighOpaque, 0.16)
-    readonly property color surfaceHighest: root.glassy ? (root.light ? ColorUtils.applyAlpha(root.litLayer, root.fillAlpha(0.5))
+    readonly property color surfaceHighest: root.glassy || root.afterglow ? (root.light ? ColorUtils.applyAlpha(root.litLayer, root.fillAlpha(0.5))
         : ColorUtils.applyAlpha(root.fillInk, root.fillAlpha(0.12)))
         : root.tinted(root.surfaceHighestOpaque, 0.2)
     // What sits raised on a group (a segmented thumb): the brighter step in the dark, a lit plate on paper.
@@ -509,8 +546,8 @@ QtObject {
     readonly property string auraName: ["off", "subtle", "vivid"].includes(root.appearance?.aura ?? "")
         ? root.appearance.aura : "subtle"
     readonly property real auraStrength: ({ off: 0, subtle: 0.2, vivid: 0.36 })[root.auraName]
-    readonly property color wallpaperLight: root.vividHighlight(Appearance.wallpaperDominantColor,
-        root.vividHighlight(Appearance.colors.colPrimary, root.accent))
+    readonly property color wallpaperLight: root.afterglow ? root.vividHighlight(Qt.color(root.afterglowPalette.bloom), root.accent)
+        : root.vividHighlight(Appearance.wallpaperDominantColor, root.vividHighlight(Appearance.colors.colPrimary, root.accent))
     function surfaceWidth(id: string, fallback: int): int {
         const width = Number(root.appearance?.surfaces?.[id]?.width ?? 0)
         return width > 0 ? Math.round(width * root.density) : fallback
@@ -572,7 +609,9 @@ QtObject {
         if (body.hslHue < 0 || body.hslSaturation < 0.04) return root.text
         return Qt.hsla(body.hslHue, Math.min(0.7, body.hslSaturation * 1.4 + 0.12), root.ink ? 0.2 : 0.24, 1)
     }
-    readonly property color fillInk: root.tinted(root.light ? root.paperFillInk : root.text, 0.22)
+    readonly property color fillInk: root.afterglow && !root.light
+        ? ColorUtils.mix(Qt.color(root.afterglowPalette.light), root.text, 0.5 * root.afterglowAtmosphere)
+        : root.tinted(root.light ? root.paperFillInk : root.text, 0.22)
     readonly property color fillQuiet: ColorUtils.applyAlpha(root.fillInk, root.fillAlpha(0.08))
     readonly property color fill: ColorUtils.applyAlpha(root.fillInk, root.fillAlpha(0.12))
     readonly property color fillHover: ColorUtils.applyAlpha(root.fillInk, root.fillAlpha(0.18))
@@ -594,7 +633,7 @@ QtObject {
     readonly property color borderStrong: ColorUtils.applyAlpha(root.text, Math.min(0.6, 0.28 * root.preset.fill * root.tweak("lines", 0, 2)))
     readonly property string rimTint: String(root.theme?.rimTint ?? "neutral")
     // Glass keeps its lit edge whatever this is: without it glass vanishes over a dark desktop.
-    readonly property string edgeStyle: !(root.theme?.rim ?? true) ? "none"
+    readonly property string edgeStyle: !(root.theme?.rim ?? true) || root.afterglow ? "none"
         : String(root.theme?.edges ?? "line") === "light" ? "light" : "line"
     readonly property bool edgeLit: root.edgeStyle === "light" && (root.glassEdgeLight > 0 || root.glassEdgeLine > 0)
     readonly property color rim: root.edgeStyle !== "line" ? Qt.color("transparent")

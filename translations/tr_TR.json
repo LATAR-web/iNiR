@@ -8894,5 +8894,19 @@
   "Open as a window": "Pencere olarak aç",
   "Where it shows up": "Nerede görünür",
   "The bubble's place while an update waits: a spot on the frame, or the Island.": "Bir güncelleme beklerken balonun yeri: çerçevede bir nokta ya da Ada.",
-  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Bir güncellemeyi beklemede bırakırsan iNiR onu bu sıklıkla yeniden gösterir, Şimdi değil dedikten sonra da."
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Bir güncellemeyi beklemede bırakırsan iNiR onu bu sıklıkla yeniden gösterir, Şimdi değil dedikten sonra da.",
+  "Texture": "Doku",
+  "What every surface is drawn as. Afterglow lights iRiS like a console menu at the turn of the millennium: tinted blacks, a soft key light, chrome edges, bloom and a tube screen's signal.": "Her yüzeyin nasıl çizildiği. Afterglow, iRiS'i milenyum dönümündeki bir konsol menüsü gibi aydınlatır: renklendirilmiş siyahlar, yumuşak bir ana ışık, krom kenarlar, parlama ve tüplü ekran sinyali.",
+  "Afterglow": "Afterglow",
+  "The colour grade the scene is lit in. Dusk is amber light over teal shadows, Cyber ice blue over navy, Fog a pale green haze; Wallpaper builds one from your wallpaper.": "Sahnenin aydınlatıldığı renk derecelendirmesi. Alacakaranlık, camgöbeği gölgeler üzerinde kehribar ışık; Cyber lacivert üzerinde buz mavisi; Sis soluk yeşil bir pus; Duvar kâğıdı, duvar kâğıdınızdan bir tane oluşturur.",
+  "Dusk": "Alacakaranlık",
+  "Cyber": "Cyber",
+  "How strongly the grade tints the blacks and the light falling across each surface.": "Derecelendirmenin siyahları ve her yüzeye düşen ışığı ne kadar renklendirdiği.",
+  "Chrome": "Krom",
+  "The bevel every edge wears: a chrome lip reflecting a lit sky over dark ground.": "Her kenarın pahı: karanlık zemin üzerindeki aydınlık gökyüzünü yansıtan krom bir dudak.",
+  "Bloom": "Parlama",
+  "Light that spills past the edges and glows on the side facing the light.": "Kenarların ötesine taşan ve ışığa bakan tarafta parlayan ışık.",
+  "Scanlines and the slight colour fringe of a tube screen.": "Tarama çizgileri ve tüplü ekranın hafif renk saçağı.",
+  "Grade the wallpaper": "Duvar kâğıdını derecelendir",
+  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "Duvar kâğıdınız aynı derecelendirme, parlama ve sinyalle gösterilir; böylece tüm ekran tek bir ışığı paylaşır. Yalnızca durağan görseller."
 }

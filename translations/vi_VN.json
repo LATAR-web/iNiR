@@ -8894,5 +8894,19 @@
   "Open as a window": "Mở dạng cửa sổ",
   "Where it shows up": "Nơi hiện ra",
   "The bubble's place while an update waits: a spot on the frame, or the Island.": "Vị trí bong bóng khi có bản cập nhật đang chờ: một điểm trên khung, hoặc Đảo.",
-  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Nếu bạn để một bản cập nhật chờ, iNiR sẽ hiện lại theo tần suất này, kể cả sau Để sau."
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Nếu bạn để một bản cập nhật chờ, iNiR sẽ hiện lại theo tần suất này, kể cả sau Để sau.",
+  "Texture": "Chất liệu",
+  "What every surface is drawn as. Afterglow lights iRiS like a console menu at the turn of the millennium: tinted blacks, a soft key light, chrome edges, bloom and a tube screen's signal.": "Mọi bề mặt được vẽ bằng gì. Afterglow chiếu sáng iRiS như menu máy chơi game thời chuyển giao thiên niên kỷ: màu đen được nhuộm, ánh sáng chính dịu, viền crôm, bloom và tín hiệu của màn hình ống.",
+  "Afterglow": "Afterglow",
+  "The colour grade the scene is lit in. Dusk is amber light over teal shadows, Cyber ice blue over navy, Fog a pale green haze; Wallpaper builds one from your wallpaper.": "Bảng chỉnh màu chiếu sáng khung cảnh. Hoàng hôn là ánh hổ phách trên bóng xanh mòng két, Cyber là xanh băng trên xanh hải quân, Sương mù là làn sương xanh lục nhạt; Hình nền tạo một bảng từ hình nền của bạn.",
+  "Dusk": "Hoàng hôn",
+  "Cyber": "Cyber",
+  "How strongly the grade tints the blacks and the light falling across each surface.": "Mức chỉnh màu nhuộm màu đen và ánh sáng rơi trên mỗi bề mặt.",
+  "Chrome": "Crôm",
+  "The bevel every edge wears: a chrome lip reflecting a lit sky over dark ground.": "Đường vát của mọi cạnh: một mép crôm phản chiếu bầu trời sáng trên mặt đất tối.",
+  "Bloom": "Bloom",
+  "Light that spills past the edges and glows on the side facing the light.": "Ánh sáng tràn qua các cạnh và rực lên ở phía hướng về nguồn sáng.",
+  "Scanlines and the slight colour fringe of a tube screen.": "Đường quét và viền màu nhẹ của màn hình ống.",
+  "Grade the wallpaper": "Chỉnh màu hình nền",
+  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "Hình nền của bạn được hiển thị với cùng bảng chỉnh màu, bloom và tín hiệu, để cả màn hình chung một ánh sáng. Chỉ ảnh tĩnh."
 }

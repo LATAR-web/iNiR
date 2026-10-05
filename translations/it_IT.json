@@ -8894,5 +8894,19 @@
   "Open as a window": "Apri in una finestra",
   "Where it shows up": "Dove appare",
   "The bubble's place while an update waits: a spot on the frame, or the Island.": "Il posto della bolla mentre un aggiornamento attende: un punto della cornice o l'Isola.",
-  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Se lasci un aggiornamento in sospeso, iNiR lo ripropone con questa frequenza, anche dopo Non ora."
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Se lasci un aggiornamento in sospeso, iNiR lo ripropone con questa frequenza, anche dopo Non ora.",
+  "Texture": "Texture",
+  "What every surface is drawn as. Afterglow lights iRiS like a console menu at the turn of the millennium: tinted blacks, a soft key light, chrome edges, bloom and a tube screen's signal.": "Di cosa è fatta ogni superficie. Afterglow illumina iRiS come il menu di una console a cavallo del millennio: neri tinti, una luce principale morbida, bordi cromati, bagliore e il segnale di uno schermo a tubo.",
+  "Afterglow": "Afterglow",
+  "The colour grade the scene is lit in. Dusk is amber light over teal shadows, Cyber ice blue over navy, Fog a pale green haze; Wallpaper builds one from your wallpaper.": "La correzione colore con cui è illuminata la scena. Tramonto è luce ambra su ombre verde acqua, Cyber azzurro ghiaccio su blu notte, Nebbia una foschia verde pallido; Sfondo ne crea una dal tuo sfondo.",
+  "Dusk": "Tramonto",
+  "Cyber": "Cyber",
+  "How strongly the grade tints the blacks and the light falling across each surface.": "Quanto la correzione colore tinge i neri e la luce che cade su ogni superficie.",
+  "Chrome": "Cromo",
+  "The bevel every edge wears: a chrome lip reflecting a lit sky over dark ground.": "Lo smusso di ogni bordo: un filo cromato che riflette un cielo luminoso sopra un suolo scuro.",
+  "Bloom": "Bagliore",
+  "Light that spills past the edges and glows on the side facing the light.": "Luce che deborda oltre i bordi e brilla sul lato rivolto alla luce.",
+  "Scanlines and the slight colour fringe of a tube screen.": "Linee di scansione e la leggera frangia di colore di uno schermo a tubo.",
+  "Grade the wallpaper": "Correggi lo sfondo",
+  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "Il tuo sfondo appare con la stessa correzione colore, bagliore e segnale, così tutto lo schermo condivide una sola luce. Solo immagini fisse."
 }

@@ -8894,5 +8894,19 @@
   "Open as a window": "Відкрити у вікні",
   "Where it shows up": "Де з'являється",
   "The bubble's place while an update waits: a spot on the frame, or the Island.": "Місце бульбашки, поки чекає оновлення: точка на рамці або Острів.",
-  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Якщо оновлення чекає, iNiR знову показує його з такою частотою, навіть після «Не зараз»."
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Якщо оновлення чекає, iNiR знову показує його з такою частотою, навіть після «Не зараз».",
+  "Texture": "Текстура",
+  "What every surface is drawn as. Afterglow lights iRiS like a console menu at the turn of the millennium: tinted blacks, a soft key light, chrome edges, bloom and a tube screen's signal.": "З чого зроблена кожна поверхня. Afterglow освітлює iRiS як меню консолі зламу тисячоліть: тоноване чорне, м'яке ключове світло, хромовані краї, сяйво й сигнал кінескопа.",
+  "Afterglow": "Afterglow",
+  "The colour grade the scene is lit in. Dusk is amber light over teal shadows, Cyber ice blue over navy, Fog a pale green haze; Wallpaper builds one from your wallpaper.": "Кольорокорекція, у якій освітлена сцена. Захід — бурштинове світло над бірюзовими тінями, Cyber — крижаний блакитний над темно-синім, Туман — блідо-зелений серпанок; Шпалери будують її з ваших шпалер.",
+  "Dusk": "Захід",
+  "Cyber": "Cyber",
+  "How strongly the grade tints the blacks and the light falling across each surface.": "Наскільки кольорокорекція тонує чорне та світло, що падає на кожну поверхню.",
+  "Chrome": "Хром",
+  "The bevel every edge wears: a chrome lip reflecting a lit sky over dark ground.": "Фаска кожного краю: хромована кромка, що відбиває світле небо над темною землею.",
+  "Bloom": "Сяйво",
+  "Light that spills past the edges and glows on the side facing the light.": "Світло, що виходить за краї й сяє на боці, зверненому до світла.",
+  "Scanlines and the slight colour fringe of a tube screen.": "Рядки розгортки та легка кольорова облямівка кінескопа.",
+  "Grade the wallpaper": "Тонувати шпалери",
+  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "Шпалери показуються з тією ж кольорокорекцією, сяйвом і сигналом, щоб увесь екран мав одне світло. Лише нерухомі зображення."
 }

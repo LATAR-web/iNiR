@@ -821,6 +821,7 @@ Scope {
         readonly property int parallaxTransitionSettleMs: ParallaxMath.resolveTransitionSettle(bgRoot.parallaxOptions, 220)
         readonly property bool externalMainWallpaperEligible: !wallpaperSafetyTriggered
             && !bgRoot.webWallpaperActive
+            && !bgRoot.afterglowWallpaperActive
             && !((bgRoot.backgroundOptions.backdrop?.enable ?? false) && (bgRoot.backgroundOptions.backdrop?.hideWallpaper ?? false))
             && AwwwBackend.supportsVisibleMainWallpaper(
                 bgRoot.wallpaperPathRaw,
@@ -838,6 +839,18 @@ Scope {
         readonly property bool externalMainWallpaperActive: bgRoot.externalMainWallpaperEligible
             && !bgRoot.effectiveHasPan
             && !bgRoot.internalShaderTransitionRequested
+            && !afterglowHandoff.running
+        // iRiS Afterglow grades the still wallpaper itself; leaving it, the picture stays drawn here until awww shows it.
+        readonly property bool afterglowWallpaperActive: (Config.options?.panelFamily ?? "ii") === "iris"
+            && String(Config.options?.iris?.appearance?.texture ?? "solid") === "afterglow"
+            && (Config.options?.iris?.appearance?.afterglow?.wallpaper ?? true)
+            && bgRoot.wallpaperPathRaw.length > 0 && !bgRoot.wallpaperIsVideo && !bgRoot.wallpaperIsGif
+            && !bgRoot.webWallpaperActive && !bgRoot.wallpaperSafetyTriggered && !bgRoot.backdropActive
+        Timer {
+            id: afterglowHandoff
+            interval: AwwwBackend.transitionDurationMs + 1800
+        }
+        onAfterglowWallpaperActiveChanged: if (!bgRoot.afterglowWallpaperActive) afterglowHandoff.restart()
         property real preferredWallpaperScale: ParallaxMath.resolveZoom(bgRoot.parallaxOptions, 1.0)
         property real _manualWallpaperScaleOverride: 0
         property int wallpaperWidth: modelData.width
@@ -1646,6 +1659,20 @@ Scope {
                         // See #159 — cap samples to bound fragment shader cost
                         samples: Math.min(33, radius * 2 + 1)
                     }
+                }
+            }
+
+            Loader {
+                z: 0.5
+                anchors.fill: wallpaperContainer
+                active: bgRoot.afterglowWallpaperActive && bgRoot._familyOwnsScreen
+                sourceComponent: IrisAfterglowWallpaper {
+                    imagePath: bgRoot.wallpaperPathRaw
+                    devicePixelRatio: bgRoot.devicePixelRatio
+                    fillMode: bgRoot.fillMode === "fit" ? Image.PreserveAspectFit
+                        : bgRoot.fillMode === "tile" ? Image.Tile
+                        : bgRoot.fillMode === "center" ? Image.Pad
+                        : Image.PreserveAspectCrop
                 }
             }
 

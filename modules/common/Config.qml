@@ -3981,6 +3981,16 @@ Singleton {
                     property bool followTheme: true // with a colour theme chosen, the shell wears its accent, highlight and material
                     property bool materialForApps: true // with the wallpaper colour theme, terminals and apps sit on the shell's material
                     property string controlPlate: "none" // rows of round controls: "none", "veil", "glass" or "solid" (IrisControlPlate)
+                    property string texture: "solid" // what the material is drawn as: "solid" or "afterglow" (IrisField.frag)
+                    // Afterglow: grade "dusk", "cyber", "fog" or "wallpaper"; the rest 0..100 %; wallpaper grades the desktop too.
+                    property JsonObject afterglow: JsonObject {
+                        property string grade: "dusk"
+                        property int atmosphere: 60
+                        property int chrome: 65
+                        property int bloom: 50
+                        property int signal: 35
+                        property bool wallpaper: true
+                    }
                     // Per scheme: tone lifts or dims the material (-30..30), colour is how strong accents read (0..100 %),
                     // widgets is how colourful the desktop widgets read (40..160 %), lume makes bodies frost the wallpaper
                     // shows through instead of solid.

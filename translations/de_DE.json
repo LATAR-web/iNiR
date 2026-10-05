@@ -8894,5 +8894,19 @@
   "Open as a window": "Als Fenster öffnen",
   "Where it shows up": "Wo sie erscheint",
   "The bubble's place while an update waits: a spot on the frame, or the Island.": "Der Platz der Blase, solange ein Update wartet: eine Stelle am Rahmen oder die Insel.",
-  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Wenn du ein Update liegen lässt, bringt iNiR es so oft zurück, auch nach „Nicht jetzt“."
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Wenn du ein Update liegen lässt, bringt iNiR es so oft zurück, auch nach „Nicht jetzt“.",
+  "Texture": "Textur",
+  "What every surface is drawn as. Afterglow lights iRiS like a console menu at the turn of the millennium: tinted blacks, a soft key light, chrome edges, bloom and a tube screen's signal.": "Woraus jede Fläche besteht. Afterglow beleuchtet iRiS wie das Menü einer Konsole zur Jahrtausendwende: getönte Schwarztöne, ein weiches Führungslicht, Chromkanten, Bloom und das Signal eines Röhrenbildschirms.",
+  "Afterglow": "Afterglow",
+  "The colour grade the scene is lit in. Dusk is amber light over teal shadows, Cyber ice blue over navy, Fog a pale green haze; Wallpaper builds one from your wallpaper.": "Die Farbkorrektur, in der die Szene leuchtet. Dämmerung ist Bernsteinlicht über petrolfarbenen Schatten, Cyber Eisblau über Marine, Nebel ein blassgrüner Dunst; Hintergrund baut eine aus deinem Hintergrundbild.",
+  "Dusk": "Dämmerung",
+  "Cyber": "Cyber",
+  "How strongly the grade tints the blacks and the light falling across each surface.": "Wie stark die Farbkorrektur die Schwarztöne und das Licht auf jeder Fläche tönt.",
+  "Chrome": "Chrom",
+  "The bevel every edge wears: a chrome lip reflecting a lit sky over dark ground.": "Die Fase jeder Kante: eine Chromlippe, die einen hellen Himmel über dunklem Boden spiegelt.",
+  "Bloom": "Bloom",
+  "Light that spills past the edges and glows on the side facing the light.": "Licht, das über die Kanten hinausfließt und auf der dem Licht zugewandten Seite leuchtet.",
+  "Scanlines and the slight colour fringe of a tube screen.": "Scanlines und der leichte Farbsaum eines Röhrenbildschirms.",
+  "Grade the wallpaper": "Hintergrund einfärben",
+  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "Dein Hintergrundbild erscheint mit derselben Farbkorrektur, demselben Bloom und Signal, damit der ganze Bildschirm ein Licht teilt. Nur Standbilder."
 }

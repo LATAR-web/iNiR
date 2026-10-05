@@ -8894,5 +8894,19 @@
   "Open as a window": "Открыть в окне",
   "Where it shows up": "Где появляется",
   "The bubble's place while an update waits: a spot on the frame, or the Island.": "Место пузыря, пока ждёт обновление: точка на рамке или Остров.",
-  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Если обновление ждёт, iNiR снова показывает его с такой частотой, даже после «Не сейчас»."
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Если обновление ждёт, iNiR снова показывает его с такой частотой, даже после «Не сейчас».",
+  "Texture": "Текстура",
+  "What every surface is drawn as. Afterglow lights iRiS like a console menu at the turn of the millennium: tinted blacks, a soft key light, chrome edges, bloom and a tube screen's signal.": "Из чего сделана каждая поверхность. Afterglow освещает iRiS как меню консоли рубежа тысячелетий: тонированный чёрный, мягкий ключевой свет, хромированные края, свечение и сигнал кинескопа.",
+  "Afterglow": "Afterglow",
+  "The colour grade the scene is lit in. Dusk is amber light over teal shadows, Cyber ice blue over navy, Fog a pale green haze; Wallpaper builds one from your wallpaper.": "Цветокоррекция, в которой освещена сцена. Закат — янтарный свет над бирюзовыми тенями, Cyber — ледяной голубой над тёмно-синим, Туман — бледно-зелёная дымка; Обои строят её по вашим обоям.",
+  "Dusk": "Закат",
+  "Cyber": "Cyber",
+  "How strongly the grade tints the blacks and the light falling across each surface.": "Насколько цветокоррекция тонирует чёрный и свет, падающий на каждую поверхность.",
+  "Chrome": "Хром",
+  "The bevel every edge wears: a chrome lip reflecting a lit sky over dark ground.": "Фаска каждого края: хромированная кромка, отражающая светлое небо над тёмной землёй.",
+  "Bloom": "Свечение",
+  "Light that spills past the edges and glows on the side facing the light.": "Свет, выходящий за края и сияющий на стороне, обращённой к свету.",
+  "Scanlines and the slight colour fringe of a tube screen.": "Строки развёртки и лёгкая цветная кайма кинескопа.",
+  "Grade the wallpaper": "Тонировать обои",
+  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "Обои показываются с той же цветокоррекцией, свечением и сигналом, чтобы весь экран был в одном свете. Только неподвижные изображения."
 }

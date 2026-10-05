@@ -8894,5 +8894,19 @@
   "Open as a window": "창으로 열기",
   "Where it shows up": "표시되는 위치",
   "The bubble's place while an update waits: a spot on the frame, or the Island.": "업데이트를 기다리는 동안 버블의 위치: 프레임의 한 곳 또는 아일랜드.",
-  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "업데이트를 미뤄 두면 '나중에'를 눌렀어도 iNiR가 이 간격으로 다시 보여 줍니다."
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "업데이트를 미뤄 두면 '나중에'를 눌렀어도 iNiR가 이 간격으로 다시 보여 줍니다.",
+  "Texture": "질감",
+  "What every surface is drawn as. Afterglow lights iRiS like a console menu at the turn of the millennium: tinted blacks, a soft key light, chrome edges, bloom and a tube screen's signal.": "모든 표면이 그려지는 방식. Afterglow는 iRiS를 밀레니엄 무렵 게임기 메뉴처럼 비춥니다: 물든 검정, 부드러운 키 라이트, 크롬 테두리, 블룸, 브라운관의 신호.",
+  "Afterglow": "Afterglow",
+  "The colour grade the scene is lit in. Dusk is amber light over teal shadows, Cyber ice blue over navy, Fog a pale green haze; Wallpaper builds one from your wallpaper.": "장면을 비추는 컬러 그레이드. 황혼은 청록 그림자 위의 호박색 빛, Cyber는 남색 위의 아이스 블루, 안개는 옅은 녹색 안개입니다. 배경화면은 배경화면에서 하나를 만듭니다.",
+  "Dusk": "황혼",
+  "Cyber": "Cyber",
+  "How strongly the grade tints the blacks and the light falling across each surface.": "그레이드가 검정과 각 표면에 떨어지는 빛을 얼마나 물들이는지.",
+  "Chrome": "크롬",
+  "The bevel every edge wears: a chrome lip reflecting a lit sky over dark ground.": "모든 테두리의 베벨: 어두운 땅 위의 밝은 하늘을 비추는 크롬 가장자리.",
+  "Bloom": "블룸",
+  "Light that spills past the edges and glows on the side facing the light.": "가장자리 너머로 번지고 빛을 향한 쪽에서 빛나는 빛.",
+  "Scanlines and the slight colour fringe of a tube screen.": "주사선과 브라운관의 미세한 색 번짐.",
+  "Grade the wallpaper": "배경화면에도 그레이드",
+  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "배경화면도 같은 그레이드, 블룸, 신호로 표시되어 화면 전체가 하나의 빛을 공유합니다. 정지 이미지 전용."
 }

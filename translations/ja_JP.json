@@ -8894,5 +8894,19 @@
   "Open as a window": "ウィンドウで開く",
   "Where it shows up": "表示する場所",
   "The bubble's place while an update waits: a spot on the frame, or the Island.": "アップデート待ちの間のバブルの場所：フレーム上の位置、またはアイランド。",
-  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "アップデートを放置すると、「今はしない」の後でも、iNiR はこの間隔で再び表示します。"
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "アップデートを放置すると、「今はしない」の後でも、iNiR はこの間隔で再び表示します。",
+  "Texture": "テクスチャ",
+  "What every surface is drawn as. Afterglow lights iRiS like a console menu at the turn of the millennium: tinted blacks, a soft key light, chrome edges, bloom and a tube screen's signal.": "各サーフェスの描かれ方。Afterglow は iRiS をミレニアム期のゲーム機メニューのように照らします。色づいた黒、やわらかなキーライト、クロームの縁、ブルーム、ブラウン管の信号。",
+  "Afterglow": "Afterglow",
+  "The colour grade the scene is lit in. Dusk is amber light over teal shadows, Cyber ice blue over navy, Fog a pale green haze; Wallpaper builds one from your wallpaper.": "シーンを照らすカラーグレード。夕暮れはティールの影に琥珀色の光、Cyber はネイビーにアイスブルー、霧は淡い緑のもや。壁紙はあなたの壁紙から作ります。",
+  "Dusk": "夕暮れ",
+  "Cyber": "Cyber",
+  "How strongly the grade tints the blacks and the light falling across each surface.": "グレードが黒と各サーフェスに落ちる光をどれだけ染めるか。",
+  "Chrome": "クローム",
+  "The bevel every edge wears: a chrome lip reflecting a lit sky over dark ground.": "すべての縁のベベル。暗い地面の上の明るい空を映すクロームの縁取り。",
+  "Bloom": "ブルーム",
+  "Light that spills past the edges and glows on the side facing the light.": "縁からあふれ、光に向いた側で輝く光。",
+  "Scanlines and the slight colour fringe of a tube screen.": "走査線と、ブラウン管のわずかな色ずれ。",
+  "Grade the wallpaper": "壁紙にもグレード",
+  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "壁紙も同じグレード、ブルーム、信号で表示され、画面全体がひとつの光を共有します。静止画のみ。"
 }

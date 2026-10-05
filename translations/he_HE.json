@@ -8894,5 +8894,19 @@
   "Open as a window": "פתח כחלון",
   "Where it shows up": "איפה היא מופיעה",
   "The bubble's place while an update waits: a spot on the frame, or the Island.": "מקום הבועה כשעדכון ממתין: נקודה על המסגרת או האי.",
-  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "אם משאירים עדכון ממתין, iNiR מחזיר אותו בתדירות הזו, גם אחרי „לא עכשיו”."
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "אם משאירים עדכון ממתין, iNiR מחזיר אותו בתדירות הזו, גם אחרי „לא עכשיו”.",
+  "Texture": "מרקם",
+  "What every surface is drawn as. Afterglow lights iRiS like a console menu at the turn of the millennium: tinted blacks, a soft key light, chrome edges, bloom and a tube screen's signal.": "ממה כל משטח מצויר. Afterglow מאיר את iRiS כמו תפריט של קונסולה מתחילת המילניום: שחורים צבועים, אור מפתח רך, שוליים כרומיים, זוהר ואות של מסך שפופרת.",
+  "Afterglow": "Afterglow",
+  "The colour grade the scene is lit in. Dusk is amber light over teal shadows, Cyber ice blue over navy, Fog a pale green haze; Wallpaper builds one from your wallpaper.": "תיקון הצבע שבו הסצנה מוארת. דמדומים הוא אור ענבר מעל צללים טורקיז, Cyber כחול קרח מעל כחול כהה, ערפל אובך ירקרק חיוור; טפט בונה אחד מהטפט שלך.",
+  "Dusk": "דמדומים",
+  "Cyber": "Cyber",
+  "How strongly the grade tints the blacks and the light falling across each surface.": "כמה תיקון הצבע צובע את השחורים ואת האור שנופל על כל משטח.",
+  "Chrome": "כרום",
+  "The bevel every edge wears: a chrome lip reflecting a lit sky over dark ground.": "השיפוע שכל קצה לובש: שפה כרומית שמשקפת שמיים מוארים מעל קרקע כהה.",
+  "Bloom": "זוהר",
+  "Light that spills past the edges and glows on the side facing the light.": "אור שנשפך מעבר לקצוות וזוהר בצד הפונה לאור.",
+  "Scanlines and the slight colour fringe of a tube screen.": "קווי סריקה ושוליים צבעוניים קלים של מסך שפופרת.",
+  "Grade the wallpaper": "לצבוע את הטפט",
+  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "הטפט שלך מוצג עם אותו תיקון צבע, זוהר ואות, כך שכל המסך חולק אור אחד. תמונות סטילס בלבד."
 }

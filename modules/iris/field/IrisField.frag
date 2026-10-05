@@ -93,6 +93,16 @@ layout(std140, binding = 0) uniform buf {
     vec4 sheen;
     // x: light where the edge faces up, y: the line elsewhere, z: its width in pixels, w: 1 when solid bodies wear it too.
     vec4 edgeGlass;
+    // Afterglow (IrisStyle.afterglow*). x: on, y: chrome, z: bloom, w: signal, each 0..1.
+    vec4 glowMix;
+    // rgb: the grade's shadow hue; a: 1 on a paper scheme.
+    vec4 glowShadow;
+    // rgb: the grade's key light; a: atmosphere 0..1.
+    vec4 glowLight;
+    // rgb: the bloom's colour; a: its radius in pixels.
+    vec4 glowBloom;
+    // x: bevel width, y: scanline pitch, z: convergence, all in pixels.
+    vec4 glowShape;
 } u;
 layout(binding = 1) uniform sampler2D backdrop;
 
@@ -102,6 +112,20 @@ float roundedBox(vec2 p, vec2 centre, vec2 halfSize, float radius) {
     float r = min(radius, min(halfSize.x, halfSize.y));
     vec2 q = abs(p - centre) - (halfSize - r);
     return length(max(q, 0.0)) + min(max(q.x, q.y), 0.0) - r;
+}
+
+// The chrome bevel's environment by elevation e: -1 ground, 0 horizon, 1 sky.
+vec3 chromeAt(float e, vec3 sky, vec3 hot, vec3 ground, vec3 deep) {
+    vec3 c = e > 0.0 ? mix(hot, sky, smoothstep(0.0, 0.75, e)) : mix(ground, deep, smoothstep(0.0, 0.55, -e));
+    return c + hot * exp(-(e * e) / 0.014) * 0.6;
+}
+
+float bayer4(vec2 p) {
+    ivec2 i = ivec2(mod(floor(p), 4.0));
+    int k = i.x + i.y * 4;
+    float m = k == 0 ? 0.0 : k == 1 ? 8.0 : k == 2 ? 2.0 : k == 3 ? 10.0 : k == 4 ? 12.0 : k == 5 ? 4.0 : k == 6 ? 14.0 : k == 7 ? 6.0
+        : k == 8 ? 3.0 : k == 9 ? 11.0 : k == 10 ? 1.0 : k == 11 ? 9.0 : k == 12 ? 15.0 : k == 13 ? 7.0 : k == 14 ? 13.0 : 5.0;
+    return m / 16.0 - 0.5;
 }
 
 // Polynomial smooth minimum: the join is a fillet `k` pixels deep, which is what
@@ -143,17 +167,21 @@ void main() {
     // come out of the same formula the bodies use, and a body that reaches the
     // edge fuses with it instead of sitting on it.
     float frameDistance = FAR * 10.0;
+    // Places can render their own field in a window inset by the band.
+    // Sample the frame in output coordinates so their joins stay aligned.
+    vec2 frameP = p + u.scene.xy;
+    vec2 size = max(u.scene.zw, vec2(1.0));
+    vec2 frameCentre = size * 0.5;
+    vec2 frameHalf = size * 0.5;
     if (u.field.y > 0.5) {
-        // Places can render their own field in a window inset by the band.
-        // Sample the frame in output coordinates so their joins stay aligned.
-        vec2 frameP = p + u.scene.xy;
-        vec2 size = max(u.scene.zw, vec2(1.0));
         float t = u.waveClock.x;
         float alongY = 0.60 + 0.24 * sin(frameP.y * 0.011 + t) + 0.16 * sin(frameP.y * 0.027 - t * 1.4);
         float alongX = 0.60 + 0.24 * sin(frameP.x * 0.009 - t) + 0.16 * sin(frameP.x * 0.023 + t * 1.2);
         vec2 lo = vec2(u.field.z + u.edgeWave.x * alongY, u.field.z + u.edgeWave.y * alongX);
         vec2 hi = size - vec2(u.field.z + u.edgeWave.z * alongY, u.field.z + u.edgeWave.w * alongX);
-        frameDistance = -roundedBox(frameP, (lo + hi) * 0.5, max((hi - lo) * 0.5, vec2(0.0)), u.field.w);
+        frameCentre = (lo + hi) * 0.5;
+        frameHalf = max((hi - lo) * 0.5, vec2(0.0));
+        frameDistance = -roundedBox(frameP, frameCentre, frameHalf, u.field.w);
         united = frameDistance;
     }
     float frameClusterDistance = frameDistance;
@@ -255,6 +283,129 @@ void main() {
         vec4 mixed = (solid * share.x + glassy * share.y + blurred * share.z) * a;
         colour = mixed.rgb;
         alpha = mixed.a;
+    }
+    if (u.glowMix.x > 0.5) {
+        bool paper = u.glowShadow.a > 0.5;
+        float bevel = max(1.0, u.glowShape.x);
+        float radiusBloom = max(1.0, u.glowBloom.a);
+        // Blended by nearness so a join shades from one body into the other instead of creasing.
+        float gouraudSum = 0.0;
+        float weightSum = 0.0;
+        if (u.field.y > 0.5) {
+            float w = exp(-clamp(frameDistance - united, 0.0, 60.0) / 12.0);
+            vec2 t = clamp(frameP / size, 0.0, 1.0);
+            gouraudSum += w * mix(mix(1.0, 0.82, t.x), mix(0.34, 0.22, t.x), t.y);
+            weightSum += w;
+        }
+        for (int i = 0; i < 20; ++i) {
+            if (bodies[i] > FAR)
+                continue;
+            vec4 s = shapeAt(i);
+            float w = exp(-clamp(bodies[i] - united, 0.0, 60.0) / 12.0);
+            vec2 t = clamp((p - s.xy + s.zw) / max(2.0 * s.zw, vec2(1.0)), 0.0, 1.0);
+            gouraudSum += w * mix(mix(1.0, 0.82, t.x), mix(0.34, 0.22, t.x), t.y);
+            weightSum += w;
+        }
+        float gouraud = weightSum > 0.0 ? gouraudSum / weightSum : 0.6;
+        // Normals from the joined field (central differences): per-body normals break at welds. Corners tighter than the
+        // bevel are rounded for the normal only, or a box's gradient creases along its diagonal. Costly: near edges only.
+        vec2 grad = vec2(0.0, -1.0);
+        if (abs(united) < bevel + 3.5 * radiusBloom + 2.0) {
+            grad = vec2(0.0);
+            for (int k = 0; k < 4; ++k) {
+                vec2 o = k == 0 ? vec2(1.0, 0.0) : k == 1 ? vec2(-1.0, 0.0) : k == 2 ? vec2(0.0, 1.0) : vec2(0.0, -1.0);
+                vec2 q = p + o;
+                float frameQ = FAR * 10.0;
+                float unitedQ = FAR * 10.0;
+                if (u.field.y > 0.5) {
+                    frameQ = -roundedBox(q + u.scene.xy, frameCentre, frameHalf, max(u.field.w, bevel));
+                    unitedQ = frameQ;
+                }
+                float bodiesQ[20];
+                for (int i = 0; i < 20; ++i) {
+                    bodiesQ[i] = FAR * 10.0;
+                    if (bodies[i] > FAR)
+                        continue;
+                    vec4 s = shapeAt(i);
+                    int block = i / 4;
+                    int slot = i - block * 4;
+                    float radius = blockValue(block, slot, u.radiiA, u.radiiB, u.radiiC, u.radiiD, u.radiiE);
+                    bodiesQ[i] = roundedBox(q, s.xy, s.zw, max(radius, bevel));
+                    unitedQ = min(unitedQ, bodiesQ[i]);
+                }
+                for (int i = 0; i < 20; ++i) {
+                    if (bodiesQ[i] > FAR)
+                        continue;
+                    int block = i / 4;
+                    int slot = i - block * 4;
+                    float kq = max(0.0, blockValue(block, slot, u.fuseA, u.fuseB, u.fuseC, u.fuseD, u.fuseE));
+                    float join = blockValue(block, slot, u.joinA, u.joinB, u.joinC, u.joinD, u.joinE);
+                    float also = blockValue(block, slot, u.alsoA, u.alsoB, u.alsoC, u.alsoD, u.alsoE);
+                    if (join < -0.5 || join > 0.5) {
+                        float other = join < 0.0 ? frameQ : bodiesQ[int(join + 0.5) - 1];
+                        if (other < FAR)
+                            unitedQ = min(unitedQ, smoothUnion(other, bodiesQ[i], kq));
+                    }
+                    if (also < -0.5 || also > 0.5) {
+                        float other = also < 0.0 ? frameQ : bodiesQ[int(also + 0.5) - 1];
+                        if (other < FAR)
+                            unitedQ = min(unitedQ, smoothUnion(other, bodiesQ[i], kq));
+                    }
+                }
+                grad += o * unitedQ * 0.5;
+            }
+        }
+        float slopeLength = length(grad);
+        vec2 n = grad / max(slopeLength, 1e-4);
+        float facing = dot(n, vec2(-0.42, -0.91));
+        // A smooth union is not a true distance inside its fillet: measured by its own slope the bevel keeps its width.
+        float depth = -united / clamp(slopeLength, 0.5, 1.0);
+        float atmosphere = u.glowLight.a;
+        float chrome = u.glowMix.y;
+        float bloom = u.glowMix.z;
+        float signal = u.glowMix.w;
+        vec3 shade = u.glowShadow.rgb;
+        vec3 key = u.glowLight.rgb;
+
+        vec3 base = alpha > 1e-4 ? colour / alpha : u.tint.rgb;
+        vec3 lit = paper
+            ? base * mix(vec3(1.0), mix(shade, key, gouraud), atmosphere * 0.16) * mix(0.9, 1.0, gouraud)
+            : base + shade * atmosphere * (0.05 + 0.42 * (1.0 - gouraud) * (1.0 - gouraud)) + key * atmosphere * 0.14 * gouraud * gouraud;
+
+        vec3 sky = paper ? vec3(1.0) : key * 0.92;
+        vec3 hot = paper ? mix(key, vec3(1.0), 0.25) : mix(key, vec3(1.0), 0.55);
+        vec3 ground = paper ? base * 0.7 + shade * 0.08 : lit * 0.5 + shade * (0.55 + 0.6 * atmosphere);
+        vec3 deep = paper ? base * 0.93 : lit;
+        float spread = u.glowShape.z * signal;
+        vec3 env = vec3(0.0);
+        vec3 amount = vec3(0.0);
+        for (int c = 0; c < 3; ++c) {
+            float d = depth + n.x * spread * float(c - 1);
+            float t = clamp(d / bevel, 0.0, 1.0);
+            float slope = (1.0 - t) * (1.0 - t * 0.5);
+            float e = (-n.y * 0.95 - n.x * 0.3) * (slope * 1.55 - 0.55) - 0.12 * (1.0 - slope);
+            vec3 reflected = chromeAt(e, sky, hot, ground, deep);
+            env[c] = reflected[c];
+            amount[c] = (1.0 - smoothstep(0.8, 1.0, t)) * chrome;
+        }
+        vec3 material = mix(lit, env, amount);
+        material += u.glowBloom.rgb * bloom * (paper ? 0.12 : 0.3) * exp(-max(depth, 0.0) / radiusBloom) * (0.35 + 0.65 * max(facing, 0.0));
+        float a = mix(alpha, coverage * u.qt_Opacity, max(amount.r, max(amount.g, amount.b)));
+        colour = min(material, vec3(1.0)) * a;
+        alpha = a;
+
+        // The band round the screen blooms at half: it is a frame, not a light.
+        if (united > 0.0) {
+            float halo = bloom * exp(-united / radiusBloom) * (0.45 + 0.55 * max(facing, 0.0)) * (1.0 - coverage) * u.qt_Opacity;
+            if (u.field.y > 0.5 && frameDistance - united < 0.5)
+                halo *= 0.5;
+            colour += u.glowBloom.rgb * halo * (paper ? 0.22 : 0.42);
+        }
+        float pitch = max(2.0, u.glowShape.y);
+        float line = 0.5 + 0.5 * cos(6.2831853 * (frameP.y + 0.5) / pitch);
+        colour *= 1.0 - signal * (paper ? 0.1 : 0.3) * (1.0 - line);
+        colour += bayer4(frameP) * (1.5 / 255.0) * alpha;
+        colour = max(colour, vec3(0.0));
     }
     // Glass has a cut edge that catches the light from above, like Liquid Glass: bright where it faces up, a faint
     // line elsewhere, in the scene's own light. Without it wallpaper glass over a dimmed desktop has no edge at

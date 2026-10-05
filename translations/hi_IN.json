@@ -8894,5 +8894,19 @@
   "Open as a window": "विंडो में खोलें",
   "Where it shows up": "यह कहाँ दिखता है",
   "The bubble's place while an update waits: a spot on the frame, or the Island.": "अपडेट के इंतज़ार में बबल की जगह: फ़्रेम पर एक स्थान या आइलैंड।",
-  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "अगर अपडेट बाकी छोड़ दें, तो iNiR उसे इतनी बार वापस दिखाता है, \"अभी नहीं\" के बाद भी।"
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "अगर अपडेट बाकी छोड़ दें, तो iNiR उसे इतनी बार वापस दिखाता है, \"अभी नहीं\" के बाद भी।",
+  "Texture": "बनावट",
+  "What every surface is drawn as. Afterglow lights iRiS like a console menu at the turn of the millennium: tinted blacks, a soft key light, chrome edges, bloom and a tube screen's signal.": "हर सतह किस तरह बनाई जाती है। Afterglow iRiS को सहस्राब्दी के मोड़ के कंसोल मेनू की तरह रोशन करता है: रंगे हुए काले, नरम मुख्य रोशनी, क्रोम किनारे, ब्लूम और ट्यूब स्क्रीन का सिग्नल।",
+  "Afterglow": "Afterglow",
+  "The colour grade the scene is lit in. Dusk is amber light over teal shadows, Cyber ice blue over navy, Fog a pale green haze; Wallpaper builds one from your wallpaper.": "वह कलर ग्रेड जिसमें दृश्य रोशन होता है। सांझ टील छायाओं पर एम्बर रोशनी है, Cyber नेवी पर आइस ब्लू, कोहरा हल्की हरी धुंध; वॉलपेपर आपके वॉलपेपर से एक बनाता है।",
+  "Dusk": "सांझ",
+  "Cyber": "Cyber",
+  "How strongly the grade tints the blacks and the light falling across each surface.": "ग्रेड कालों और हर सतह पर पड़ती रोशनी को कितना रंगता है।",
+  "Chrome": "क्रोम",
+  "The bevel every edge wears: a chrome lip reflecting a lit sky over dark ground.": "हर किनारे का बेवल: अंधेरी ज़मीन के ऊपर उजले आसमान को दर्शाता क्रोम किनारा।",
+  "Bloom": "ब्लूम",
+  "Light that spills past the edges and glows on the side facing the light.": "किनारों से बाहर छलकती और रोशनी की ओर वाली तरफ़ चमकती रोशनी।",
+  "Scanlines and the slight colour fringe of a tube screen.": "स्कैनलाइनें और ट्यूब स्क्रीन की हल्की रंग-किनारी।",
+  "Grade the wallpaper": "वॉलपेपर को ग्रेड करें",
+  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "आपका वॉलपेपर उसी ग्रेड, ब्लूम और सिग्नल से दिखता है, ताकि पूरी स्क्रीन एक ही रोशनी साझा करे। केवल स्थिर चित्र।"
 }

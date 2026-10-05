@@ -8894,5 +8894,19 @@
   "Open as a window": "Open as a window",
   "Where it shows up": "Where it shows up",
   "The bubble's place while an update waits: a spot on the frame, or the Island.": "The bubble's place while an update waits: a spot on the frame, or the Island.",
-  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "If you leave an update sitting, iNiR brings it back this often, also after Not now."
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "If you leave an update sitting, iNiR brings it back this often, also after Not now.",
+  "Texture": "Texture",
+  "What every surface is drawn as. Afterglow lights iRiS like a console menu at the turn of the millennium: tinted blacks, a soft key light, chrome edges, bloom and a tube screen's signal.": "What every surface is drawn as. Afterglow lights iRiS like a console menu at the turn of the millennium: tinted blacks, a soft key light, chrome edges, bloom and a tube screen's signal.",
+  "Afterglow": "Afterglow",
+  "The colour grade the scene is lit in. Dusk is amber light over teal shadows, Cyber ice blue over navy, Fog a pale green haze; Wallpaper builds one from your wallpaper.": "The colour grade the scene is lit in. Dusk is amber light over teal shadows, Cyber ice blue over navy, Fog a pale green haze; Wallpaper builds one from your wallpaper.",
+  "Dusk": "Dusk",
+  "Cyber": "Cyber",
+  "How strongly the grade tints the blacks and the light falling across each surface.": "How strongly the grade tints the blacks and the light falling across each surface.",
+  "Chrome": "Chrome",
+  "The bevel every edge wears: a chrome lip reflecting a lit sky over dark ground.": "The bevel every edge wears: a chrome lip reflecting a lit sky over dark ground.",
+  "Bloom": "Bloom",
+  "Light that spills past the edges and glows on the side facing the light.": "Light that spills past the edges and glows on the side facing the light.",
+  "Scanlines and the slight colour fringe of a tube screen.": "Scanlines and the slight colour fringe of a tube screen.",
+  "Grade the wallpaper": "Grade the wallpaper",
+  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only."
 }

@@ -345,12 +345,15 @@ Item {
     Shortcut { sequences: ["Alt+Right", "Ctrl+]"]; enabled: GlobalStates.settingsOverlayOpen; onActivated: root.goForward() }
     MouseArea { anchors.fill: parent; enabled: !root.windowed; onClicked: GlobalStates.settingsOverlayOpen = false }
 
+    // Afterglow's bevel must follow the corners Niri clips the window to.
+    readonly property bool windowField: root.windowed && IrisStyle.afterglow
+    onWindowFieldChanged: if (root.windowField) IrisNiri.reload(["window-rules"])
     // In a window Niri owns the shape, the corners and the open motion: the body fills it, already open.
     IrisMorphSurface {
         motionSurface: "settings"
         settles: true
         windowOffset: Qt.point(IrisFrame.band, IrisFrame.band)
-        ownField: !root.windowed
+        ownField: !root.windowed || root.windowField
         // A window cannot know where it sits on screen, so it never samples the wallpaper: Blur asks Niri, else solid.
         glass: !root.windowed || IrisStyle.glassCompositor
         id: frame
@@ -358,7 +361,8 @@ Item {
         open: root.windowed || GlobalStates.settingsOverlayOpen
         color: IrisStyle.surface
         light: IrisStyle.surfaceLight("settings", IrisStyle.wallpaperLight)
-        radius: root.windowed ? 0 : IrisStyle.surfaceRadius("settings", IrisStyle.radiusPanel)
+        radius: root.windowField ? Number(IrisNiri.data["window-rules"]?.corner_radius ?? 16)
+            : root.windowed ? 0 : IrisStyle.surfaceRadius("settings", IrisStyle.radiusPanel)
         onClosed: GlobalStates.irisMorphOwner = ""
         x: root.windowed ? 0 : (parent.width - width) / 2
         y: root.windowed ? 0 : (parent.height - height) / 2

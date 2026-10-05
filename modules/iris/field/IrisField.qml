@@ -22,7 +22,7 @@ Item {
     property real cornerRadius: IrisFrame.cornerRadius
     readonly property int capacity: 20
     readonly property int shadowSlots: root.capacity
-    readonly property real reach: root.smoothing + 2
+    readonly property real reach: root.smoothing + 2 + IrisStyle.afterglowReach
     property bool compositorAllowed: false
     // A field that does not cover its output: its window's position on the output and the output's size.
     property point sceneOrigin: Qt.point(0, 0)
@@ -217,8 +217,14 @@ Item {
         readonly property vector4d quiet: root.quietRect
         readonly property color rim: root.rim
         readonly property color sheen: root.sheen
-        readonly property vector4d edgeGlass: Qt.vector4d(IrisStyle.glassEdgeLight, IrisStyle.glassEdgeLine, Math.max(1, Math.round(IrisStyle.glassEdgeWidth * IrisStyle.density)), IrisStyle.edgeLit ? 1 : 0)
+        readonly property vector4d edgeGlass: IrisStyle.afterglow ? Qt.vector4d(0, 0, 1, 0)
+            : Qt.vector4d(IrisStyle.glassEdgeLight, IrisStyle.glassEdgeLine, Math.max(1, Math.round(IrisStyle.glassEdgeWidth * IrisStyle.density)), IrisStyle.edgeLit ? 1 : 0)
         readonly property vector4d edge: Qt.vector4d(root.rimWidth, root.rim.a > 0 ? 1 : 0, 0, 0)
+        readonly property vector4d glowMix: IrisStyle.afterglowMix
+        readonly property vector4d glowShadow: IrisStyle.afterglowShadow
+        readonly property vector4d glowLight: IrisStyle.afterglowLight
+        readonly property vector4d glowBloom: IrisStyle.afterglowBloomInk
+        readonly property vector4d glowShape: IrisStyle.afterglowShape
         readonly property vector4d shape0: pass.shapeAt(0)
         readonly property vector4d shape1: pass.shapeAt(1)
         readonly property vector4d shape2: pass.shapeAt(2)

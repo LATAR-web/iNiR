@@ -2410,6 +2410,15 @@
         },
         "appearance": {
         "controlPlate": "none",
+            "texture": "solid",
+            "afterglow": {
+                "grade": "dusk",
+                "atmosphere": 60,
+                "chrome": 65,
+                "bloom": 50,
+                "signal": 35,
+                "wallpaper": true
+            },
             "fontFamily": "",
             "titleFontFamily": "",
             "highlight": "orange",

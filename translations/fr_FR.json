@@ -8894,5 +8894,19 @@
   "Open as a window": "Ouvrir dans une fenêtre",
   "Where it shows up": "Où elle apparaît",
   "The bubble's place while an update waits: a spot on the frame, or the Island.": "La place de la bulle pendant qu'une mise à jour attend : un endroit du cadre ou l'Île.",
-  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Si vous laissez une mise à jour en attente, iNiR la remontre à cette fréquence, même après « Pas maintenant »."
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Si vous laissez une mise à jour en attente, iNiR la remontre à cette fréquence, même après « Pas maintenant ».",
+  "Texture": "Texture",
+  "What every surface is drawn as. Afterglow lights iRiS like a console menu at the turn of the millennium: tinted blacks, a soft key light, chrome edges, bloom and a tube screen's signal.": "Ce dont chaque surface est faite. Afterglow éclaire iRiS comme le menu d'une console du tournant du millénaire : noirs teintés, lumière principale douce, bords chromés, halo lumineux et signal d'un écran cathodique.",
+  "Afterglow": "Afterglow",
+  "The colour grade the scene is lit in. Dusk is amber light over teal shadows, Cyber ice blue over navy, Fog a pale green haze; Wallpaper builds one from your wallpaper.": "L'étalonnage dans lequel la scène est éclairée. Crépuscule : lumière ambrée sur ombres sarcelle ; Cyber : bleu glacier sur bleu marine ; Brume : voile vert pâle ; Fond d'écran en compose un à partir de votre fond d'écran.",
+  "Dusk": "Crépuscule",
+  "Cyber": "Cyber",
+  "How strongly the grade tints the blacks and the light falling across each surface.": "À quel point l'étalonnage teinte les noirs et la lumière qui tombe sur chaque surface.",
+  "Chrome": "Chrome",
+  "The bevel every edge wears: a chrome lip reflecting a lit sky over dark ground.": "Le biseau de chaque bord : une arête chromée qui reflète un ciel lumineux au-dessus d'un sol sombre.",
+  "Bloom": "Halo",
+  "Light that spills past the edges and glows on the side facing the light.": "La lumière qui déborde des bords et brille du côté tourné vers la lumière.",
+  "Scanlines and the slight colour fringe of a tube screen.": "Lignes de balayage et léger liseré de couleur d'un écran cathodique.",
+  "Grade the wallpaper": "Étalonner le fond d'écran",
+  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "Votre fond d'écran passe par le même étalonnage, halo et signal, pour que tout l'écran partage une seule lumière. Images fixes uniquement."
 }

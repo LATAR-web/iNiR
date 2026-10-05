@@ -8894,5 +8894,19 @@
   "Open as a window": "以窗口打开",
   "Where it shows up": "显示位置",
   "The bubble's place while an update waits: a spot on the frame, or the Island.": "有更新等待时气泡的位置：边框上的某处，或灵动岛。",
-  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "如果更新一直未安装，iNiR 会按此间隔再次显示，即使点过“稍后”。"
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "如果更新一直未安装，iNiR 会按此间隔再次显示，即使点过“稍后”。",
+  "Texture": "质感",
+  "What every surface is drawn as. Afterglow lights iRiS like a console menu at the turn of the millennium: tinted blacks, a soft key light, chrome edges, bloom and a tube screen's signal.": "每个界面的绘制方式。Afterglow 让 iRiS 像千禧年之交的游戏机菜单那样被照亮：染色的黑、柔和的主光、镀铬边缘、泛光和显像管的信号。",
+  "Afterglow": "Afterglow",
+  "The colour grade the scene is lit in. Dusk is amber light over teal shadows, Cyber ice blue over navy, Fog a pale green haze; Wallpaper builds one from your wallpaper.": "场景所用的调色。黄昏是青绿阴影上的琥珀色光，Cyber 是海军蓝上的冰蓝，雾是淡绿色的薄雾；壁纸则根据你的壁纸生成。",
+  "Dusk": "黄昏",
+  "Cyber": "Cyber",
+  "How strongly the grade tints the blacks and the light falling across each surface.": "调色对黑色和落在每个界面上的光的染色程度。",
+  "Chrome": "镀铬",
+  "The bevel every edge wears: a chrome lip reflecting a lit sky over dark ground.": "每条边的倒角：镀铬的边沿，映出暗色地面上方明亮的天空。",
+  "Bloom": "泛光",
+  "Light that spills past the edges and glows on the side facing the light.": "溢出边缘、并在朝光一侧发亮的光。",
+  "Scanlines and the slight colour fringe of a tube screen.": "扫描线和显像管轻微的色边。",
+  "Grade the wallpaper": "为壁纸调色",
+  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "壁纸也以相同的调色、泛光和信号显示，让整个屏幕共享一种光。仅限静态图片。"
 }

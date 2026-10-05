@@ -8894,5 +8894,19 @@
   "Open as a window": "Buka sebagai jendela",
   "Where it shows up": "Tempat munculnya",
   "The bubble's place while an update waits: a spot on the frame, or the Island.": "Tempat gelembung saat pembaruan menunggu: satu titik di bingkai, atau Pulau.",
-  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Jika pembaruan dibiarkan, iNiR menampilkannya lagi sesering ini, juga setelah Nanti saja."
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Jika pembaruan dibiarkan, iNiR menampilkannya lagi sesering ini, juga setelah Nanti saja.",
+  "Texture": "Tekstur",
+  "What every surface is drawn as. Afterglow lights iRiS like a console menu at the turn of the millennium: tinted blacks, a soft key light, chrome edges, bloom and a tube screen's signal.": "Dari apa setiap permukaan digambar. Afterglow menerangi iRiS seperti menu konsol di pergantian milenium: hitam yang diwarnai, cahaya utama yang lembut, tepi krom, bloom, dan sinyal layar tabung.",
+  "Afterglow": "Afterglow",
+  "The colour grade the scene is lit in. Dusk is amber light over teal shadows, Cyber ice blue over navy, Fog a pale green haze; Wallpaper builds one from your wallpaper.": "Gradasi warna tempat adegan diterangi. Senja adalah cahaya ambar di atas bayangan toska, Cyber biru es di atas biru tua, Kabut kabut hijau pucat; Wallpaper membuatnya dari wallpaper Anda.",
+  "Dusk": "Senja",
+  "Cyber": "Cyber",
+  "How strongly the grade tints the blacks and the light falling across each surface.": "Seberapa kuat gradasi mewarnai hitam dan cahaya yang jatuh di setiap permukaan.",
+  "Chrome": "Krom",
+  "The bevel every edge wears: a chrome lip reflecting a lit sky over dark ground.": "Bevel di setiap tepi: bibir krom yang memantulkan langit terang di atas tanah gelap.",
+  "Bloom": "Bloom",
+  "Light that spills past the edges and glows on the side facing the light.": "Cahaya yang meluap melewati tepi dan berpendar di sisi yang menghadap cahaya.",
+  "Scanlines and the slight colour fringe of a tube screen.": "Garis pindai dan sedikit pinggiran warna layar tabung.",
+  "Grade the wallpaper": "Gradasi wallpaper",
+  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "Wallpaper Anda ditampilkan dengan gradasi, bloom, dan sinyal yang sama, sehingga seluruh layar berbagi satu cahaya. Hanya gambar diam."
 }

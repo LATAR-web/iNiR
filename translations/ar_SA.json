@@ -8894,5 +8894,19 @@
   "Open as a window": "افتح كنافذة",
   "Where it shows up": "أين تظهر",
   "The bubble's place while an update waits: a spot on the frame, or the Island.": "مكان الفقاعة أثناء انتظار تحديث: موضع على الإطار أو الجزيرة.",
-  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "إذا تركت تحديثًا معلّقًا، يعيده iNiR بهذا التكرار، حتى بعد «ليس الآن»."
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "إذا تركت تحديثًا معلّقًا، يعيده iNiR بهذا التكرار، حتى بعد «ليس الآن».",
+  "Texture": "الملمس",
+  "What every surface is drawn as. Afterglow lights iRiS like a console menu at the turn of the millennium: tinted blacks, a soft key light, chrome edges, bloom and a tube screen's signal.": "مما تُرسم كل الأسطح. يضيء Afterglow واجهة iRiS كقائمة جهاز ألعاب من مطلع الألفية: سواد مُلوَّن، وضوء رئيسي ناعم، وحواف كرومية، وتوهج، وإشارة شاشة أنبوبية.",
+  "Afterglow": "Afterglow",
+  "The colour grade the scene is lit in. Dusk is amber light over teal shadows, Cyber ice blue over navy, Fog a pale green haze; Wallpaper builds one from your wallpaper.": "تدرج الألوان الذي تُضاء به المشهد. الغسق ضوء كهرماني فوق ظلال فيروزية، وCyber أزرق جليدي فوق كحلي، والضباب غشاوة خضراء باهتة؛ والخلفية تبني واحدًا من خلفيتك.",
+  "Dusk": "الغسق",
+  "Cyber": "Cyber",
+  "How strongly the grade tints the blacks and the light falling across each surface.": "مدى تلوين التدرج للسواد وللضوء الساقط على كل سطح.",
+  "Chrome": "كروم",
+  "The bevel every edge wears: a chrome lip reflecting a lit sky over dark ground.": "الشطفة التي يلبسها كل حد: حافة كرومية تعكس سماء مضيئة فوق أرض داكنة.",
+  "Bloom": "توهج",
+  "Light that spills past the edges and glows on the side facing the light.": "ضوء يفيض خلف الحواف ويتوهج في الجانب المواجه للضوء.",
+  "Scanlines and the slight colour fringe of a tube screen.": "خطوط المسح والهالة اللونية الخفيفة لشاشة أنبوبية.",
+  "Grade the wallpaper": "تلوين الخلفية",
+  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "تُعرض خلفيتك بنفس التدرج والتوهج والإشارة، لتتشارك الشاشة كلها ضوءًا واحدًا. للصور الثابتة فقط."
 }
