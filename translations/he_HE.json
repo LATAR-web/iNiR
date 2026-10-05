@@ -8908,5 +8908,11 @@
   "Light that spills past the edges and glows on the side facing the light.": "אור שנשפך מעבר לקצוות וזוהר בצד הפונה לאור.",
   "Scanlines and the slight colour fringe of a tube screen.": "קווי סריקה ושוליים צבעוניים קלים של מסך שפופרת.",
   "Grade the wallpaper": "לצבוע את הטפט",
-  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "הטפט שלך מוצג עם אותו תיקון צבע, זוהר ואות, כך שכל המסך חולק אור אחד. תמונות סטילס בלבד."
+  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "הטפט שלך מוצג עם אותו תיקון צבע, זוהר ואות, כך שכל המסך חולק אור אחד. תמונות סטילס בלבד.",
+  "Terminals always dark": "מסופים תמיד כהים",
+  "Terminals keep a dark palette in Ink and Light mode too.": "המסופים שומרים על פלטה כהה גם במצבי דיו ובהיר.",
+  "Terminals stay dark: Terminals always dark is on under App colours.": "המסופים נשארים כהים: ‏'מסופים תמיד כהים' מופעל בצבעי היישומים.",
+  "Your terminals and apps sit on the same surfaces as the shell.": "המסופים והיישומים שלך יושבים על אותם משטחים כמו המעטפת.",
+  "Apps use this accent": "היישומים משתמשים בצבע ההדגשה הזה",
+  "Your apps and terminals are coloured from this accent instead of the wallpaper, so they and the shell wear one colour.": "היישומים והמסופים נצבעים מצבע ההדגשה הזה במקום מהטפט, כך שהם והמעטפת לובשים צבע אחד."
 }

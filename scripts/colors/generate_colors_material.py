@@ -144,6 +144,12 @@ parser.add_argument(
     help="hex colour the neutral surfaces are anchored to (the shell's own material); accents stay from the source",
 )
 parser.add_argument(
+    "--accent-seed",
+    type=str,
+    default=None,
+    help="hex colour the accents are drawn from instead of the source (the shell's own accent)",
+)
+parser.add_argument(
     "--render-templates",
     type=str,
     default=None,
@@ -682,6 +688,10 @@ elif args.color is not None:
     argb = hex_to_argb(args.color)
     hct = Hct.from_int(argb)
 
+if args.accent_seed and re.fullmatch(r"#?[0-9A-Fa-f]{6}", args.accent_seed.strip()):
+    argb = hex_to_argb("#" + args.accent_seed.strip().lstrip("#"))
+    hct = Hct.from_int(argb)
+
 # Complementary palette: rotate seed hue 180° before scheme generation.
 # The motor recalculates optimal tones for the complementary hue, producing
 # a natural palette rather than a flat hue-shift of the generated colors.
@@ -993,12 +1003,12 @@ if args.termscheme is not None:
                 grey = Hct.from_hct(bg_hct.hue, grey_chroma, start_tone).to_int()
                 term_colors[color] = argb_to_hex(ensure_contrast(grey, bg_argb, ratio, darkmode))
 
-        # Bright semantic colors: lighter contrast requirement (3.5:1) to preserve vibrancy
+        # Brights: 3.5:1 in dark; on paper they are text (strings, types, ls) and need 4.5:1.
         bright_colors = ["term9", "term10", "term11", "term12", "term13", "term14"]
         for color in bright_colors:
             if color in term_colors:
                 fg_argb = hex_to_argb(term_colors[color])
-                adjusted = ensure_contrast(fg_argb, bg_argb, 3.5, darkmode)
+                adjusted = ensure_contrast(fg_argb, bg_argb, 3.5 if darkmode else 4.5, darkmode)
                 term_colors[color] = argb_to_hex(adjusted)
 
     if darkmode and "term0" in term_colors and "term15" in term_colors:
@@ -1156,6 +1166,9 @@ theme_meta = {
     "blend_bg_fg": args.blend_bg_fg,
     "surface_seed": ("#" + args.surface_seed.strip().lstrip("#").lower())
     if args.surface_seed and re.fullmatch(r"#?[0-9A-Fa-f]{6}", args.surface_seed.strip())
+    else "",
+    "accent_seed": ("#" + args.accent_seed.strip().lstrip("#").lower())
+    if args.accent_seed and re.fullmatch(r"#?[0-9A-Fa-f]{6}", args.accent_seed.strip())
     else "",
     "generated_by": "generate_colors_material.py",
 }

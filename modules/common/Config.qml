@@ -3980,6 +3980,7 @@ Singleton {
                     property string scheme: "auto" // "auto" (follows the system), "dark", "ink" or "light"
                     property bool followTheme: true // with a colour theme chosen, the shell wears its accent, highlight and material
                     property bool materialForApps: true // with the wallpaper colour theme, terminals and apps sit on the shell's material
+                    property bool accentForApps: true // with the wallpaper colour theme, apps take the shell's own accent when it has one
                     property string controlPlate: "none" // rows of round controls: "none", "veil", "glass" or "solid" (IrisControlPlate)
                     property string texture: "solid" // what the material is drawn as: "solid" or "afterglow" (IrisField.frag)
                     // Afterglow: grade "dusk", "cyber", "fog" or "wallpaper"; the rest 0..100 %; wallpaper grades the desktop too.

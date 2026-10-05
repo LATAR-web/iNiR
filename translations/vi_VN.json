@@ -8908,5 +8908,11 @@
   "Light that spills past the edges and glows on the side facing the light.": "Ánh sáng tràn qua các cạnh và rực lên ở phía hướng về nguồn sáng.",
   "Scanlines and the slight colour fringe of a tube screen.": "Đường quét và viền màu nhẹ của màn hình ống.",
   "Grade the wallpaper": "Chỉnh màu hình nền",
-  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "Hình nền của bạn được hiển thị với cùng bảng chỉnh màu, bloom và tín hiệu, để cả màn hình chung một ánh sáng. Chỉ ảnh tĩnh."
+  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "Hình nền của bạn được hiển thị với cùng bảng chỉnh màu, bloom và tín hiệu, để cả màn hình chung một ánh sáng. Chỉ ảnh tĩnh.",
+  "Terminals always dark": "Terminal luôn tối",
+  "Terminals keep a dark palette in Ink and Light mode too.": "Terminal giữ bảng màu tối cả ở chế độ Mực và Sáng.",
+  "Terminals stay dark: Terminals always dark is on under App colours.": "Terminal vẫn tối: Terminal luôn tối đang bật trong Màu ứng dụng.",
+  "Your terminals and apps sit on the same surfaces as the shell.": "Terminal và ứng dụng của bạn nằm trên cùng các bề mặt với shell.",
+  "Apps use this accent": "Ứng dụng dùng màu nhấn này",
+  "Your apps and terminals are coloured from this accent instead of the wallpaper, so they and the shell wear one colour.": "Ứng dụng và terminal được tô màu từ màu nhấn này thay vì hình nền, để chúng và shell cùng một màu."
 }

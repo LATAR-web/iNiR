@@ -8908,5 +8908,11 @@
   "Light that spills past the edges and glows on the side facing the light.": "La lumière qui déborde des bords et brille du côté tourné vers la lumière.",
   "Scanlines and the slight colour fringe of a tube screen.": "Lignes de balayage et léger liseré de couleur d'un écran cathodique.",
   "Grade the wallpaper": "Étalonner le fond d'écran",
-  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "Votre fond d'écran passe par le même étalonnage, halo et signal, pour que tout l'écran partage une seule lumière. Images fixes uniquement."
+  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "Votre fond d'écran passe par le même étalonnage, halo et signal, pour que tout l'écran partage une seule lumière. Images fixes uniquement.",
+  "Terminals always dark": "Terminaux toujours sombres",
+  "Terminals keep a dark palette in Ink and Light mode too.": "Les terminaux gardent une palette sombre aussi en mode Encre et Clair.",
+  "Terminals stay dark: Terminals always dark is on under App colours.": "Les terminaux restent sombres : Terminaux toujours sombres est activé dans Couleurs des apps.",
+  "Your terminals and apps sit on the same surfaces as the shell.": "Vos terminaux et apps reposent sur les mêmes surfaces que le shell.",
+  "Apps use this accent": "Les apps utilisent cet accent",
+  "Your apps and terminals are coloured from this accent instead of the wallpaper, so they and the shell wear one colour.": "Vos apps et terminaux prennent leur couleur de cet accent plutôt que du fond d'écran, pour qu'eux et le shell portent une seule couleur."
 }

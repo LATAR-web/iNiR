@@ -2433,6 +2433,7 @@
             "scheme": "auto",
             "followTheme": true,
             "materialForApps": true,
+            "accentForApps": true,
             "tune": {
                 "dark": { "tone": 0, "colour": 100, "widgets": 100, "lume": false },
                 "ink": { "tone": 0, "colour": 100, "widgets": 120, "lume": true },

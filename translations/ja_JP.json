@@ -8908,5 +8908,11 @@
   "Light that spills past the edges and glows on the side facing the light.": "縁からあふれ、光に向いた側で輝く光。",
   "Scanlines and the slight colour fringe of a tube screen.": "走査線と、ブラウン管のわずかな色ずれ。",
   "Grade the wallpaper": "壁紙にもグレード",
-  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "壁紙も同じグレード、ブルーム、信号で表示され、画面全体がひとつの光を共有します。静止画のみ。"
+  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "壁紙も同じグレード、ブルーム、信号で表示され、画面全体がひとつの光を共有します。静止画のみ。",
+  "Terminals always dark": "ターミナルは常にダーク",
+  "Terminals keep a dark palette in Ink and Light mode too.": "インクとライトモードでもターミナルはダークパレットのままです。",
+  "Terminals stay dark: Terminals always dark is on under App colours.": "ターミナルはダークのままです：アプリの色で「ターミナルは常にダーク」がオンです。",
+  "Your terminals and apps sit on the same surfaces as the shell.": "ターミナルとアプリはシェルと同じサーフェスに置かれます。",
+  "Apps use this accent": "アプリにこのアクセントを使う",
+  "Your apps and terminals are coloured from this accent instead of the wallpaper, so they and the shell wear one colour.": "アプリとターミナルは壁紙ではなくこのアクセントから色づけされ、シェルとひとつの色になります。"
 }

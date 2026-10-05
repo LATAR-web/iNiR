@@ -7,7 +7,8 @@ Writes four files into Claude Code's themes folder:
                                             number 12, string 10, function 11, comment 8), and every other token is either an
                                             ANSI name (follows the terminal at once) or a hex solved from the palette
   inir-monokai.json, inir-monokai-soft.json fixed retro palette: base dark, which makes Claude Code use Monokai Extended for
-                                            syntax and draw red and green bars on diffs (ANSI themes get neither)
+                                            syntax and draw red and green bars on diffs (ANSI themes get neither); in light
+                                            mode the same families on paper, base light
 
 Claude Code reads a theme file again when it changes, so a running session repaints.
 """
@@ -119,7 +120,33 @@ MONOKAI_SOFT = dict(
 )
 
 
-def monokai(name: str, p: dict) -> dict:
+# Paper variants: inks deep enough to read on a light terminal; base light so code blocks use a light syntax theme.
+PAPER = dict(
+    text="#2A241E", inverse="#F6F1E7", amber="#A8480A", amber_hi="#C8661E", cyan="#0B6A80", cyan_hi="#1A88A0",
+    green="#4A720C", green_hi="#5E8C1A", red="#B02640", red_hi="#CC4A60", yellow="#7F5A00", yellow_hi="#9C7210",
+    purple="#6440B8", purple_hi="#7E5CD0", pink="#AE1758", pink_hi="#C83E78", teal="#0C7058", blue="#2C50B0",
+    violet="#8438AE", inactive="#6E6656", inactive_hi="#4F483B", subtle="#8E8673", border="#9A927D", border_hi="#6E6656",
+    fast="#B8520C", fast_hi="#D2701E",
+)
+PAPER_SOFT = dict(
+    PAPER, text="#3A332B", amber="#9A5524", cyan="#2A6B78", green="#557236", red="#A0414F", yellow="#77602A",
+    purple="#6A5598", pink="#9C3C64", teal="#2E6A58", blue="#40589C", violet="#7C4C98",
+)
+
+
+def paper_backgrounds(p: dict, term: dict) -> dict:
+    bg = to_hct(term["term0"])
+    t0 = bg.tone
+    neutral = lambda dt, c=10: hct_hex(bg.hue, min(bg.chroma, c), t0 + dt)
+    add, rem = to_hct(term["term2"]).hue, to_hct(term["term1"]).hue
+    return dict(p, umsg=neutral(-7), umsg_hover=neutral(-11), side=neutral(-4), select=hct_hex(to_hct(p["amber"]).hue, 20, t0 - 12),
+        bash=hct_hex(to_hct(p["pink"]).hue, 10, t0 - 8), memory=hct_hex(to_hct(p["teal"]).hue, 10, t0 - 8),
+        add_bg=hct_hex(add, 18, t0 - 8), add_word=hct_hex(add, 28, t0 - 16), add_dim=hct_hex(add, 8, t0 - 4),
+        del_bg=hct_hex(rem, 14, t0 - 8), del_word=hct_hex(rem, 22, t0 - 16), del_dim=hct_hex(rem, 6, t0 - 4),
+        rl_empty=neutral(-12, 14))
+
+
+def monokai(name: str, p: dict, base: str = "dark") -> dict:
     o = {
         "autoAccept": p["purple"], "skill": p["purple"], "bashBorder": p["pink"],
         "claude": p["amber"], "claudeShimmer": p["amber_hi"],
@@ -150,7 +177,7 @@ def monokai(name: str, p: dict) -> dict:
         "rainbow_yellow_shimmer": p["yellow_hi"], "rainbow_green_shimmer": p["green_hi"],
         "rainbow_blue_shimmer": p["cyan_hi"], "rainbow_indigo_shimmer": "#B4C4FF", "rainbow_violet_shimmer": p["purple_hi"],
     }
-    return {"name": name, "base": "dark", "overrides": o}
+    return {"name": name, "base": base, "overrides": o}
 
 
 def main() -> int:
@@ -167,8 +194,10 @@ def main() -> int:
     files = {
         "inir.json": dynamic("iNiR", False, term, palette, args.mode),
         "inir-soft.json": dynamic("iNiR Soft", True, term, palette, args.mode),
-        "inir-monokai.json": monokai("iNiR Monokai", VIVID),
-        "inir-monokai-soft.json": monokai("iNiR Monokai Soft", MONOKAI_SOFT),
+        "inir-monokai.json": monokai("iNiR Monokai", VIVID) if args.mode != "light"
+            else monokai("iNiR Monokai", paper_backgrounds(PAPER, term), "light"),
+        "inir-monokai-soft.json": monokai("iNiR Monokai Soft", MONOKAI_SOFT) if args.mode != "light"
+            else monokai("iNiR Monokai Soft", paper_backgrounds(PAPER_SOFT, term), "light"),
     }
     out = pathlib.Path(args.out_dir)
     changed = []

@@ -532,11 +532,15 @@ switch() {
     [[ -n "$type_flag" ]] && generate_colors_material_args+=(--scheme "$type_flag")
     generate_colors_material_args+=(--termscheme "$terminalscheme" --blend_bg_fg)
     # iRiS: the surfaces the shell wears (its material, tone included) anchor the apps' neutrals. The shell writes the file.
-    if [[ "$cfg_panel_family" == "iris" && "$cfg_iris_material_apps" == "true" && "$cfg_theme" == "auto" ]]; then
+    if [[ "$cfg_panel_family" == "iris" && "$cfg_theme" == "auto" ]]; then
         iris_surface_file="$STATE_DIR/user/generated/iris-surface.json"
         if [[ -s "$iris_surface_file" ]]; then
-            iris_surface_seed=$(jq -r '.seed // empty' "$iris_surface_file" 2>/dev/null)
-            [[ "$iris_surface_seed" =~ ^#[0-9A-Fa-f]{6}$ ]] && generate_colors_material_args+=(--surface-seed "$iris_surface_seed")
+            if [[ "$cfg_iris_material_apps" == "true" ]]; then
+                iris_surface_seed=$(jq -r '.seed // empty' "$iris_surface_file" 2>/dev/null)
+                [[ "$iris_surface_seed" =~ ^#[0-9A-Fa-f]{6}$ ]] && generate_colors_material_args+=(--surface-seed "$iris_surface_seed")
+            fi
+            iris_accent_seed=$(jq -r '.accent // empty' "$iris_surface_file" 2>/dev/null)
+            [[ "$iris_accent_seed" =~ ^#[0-9A-Fa-f]{6}$ ]] && generate_colors_material_args+=(--accent-seed "$iris_accent_seed")
         fi
     fi
     generate_colors_material_args+=(--cache "$STATE_DIR/user/generated/color.txt")

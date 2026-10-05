@@ -8908,5 +8908,11 @@
   "Light that spills past the edges and glows on the side facing the light.": "溢出边缘、并在朝光一侧发亮的光。",
   "Scanlines and the slight colour fringe of a tube screen.": "扫描线和显像管轻微的色边。",
   "Grade the wallpaper": "为壁纸调色",
-  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "壁纸也以相同的调色、泛光和信号显示，让整个屏幕共享一种光。仅限静态图片。"
+  "Your wallpaper is shown through the same grade, bloom and signal, so the whole screen shares one light. Still pictures only.": "壁纸也以相同的调色、泛光和信号显示，让整个屏幕共享一种光。仅限静态图片。",
+  "Terminals always dark": "终端始终深色",
+  "Terminals keep a dark palette in Ink and Light mode too.": "在墨水和浅色模式下终端也保持深色配色。",
+  "Terminals stay dark: Terminals always dark is on under App colours.": "终端保持深色：应用颜色中开启了“终端始终深色”。",
+  "Your terminals and apps sit on the same surfaces as the shell.": "你的终端和应用使用与外壳相同的界面底色。",
+  "Apps use this accent": "应用使用此强调色",
+  "Your apps and terminals are coloured from this accent instead of the wallpaper, so they and the shell wear one colour.": "应用和终端改用此强调色而不是壁纸来着色，让它们与外壳同为一种颜色。"
 }

@@ -336,8 +336,10 @@ QtObject {
         const sample = root.appsGlassy && screen ? Lume.read(root.appsOutput, 0, 0, screen.width, screen.height) : null
         if (!sample) return root.surfaceOpaque
         const body = ColorUtils.mix(root.surfaceOpaque, sample.color, root.glassTint)
+        // On paper the apps keep the paper's lightness: frost over a dark wallpaper averages to a dull grey.
         return Qt.hsla(Math.max(0, body.hslHue), body.hslSaturation, root.light
-            ? Math.max(0.66, Math.min(0.96, body.hslLightness)) : Math.max(0.03, Math.min(0.26, body.hslLightness)), 1)
+            ? Math.max(Math.min(0.96, root.surfaceOpaque.hslLightness - 0.03), Math.min(0.96, body.hslLightness))
+            : Math.max(0.03, Math.min(0.26, body.hslLightness)), 1)
     }
     readonly property color bodyTint: root.glassy ? ColorUtils.applyAlpha(root.surfaceOpaque, root.glassTint) : root.bodySurface
     readonly property color bodyFill: root.glassy ? Qt.color("transparent") : root.bodySurface
@@ -543,6 +545,10 @@ QtObject {
         return root.animeEnabled && root.animeHighlightOn
             ? root.animeHighlight(base, root.animePaletteName, root.animeStrength) : base
     }
+    // A wallpaper or theme accent already is the apps' palette.
+    readonly property bool appsShareAccent: !root.followsTheme && Boolean(root.appearance?.accentForApps ?? true)
+        && !["theme", "wallpaper"].includes(String(root.appearance?.accent ?? "blue"))
+    readonly property color appsAccent: root.accent
     readonly property string auraName: ["off", "subtle", "vivid"].includes(root.appearance?.aura ?? "")
         ? root.appearance.aura : "subtle"
     readonly property real auraStrength: ({ off: 0, subtle: 0.2, vivid: 0.36 })[root.auraName]
@@ -832,8 +838,10 @@ QtObject {
         return ["veil", "glass", "solid"].includes(value) ? value : "none"
     }
     readonly property bool controlPlated: root.controlPlate !== "none"
+    // On paper the veil darkens in the body's ink: the dark media veil left dark plates under dark ink.
     function plateFillFor(material: string): color {
-        return material === "veil" ? root.veil : material === "solid" ? root.readingCard : root.fill
+        if (material === "veil") return root.light ? ColorUtils.applyAlpha(root.fillInk, root.fillAlpha(0.2)) : root.veil
+        return material === "solid" ? root.readingCard : root.fill
     }
     function profileRadius(profile: string, size: real): real {
         const half = size / 2
