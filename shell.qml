@@ -917,7 +917,7 @@ ShellRoot {
             // the shared `altSwitcher` target reaches it through the lightweight router.
             "iiBootGreeting", "iiCheatsheet", "iiOnScreenKeyboard", "iiOverlay", "iiOverview",
             "iiRegionSelector", "iiScreenCorners", "iiWallpaperSelector", "iiWallpaperLauncher", "iiCoverflowSelector", "iiClipboard",
-            "iiMascotCompanion"
+            "iiShellUpdate", "iiMascotCompanion"
         ],
         "iris": [
             "irisBar", "irisBackground", "irisPalette", "irisControlCenter",
