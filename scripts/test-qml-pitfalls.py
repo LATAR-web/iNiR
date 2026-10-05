@@ -12,8 +12,9 @@ declaration per line, as this codebase is formatted:
 - A property of a visual object named like a FINAL member of `Item` (`top`, `left`, `width`, `visible`…:
   "Cannot override FINAL property"). The list is QQuickItem's `isFinal` set in Qt's qmltypes.
 
-And one that loads but misbehaves: `Connections { target: Hyprland }` is evaluated even when the
-Connections is disabled, so it connects to the Hyprland socket on Niri.
+And two that load but misbehave: `Connections { target: Hyprland }` is evaluated even when the
+Connections is disabled, so it connects to the Hyprland socket on Niri; `Notifications.notify(…)` emits the
+arrived-notification signal and shows nothing (post with `Notifications.send`).
 """
 
 import re
@@ -37,6 +38,7 @@ BEHAVIOR = re.compile(r"\bBehavior\s+on\s+(\w+)\s*\{")
 COMPONENT = re.compile(r"^\s*component\s+(\w+)\s*:")
 ESCAPE_METHOD = re.compile(r"\bfunction\s+escape\s*\(")
 HYPRLAND_TARGET = re.compile(r"^\s*target\s*:\s*Hyprland\w*\s*$")
+NOTIFY_CALL = re.compile(r"\bNotifications\.notify\s*\(")
 
 
 def blank(text: str) -> str:
@@ -77,6 +79,9 @@ def scan(rel: str, text: str) -> list:
         if HYPRLAND_TARGET.match(line):
             out.append(f"{rel}:{number}: `target: Hyprland` connects on Niri too; use "
                        "`target: CompositorService.isHyprland ? Hyprland : null`")
+        if NOTIFY_CALL.search(line):
+            out.append(f"{rel}:{number}: `Notifications.notify(…)` only emits a signal and shows nothing; "
+                       "use `Notifications.send(summary, body, urgency, timeoutMs)`")
         opens, closes = line.count("{"), line.count("}")
         opened = OBJECT_OPEN.search(line) if opens == 1 and closes == 0 else None
         if opened:

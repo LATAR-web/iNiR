@@ -431,6 +431,7 @@ complete -c inir -n '__inir_at_target' -a notifications -d 'Notification managem
 complete -c inir -n '__inir_at_function notifications' -a test -d 'Send test notifications'
 complete -c inir -n '__inir_at_function notifications' -a clearAll -d 'Dismiss all notifications'
 complete -c inir -n '__inir_at_function notifications' -a toggleSilent -d 'Toggle Do Not Disturb mode'
+complete -c inir -n '__inir_at_function notifications' -a invokeAction -d 'Press a button on the newest notification that has it, as a…'
 complete -c inir -n '__inir_at_target' -a orbit -d 'Niri-only session navigator'
 complete -c inir -n '__inir_at_function orbit' -a toggle -d 'Open/close Orbit'
 complete -c inir -n '__inir_at_function orbit' -a close -d 'Close Orbit if it is active'

@@ -355,7 +355,12 @@ Singleton {
     // can already contain higher IDs. This is for avoiding id collisions
     property int idOffset
     signal initDone();
+    // `notify` announces a notification that arrived; it shows nothing. Post one with `send`.
     signal notify(notification: var);
+    function send(summary: string, body: string, urgency: string, timeoutMs: int): void {
+        Quickshell.execDetached(["/usr/bin/notify-send", "-a", "iNiR", "-u", urgency.length > 0 ? urgency : "normal",
+            "-t", String(timeoutMs > 0 ? timeoutMs : 10000), "--", summary, body])
+    }
     signal discard(id: int);
     signal discardAll();
     signal timeout(id: var);
@@ -667,7 +672,7 @@ Singleton {
 
             if (action) {
                 action.invoke()
-                if (root._isViewLikeAction(action.text)) {
+                if (notifServerNotif.appName !== "iNiR" && root._isViewLikeAction(action.text)) {
                     root._focusOrLaunchFromNotifServerNotif(notifServerNotif)
                 }
             } else {
@@ -742,6 +747,13 @@ Singleton {
 
         function toggleSilent(): void {
             root.silent = !root.silent
+        }
+
+        function invokeAction(identifier: string): string {
+            const notif = root.list.slice().reverse().find(n => (n.actions ?? []).some(a => a.identifier === identifier))
+            if (!notif) return "No notification offers " + identifier
+            root.attemptInvokeAction(notif.notificationId, identifier)
+            return notif.summary
         }
     }
 

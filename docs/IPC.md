@@ -1028,6 +1028,7 @@ Notification management.
 | `test` | Send test notifications |
 | `clearAll` | Dismiss all notifications |
 | `toggleSilent` | Toggle Do Not Disturb mode |
+| `invokeAction <identifier>` | Press a button on the newest notification that has it, as a click would (e.g. `open` on a new iNiR notice) |
 
 ---
 

@@ -2,7 +2,7 @@
 # Auto-generated from QML IpcHandler declarations + docs/IPC.md metadata.
 # Do not edit manually.
 # Regenerate: python3 scripts/lib/generate-ipc-registry.py
-# IPC.md hash: 25016b87576c6dda
+# IPC.md hash: cf3f7b63eb3f57f6
 # Targets: 70
 
 declare -gA IPC_TARGET_DESC=(
@@ -186,7 +186,7 @@ declare -gA IPC_TARGET_FUNCTIONS=(
   [mpris]="pauseAll playPause previous next select"
   [network]="status check simulate"
   [niriAnimations]="list active apply"
-  [notifications]="test clearAll toggleSilent"
+  [notifications]="test clearAll toggleSilent invokeAction"
   [orbit]="toggle close open pocket studio find stage orbital next previous status toggleView"
   [osd]="volume brightness mic keyboard media hide"
   [osdVolume]="trigger hide toggle"
@@ -459,6 +459,7 @@ declare -gA IPC_FUNCTION_DESC=(
   ["notifications:test"]="Send test notifications"
   ["notifications:clearAll"]="Dismiss all notifications"
   ["notifications:toggleSilent"]="Toggle Do Not Disturb mode"
+  ["notifications:invokeAction"]="Press a button on the newest notification that has it, as a click would (e.g. \`open\` on a new iNiR notice)"
   ["orbit:toggle"]="Open/close Orbit"
   ["orbit:close"]="Close Orbit if it is active"
   ["orbit:open"]="Open Orbit on the focused output"
@@ -747,6 +748,7 @@ declare -gA IPC_FUNCTION_ARGS=(
   ["mpris:select"]="<which>"
   ["network:simulate"]="<state>"
   ["niriAnimations:apply"]="<id>"
+  ["notifications:invokeAction"]="<identifier>"
   ["orbit:find"]="<query>"
   ["osd:media"]="<action>"
   ["overlay:tool"]="<identifier> <action>"

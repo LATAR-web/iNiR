@@ -140,13 +140,7 @@ Singleton {
     onAvailableChanged: {
         if (initialAvailabilityChecked && !available && !unavailableNotificationShown && !managedExternally) {
             unavailableNotificationShown = true
-            Notifications.notify({
-                summary: root.unavailableTitle,
-                body: root.unavailableHint,
-                urgency: NotificationUrgency.Normal,
-                timeout: 10000,
-                appName: "iNiR Shell"
-            })
+            Notifications.send(root.unavailableTitle, root.unavailableHint, "normal", 10000)
             print("[ShellUpdates] Notification sent: Updates unavailable")
         }
         // Reset notification flag when available becomes true again
@@ -173,18 +167,27 @@ Singleton {
         const commits = root.repoDiverged
             ? "Repository history changed upstream. iNiR will preserve local work and recover clean published checkouts automatically."
             : (root.commitsBehind > 0 ? (root.commitsBehind + " commits behind") : "New version available")
-        Notifications.notify({
-            summary: "iNiR Update Available" + version,
-            body: commits + ". Run `inir update`, or open it from the shell's own updater.",
-            urgency: NotificationUrgency.Normal,
-            timeout: 15000,
-            appName: "iNiR Shell"
-        })
+        root.postUpdateNotice("iNiR Update Available" + version,
+            commits + ". Run `inir update`, or open it from the shell's own updater.")
         Config.setNestedValues({
             "shellUpdates.lastNotifiedCommit": remoteCommit,
             "shellUpdates.lastNotifiedAt": now
         })
         print("[ShellUpdates] Notification sent: Update available" + version)
+    }
+
+    function postUpdateNotice(summary: string, body: string): void {
+        updateNotice.running = false
+        updateNotice.command = ["/usr/bin/notify-send", "-a", "iNiR", "-u", "normal", "-t", "15000", "-w",
+            "-A", "open=" + Translation.tr("What changed"), "--", summary, body]
+        updateNotice.running = true
+    }
+
+    Process {
+        id: updateNotice
+        stdout: StdioCollector {
+            onStreamFinished: if ((text ?? "").trim() === "open") root.openOverlay()
+        }
     }
 
     // A check that could not run for lack of internet; retried when the connection returns.
@@ -830,13 +833,7 @@ Singleton {
                     root.fetchErrorNotificationShown = true
                     const title = "iNiR Update Check Failed"
                     const body = "Cannot reach remote repository. Check your internet connection or run './setup doctor'."
-                    Notifications.notify({
-                        summary: title,
-                        body: body,
-                        urgency: NotificationUrgency.Low,
-                        timeout: 8000,
-                        appName: "iNiR Shell"
-                    })
+                    Notifications.send(title, body, "low", 8000)
                     print("[ShellUpdates] Notification sent: Persistent fetch errors")
                 }
                 return
@@ -978,10 +975,10 @@ Singleton {
                 root.repoRelation = "unknown"
                 root.isChecking = false
                 root.initialUpdateCheckDone = true
+                root.maybeNotifyUpdate()
                 return
             }
             root.hasUpdate = root.commitsBehind > 0
-            Qt.callLater(() => root.maybeNotifyUpdate())
             print("[ShellUpdates] Repo relation: " + root.repoRelation
                 + " (ahead=" + root.commitsAhead + ", behind=" + root.commitsBehind + "), hasUpdate: " + root.hasUpdate)
             if (root.hasUpdate) {
@@ -994,19 +991,22 @@ Singleton {
         }
     }
 
-    // Step 7: Get latest commit message from remote
+    // Step 7: Get the pending commits; the newest is the latest message
     Process {
         id: latestMessageProc
         running: false
-        command: [...root._gitCmd, "log", "--oneline", "-1", "origin/" + root._remoteBranch]
+        command: [...root._gitCmd, "log", "--pretty=format:%h|%s|%cr|%an", "HEAD..origin/" + root._remoteBranch]
         stdout: StdioCollector {
             onStreamFinished: {
-                root.latestMessage = (text ?? "").trim()
+                root.commitLog = (text ?? "").trim()
+                const newest = root.commitLog.split("\n")[0].split("|")
+                root.latestMessage = newest.length > 1 ? newest[0] + " " + newest[1] : ""
             }
         }
         onExited: (exitCode, exitStatus) => {
             root.isChecking = false
             root.initialUpdateCheckDone = true
+            root.maybeNotifyUpdate()
         }
     }
 
