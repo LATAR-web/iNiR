@@ -8892,5 +8892,7 @@
   "Over the desktop previews every change on the screen behind it. A window sits with your apps: Niri sizes, maximizes and moves it like any other.": "데스크톱 위에서는 모든 변경이 뒤쪽 화면에 바로 보입니다. 창은 앱과 함께 놓이며, Niri가 다른 창처럼 크기를 바꾸고 최대화하고 옮깁니다.",
   "Open over the desktop": "데스크톱 위에서 열기",
   "Open as a window": "창으로 열기",
+  "Where it shows up": "표시되는 위치",
+  "The bubble's place while an update waits: a spot on the frame, or the Island.": "업데이트를 기다리는 동안 버블의 위치: 프레임의 한 곳 또는 아일랜드.",
   "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "업데이트를 미뤄 두면 '나중에'를 눌렀어도 iNiR가 이 간격으로 다시 보여 줍니다."
 }

@@ -7,6 +7,7 @@ import qs.modules.common
 import qs.services
 import qs.modules.iris.style
 import qs.modules.iris.pieces
+import qs.modules.iris.frame
 import qs.modules.iris.control
 import qs.modules.iris.background
 import qs.modules.background.widgets
@@ -516,6 +517,7 @@ QtObject {
                 path: IrisPieces.configPath(piece.id) + ".place", kind: "zone", fallback: "island",
                 choices: IrisPieces.zoneChoices(true) })
         for (const piece of IrisPieces.extras) {
+            if (IrisFrame.announcements.includes(piece.id)) continue
             const path = IrisPieces.configPath(piece.id)
             // The two anime pieces live with the rest of anime in Settings; every
             // other bubble stays under Bubbles. One switch, one place.
@@ -579,6 +581,7 @@ QtObject {
         { section: "sources", group: "VPN", label: "VPN button in quick controls", description: "Adds a VPN switch to the Control Center beside Ethernet and Bluetooth. Off by default because it changes the shape of that grid. The VPN bubble is separate: turn it on under Bubbles.", path: "vpn.quickToggle", kind: "switch", fallback: false },
         { section: "sources", group: "VPN", label: "Connection details", description: "The VPN card shows addresses, the tailnet's devices and live traffic; tap a value to copy it.", path: "vpn.details", kind: "switch", fallback: false, keywords: ["vpn", "tailscale", "wireguard", "ip", "ipv4", "ipv6", "address", "devices", "traffic", "details", "detalles", "dirección"] },
         { section: "sources", group: "New iNiR", label: "Watch for new iNiR versions", description: "A bubble shows up on its own when there is a new iNiR upstream, and goes away once you update.", path: "shellUpdates.enabled", kind: "switch", fallback: true },
+        { section: "sources", group: "New iNiR", label: "Where it shows up", description: "The bubble's place while an update waits: a spot on the frame, or the Island.", path: "iris.bubbles.extras.shellUpdate.place", visibleWhen: "shellUpdates.enabled", kind: "zone", fallback: "right", choices: IrisPieces.zoneChoices(true) },
         { section: "sources", group: "New iNiR", label: "Check every", path: "shellUpdates.checkIntervalMinutes", visibleWhen: "shellUpdates.enabled", kind: "range", fallback: 360, min: 60, max: 1440, step: 60, unit: " min" },
         { section: "sources", group: "New iNiR", label: "Say it again after", description: "If you leave an update sitting, iNiR brings it back this often, also after Not now.", path: "shellUpdates.remindDays", visibleWhen: "shellUpdates.enabled", kind: "range", fallback: 3, min: 0, max: 30, zeroLabel: "Only once", unit: " days" },
         { section: "anime", group: "Airing", label: "Episodes in the card", description: "How many upcoming episodes the Airing bubble lists. Tap a show to follow it; the bubble shows what you follow first.", path: "iris.anime.shows", kind: "range", fallback: 5, min: 3, max: 8, keywords: ["anime", "weeb", "otaku", "airing", "episodes", "episodio", "following", "shows", "tracker"] },

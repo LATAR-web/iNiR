@@ -8892,5 +8892,7 @@
   "Over the desktop previews every change on the screen behind it. A window sits with your apps: Niri sizes, maximizes and moves it like any other.": "Masaüstünün üzerinde her değişikliği arkadaki ekranda gösterir. Pencere uygulamalarınla birlikte durur: Niri onu diğerleri gibi boyutlandırır, büyütür ve taşır.",
   "Open over the desktop": "Masaüstünün üzerinde aç",
   "Open as a window": "Pencere olarak aç",
+  "Where it shows up": "Nerede görünür",
+  "The bubble's place while an update waits: a spot on the frame, or the Island.": "Bir güncelleme beklerken balonun yeri: çerçevede bir nokta ya da Ada.",
   "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Bir güncellemeyi beklemede bırakırsan iNiR onu bu sıklıkla yeniden gösterir, Şimdi değil dedikten sonra da."
 }

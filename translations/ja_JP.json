@@ -8892,5 +8892,7 @@
   "Over the desktop previews every change on the screen behind it. A window sits with your apps: Niri sizes, maximizes and moves it like any other.": "デスクトップの上では、変更がすぐ背後の画面に反映されます。ウィンドウはアプリと並び、Niri がほかのウィンドウと同じようにサイズ変更・最大化・移動します。",
   "Open over the desktop": "デスクトップの上で開く",
   "Open as a window": "ウィンドウで開く",
+  "Where it shows up": "表示する場所",
+  "The bubble's place while an update waits: a spot on the frame, or the Island.": "アップデート待ちの間のバブルの場所：フレーム上の位置、またはアイランド。",
   "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "アップデートを放置すると、「今はしない」の後でも、iNiR はこの間隔で再び表示します。"
 }

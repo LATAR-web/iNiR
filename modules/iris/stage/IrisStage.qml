@@ -65,7 +65,7 @@ Item {
         slot = root.ownerSlot(slot)
         const o = root.optionsFor(slot)
         if (root.isApp(slot)) return String(o?.place ?? IrisPieces.defaultPlace)
-        if (root.isExtra(slot)) return (o?.enable ?? false) && !IrisPieces.listedOnIsland(slot.slice(6))
+        if (root.isExtra(slot)) return IrisFrame.extraOn(root.options?.extras, slot.slice(6)) && !IrisPieces.listedOnIsland(slot.slice(6))
             ? String(o?.place ?? IrisPieces.defaultPlace) : "island"
         return String(o?.place ?? "island")
     }

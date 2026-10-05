@@ -6,6 +6,7 @@ import Quickshell.Wayland
 import qs
 import qs.services
 import qs.modules.common
+import qs.modules.iris.frame
 
 // The way into Orbit without a key: rest the pointer in a screen corner. It picks the corner itself unless told (Auto):
 // one Niri's own overview does not already use, and where none of your pieces sits. A game, a locked screen and widget
@@ -31,7 +32,7 @@ Scope {
         }
         const extras = bubbles.extras ?? ({})
         for (const id in extras) {
-            if (extras[id]?.enable) zones.add(String(extras[id]?.place ?? ""))
+            if (IrisFrame.extraOn(extras, id)) zones.add(String(extras[id]?.place ?? ""))
         }
         return zones
     }

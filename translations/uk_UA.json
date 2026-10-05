@@ -8892,5 +8892,7 @@
   "Over the desktop previews every change on the screen behind it. A window sits with your apps: Niri sizes, maximizes and moves it like any other.": "Поверх робочого столу кожну зміну одразу видно на екрані позаду. Вікно живе поруч із застосунками: Niri змінює його розмір, розгортає й переміщує, як будь-яке інше.",
   "Open over the desktop": "Відкрити поверх робочого столу",
   "Open as a window": "Відкрити у вікні",
+  "Where it shows up": "Де з'являється",
+  "The bubble's place while an update waits: a spot on the frame, or the Island.": "Місце бульбашки, поки чекає оновлення: точка на рамці або Острів.",
   "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Якщо оновлення чекає, iNiR знову показує його з такою частотою, навіть після «Не зараз»."
 }

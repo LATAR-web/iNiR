@@ -8892,5 +8892,7 @@
   "Over the desktop previews every change on the screen behind it. A window sits with your apps: Niri sizes, maximizes and moves it like any other.": "מעל שולחן העבודה מציג כל שינוי על המסך שמאחור. חלון יושב לצד האפליקציות שלך: Niri משנה את גודלו, מגדיל ומזיז אותו כמו כל חלון אחר.",
   "Open over the desktop": "פתח מעל שולחן העבודה",
   "Open as a window": "פתח כחלון",
+  "Where it shows up": "איפה היא מופיעה",
+  "The bubble's place while an update waits: a spot on the frame, or the Island.": "מקום הבועה כשעדכון ממתין: נקודה על המסגרת או האי.",
   "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "אם משאירים עדכון ממתין, iNiR מחזיר אותו בתדירות הזו, גם אחרי „לא עכשיו”."
 }

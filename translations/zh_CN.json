@@ -8892,5 +8892,7 @@
   "Over the desktop previews every change on the screen behind it. A window sits with your apps: Niri sizes, maximizes and moves it like any other.": "覆盖在桌面上时，每项更改都会立即显示在后方屏幕上。窗口模式则与应用并列：Niri 像对待其他窗口一样调整大小、最大化和移动它。",
   "Open over the desktop": "在桌面上方打开",
   "Open as a window": "以窗口打开",
+  "Where it shows up": "显示位置",
+  "The bubble's place while an update waits: a spot on the frame, or the Island.": "有更新等待时气泡的位置：边框上的某处，或灵动岛。",
   "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "如果更新一直未安装，iNiR 会按此间隔再次显示，即使点过“稍后”。"
 }

@@ -831,6 +831,9 @@ Item {
     Component {
         id: shellUpdateCard
         ColumnLayout {
+            id: updateCard
+            readonly property var changes: ShellUpdates.commitLog.split("\n").filter(l => l.length > 0)
+                .map(l => l.split("|")[1] ?? l)
             spacing: 10 * root.d
             CardHeader {
                 glyph: "rocket_launch"
@@ -846,41 +849,33 @@ Item {
             IrisText {
                 Layout.fillWidth: true
                 visible: text.length > 0
-                text: ShellUpdates.latestMessage
+                text: updateCard.changes.length > 0
+                    ? updateCard.changes.slice(0, 5).map(s => "• " + s).join("\n")
+                        + (updateCard.changes.length > 5 ? "\n" + Translation.tr("+%1 more").arg(updateCard.changes.length - 5) : "")
+                    : ShellUpdates.latestMessage
                 color: IrisStyle.subtext
                 wrapMode: Text.WordWrap
-                maximumLineCount: 3
+                maximumLineCount: 9
                 elide: Text.ElideRight
                 font.pixelSize: IrisStyle.typeMeta
             }
             IrisButton {
                 Layout.fillWidth: true
+                visible: ShellUpdates.selfUpdateSupported
                 enabled: !ShellUpdates.isUpdating
-                text: ShellUpdates.isUpdating
-                    ? Translation.tr("Updating…") : Translation.tr("Update now")
+                text: ShellUpdates.isUpdating ? Translation.tr("Updating…")
+                    : ShellUpdates.repoDiverged ? Translation.tr("Repair & Update") : Translation.tr("Update now")
                 buttonRadius: IrisStyle.radiusTile
                 implicitHeight: Math.round(38 * root.d)
                 onClicked: { root.close(); ShellUpdates.performUpdate() }
             }
-            RowLayout {
+            IrisButton {
                 Layout.fillWidth: true
-                spacing: 8 * root.d
-                IrisButton {
-                    Layout.fillWidth: true
-                    quiet: true
-                    text: Translation.tr("What changed")
-                    buttonRadius: IrisStyle.radiusTile
-                    implicitHeight: Math.round(32 * root.d)
-                    onClicked: { root.close(); ShellUpdates.openOverlay() }
-                }
-                IrisButton {
-                    Layout.fillWidth: true
-                    quiet: true
-                    text: Translation.tr("Not now")
-                    buttonRadius: IrisStyle.radiusTile
-                    implicitHeight: Math.round(32 * root.d)
-                    onClicked: { root.close(); ShellUpdates.dismiss() }
-                }
+                quiet: true
+                text: Translation.tr("Not now")
+                buttonRadius: IrisStyle.radiusTile
+                implicitHeight: Math.round(32 * root.d)
+                onClicked: { root.close(); ShellUpdates.dismiss() }
             }
         }
     }

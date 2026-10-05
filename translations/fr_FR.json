@@ -8892,5 +8892,7 @@
   "Over the desktop previews every change on the screen behind it. A window sits with your apps: Niri sizes, maximizes and moves it like any other.": "Sur le bureau, chaque changement s'affiche sur l'écran derrière. Une fenêtre vit avec vos applis : Niri la redimensionne, l'agrandit et la déplace comme les autres.",
   "Open over the desktop": "Ouvrir sur le bureau",
   "Open as a window": "Ouvrir dans une fenêtre",
+  "Where it shows up": "Où elle apparaît",
+  "The bubble's place while an update waits: a spot on the frame, or the Island.": "La place de la bulle pendant qu'une mise à jour attend : un endroit du cadre ou l'Île.",
   "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Si vous laissez une mise à jour en attente, iNiR la remontre à cette fréquence, même après « Pas maintenant »."
 }

@@ -5,6 +5,7 @@ import Quickshell.Services.SystemTray
 import qs.services
 import qs.services.deferred
 import qs.modules.common
+import qs.modules.iris.frame
 
 QtObject {
     id: root
@@ -67,7 +68,7 @@ QtObject {
         if (id === "battery") return Battery.available
         if (id === "bluetooth") return BluetoothStatus.available
         if (id === "updates") return Updates.available
-        if (id === "shellUpdate") return ShellUpdates.showUpdate
+        if (id === "shellUpdate") return ShellUpdates.showUpdate || ShellUpdates.isUpdating
         if (id === "vpn") return Vpn.available
         if (id === "watching") return AnimeWatch.available
         return root.extraIds.includes(id)
@@ -202,7 +203,7 @@ QtObject {
     }
     function floats(options: var, id: string): bool {
         const extra = options?.extras?.[id]
-        return (extra?.enable ?? false) && String(extra?.place ?? root.defaultPlace) !== "island" && !root.listedOnIsland(id)
+        return IrisFrame.extraOn(options?.extras, id) && String(extra?.place ?? root.defaultPlace) !== "island" && !root.listedOnIsland(id)
     }
     // What the Island carries: its own list, and any extra switched on whose place is the Island (a Settings switch
     // can turn one on there without adding it to the list; it must not vanish).
@@ -210,7 +211,7 @@ QtObject {
         const out = Array.from(listed ?? []).map(String)
         for (const id of root.extraIds) {
             const extra = options?.extras?.[id]
-            if ((extra?.enable ?? false) && String(extra?.place ?? root.defaultPlace) === "island" && !out.includes(id)) out.push(id)
+            if (IrisFrame.extraOn(options?.extras, id) && String(extra?.place ?? root.defaultPlace) === "island" && !out.includes(id)) out.push(id)
         }
         return out
     }
