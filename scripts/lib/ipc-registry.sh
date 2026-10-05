@@ -2,7 +2,7 @@
 # Auto-generated from QML IpcHandler declarations + docs/IPC.md metadata.
 # Do not edit manually.
 # Regenerate: python3 scripts/lib/generate-ipc-registry.py
-# IPC.md hash: cf3f7b63eb3f57f6
+# IPC.md hash: 5bbd5281c06f56fb
 # Targets: 70
 
 declare -gA IPC_TARGET_DESC=(
@@ -203,7 +203,7 @@ declare -gA IPC_TARGET_FUNCTIONS=(
   [settings]="open toggle openOverlay openOverlayAt openWindowAt setOverlayStyle"
   [settingsNav]="page section count current"
   [shellLayout]="toggle open openOn close select lift preview place cancel dragStart dragUpdate dragEnd reset setProperty handleEscape status validate"
-  [shellUpdate]="toggle open close check performUpdate dismiss undismiss diagnose"
+  [shellUpdate]="toggle open close check performUpdate dismiss undismiss diagnose simulate"
   [sidebarLeft]="toggle close open expand compact status detach attach"
   [sidebarRight]="toggle close open"
   [taskview]="toggle close open"
@@ -553,6 +553,7 @@ declare -gA IPC_FUNCTION_DESC=(
   ["shellUpdate:dismiss"]="Dismiss update notification"
   ["shellUpdate:undismiss"]="Un-dismiss update notification"
   ["shellUpdate:diagnose"]="Dump update state as JSON"
+  ["shellUpdate:simulate"]="\`on\` fakes a pending update to see the bubble, card and notification, \`off\` clears it; git and config are untouched and Update only plays a pretend run in the terminal. For testing"
   ["sidebarLeft:toggle"]="Open/close left sidebar"
   ["sidebarLeft:close"]="Hide left sidebar"
   ["sidebarLeft:open"]="Show left sidebar"
@@ -771,6 +772,7 @@ declare -gA IPC_FUNCTION_ARGS=(
   ["shellLayout:reset"]="<surfaceId>"
   ["shellLayout:setProperty"]="<surfaceId> <key> <value>"
   ["shellLayout:validate"]="<surfaceId> <slot>"
+  ["shellUpdate:simulate"]="<state>"
   ["vpn:details"]="<state>"
   ["vpn:importFile"]="<path>"
   ["vpn:add"]="<kind>"
@@ -855,6 +857,7 @@ declare -gA IPC_FUNCTION_VALUES=(
   ["settings:openWindowAt"]="index"
   ["settings:setOverlayStyle"]="index"
   ["shellLayout:setProperty"]="sizeMode height thickness"
+  ["shellUpdate:simulate"]="on off"
   ["vpn:details"]="on off toggle"
   ["vpn:add"]="wireguard vpn nmtui"
   ["wallpaperSelector:openLauncher"]="static animated"

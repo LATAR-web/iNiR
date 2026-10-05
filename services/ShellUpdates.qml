@@ -28,8 +28,39 @@ Singleton {
         function dismiss(): void { root.dismiss() }
         function undismiss(): void { root.undismiss() }
         function diagnose(): string { return root.getDiagnostics() }
+        function simulate(state: string): string { return root.simulate(state) }
     }
     id: root
+
+    // A fake pending update for checking every surface that shows one; git, config and setup stay untouched.
+    property bool simulated: false
+    function simulate(state: string): string {
+        if (state === "off") {
+            if (!root.simulated) return "off"
+            root.simulated = false
+            root.commitLog = ""
+            root.hasUpdate = false
+            root.commitsBehind = 0
+            root.isUpdating = false
+            root.check()
+            return "off"
+        }
+        if (state !== "on" && state !== "") return "Use on or off"
+        if (state === "on") {
+            root.simulated = true
+            root.isUpdating = false
+            root.repoRelation = "behind"
+            root.commitsBehind = 3
+            root.remoteCommit = "simulated"
+            root.remoteVersion = root.localVersion.length > 0 ? root.localVersion + "+1" : ""
+            root.commitLog = ["a1b2c3d|feat(iris): a pending update to look at|1 hour ago|iNiR",
+                "e4f5a6b|fix(bar): a fix that comes with it|2 hours ago|iNiR",
+                "c7d8e9f|chore: one more commit|3 hours ago|iNiR"].join("\n")
+            root.latestMessage = "a1b2c3d feat(iris): a pending update to look at"
+            root.hasUpdate = true
+        }
+        return root.simulated ? "on: " + root.commitsBehind + " commits behind" : "off"
+    }
 
     // Public state
     property bool hasUpdate: false
@@ -161,6 +192,10 @@ Singleton {
     function maybeNotifyUpdate(): void {
         if (!hasUpdate || !available || !initialUpdateCheckDone || isDismissed) return
         if (remoteCommit.length === 0) return
+        if (root.simulated) {
+            root.postUpdateNotice("iNiR Update Available (simulated)", "3 commits behind.")
+            return
+        }
         const now = Date.now()
         if (remoteCommit === lastNotifiedCommit) {
             if (root.remindDays <= 0 || root.lastNotifiedAt <= 0) return
@@ -204,7 +239,7 @@ Singleton {
     }
 
     function check(): void {
-        if (!enabled || isChecking || isUpdating || managedExternally) return
+        if (!enabled || isChecking || isUpdating || managedExternally || simulated) return
         root._clock = Date.now()
         root.waitingForNetwork = !Network.online
         if (root.waitingForNetwork) return
@@ -216,6 +251,7 @@ Singleton {
     // Fetch detailed info for the overlay (commit log, changelog, local mods)
     function fetchDetails(): void {
         if (isFetchingDetails || managedExternally) return
+        if (root.simulated) return
         root.isFetchingDetails = true
         root.commitLog = ""
         root.remoteChangelog = ""
@@ -256,6 +292,19 @@ Singleton {
 
     function performUpdate(): void {
         if (isUpdating || !hasUpdate || !available || managedExternally) return
+        if (root.simulated) {
+            root.overlayOpen = false
+            root.isUpdating = true
+            simulatedUpdate.restart()
+            if (Config.options?.shellUpdates?.openTerminalOnUpdate ?? true) {
+                const slot = (AppLauncher && typeof AppLauncher.commandFor === "function") ? AppLauncher.commandFor("terminal") : ""
+                ShellExec.execDetachedArgs([(slot.length > 0 ? slot : "kitty").trim().split(/\s+/)[0], "-e", "/usr/bin/bash", "-c",
+                    "echo 'Simulated iNiR update: nothing is downloaded or changed.'; echo; "
+                    + "for s in Fetching Applying 'Restarting the shell'; do echo \"==> $s\"; sleep 1; done; "
+                    + "echo; echo 'All good. You can close this window whenever you want.'; read -r _"], "Update iNiR", root.repoPath)
+            }
+            return
+        }
         root.isUpdating = true
         root.lastError = ""
         root.updateStep = 0
@@ -322,7 +371,14 @@ Singleton {
         updateProgressPoller.restart()
     }
 
+    Timer {
+        id: simulatedUpdate
+        interval: 4000
+        onTriggered: root.simulate("off")
+    }
+
     function dismiss(): void {
+        if (root.simulated) { root.simulate("off"); return }
         if (remoteCommit.length > 0) {
             Config.setNestedValues({ "shellUpdates.dismissedCommit": remoteCommit, "shellUpdates.dismissedAt": Date.now() })
         }

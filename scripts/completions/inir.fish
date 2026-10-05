@@ -555,6 +555,8 @@ complete -c inir -n '__inir_at_function shellUpdate shell-update' -a performUpda
 complete -c inir -n '__inir_at_function shellUpdate shell-update' -a dismiss -d 'Dismiss update notification'
 complete -c inir -n '__inir_at_function shellUpdate shell-update' -a undismiss -d 'Un-dismiss update notification'
 complete -c inir -n '__inir_at_function shellUpdate shell-update' -a diagnose -d 'Dump update state as JSON'
+complete -c inir -n '__inir_at_function shellUpdate shell-update' -a simulate -d 'on fakes a pending update to see the bubble, card and notif…'
+complete -c inir -n '__inir_at_value 1 simulate shellUpdate shell-update' -a 'on off'
 complete -c inir -n '__inir_at_target' -a sidebarLeft -d 'Left sidebar: AI chat and apps in Material; the customizabl…'
 complete -c inir -n '__inir_at_target' -a sidebar-left -d 'Left sidebar: AI chat and apps in Material; the customizabl…'
 complete -c inir -n '__inir_at_function sidebarLeft sidebar-left' -a toggle -d 'Open/close left sidebar'

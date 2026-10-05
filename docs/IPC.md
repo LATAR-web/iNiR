@@ -1016,6 +1016,7 @@ Shell update checker. Monitors the git repo for new commits and shows an update 
 | `dismiss` | Dismiss update notification |
 | `undismiss` | Un-dismiss update notification |
 | `diagnose` | Dump update state as JSON |
+| `simulate <state>` | `on` fakes a pending update to see the bubble, card and notification, `off` clears it; git and config are untouched and Update only plays a pretend run in the terminal. For testing |
 
 ---
 
