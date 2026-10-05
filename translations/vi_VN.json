@@ -7309,7 +7309,6 @@
   "How wide the shoulders are where the Island turns into its edge.": "Độ rộng của vai nơi Đảo chuyển thành cạnh.",
   "Hug its content in the middle, hug one end, or span the whole edge as a bar.": "Ôm nội dung ở giữa, ôm một đầu, hoặc trải hết cạnh như một thanh.",
   "Hundredths": "Phần trăm giây",
-  "If you leave an update sitting, iNiR mentions it again this often. Not now silences that version for good.": "Nếu bạn để một bản cập nhật đó, iNiR nhắc lại sau khoảng này. Để sau sẽ tắt nhắc phiên bản đó luôn.",
   "In progress": "Đang diễn ra",
   "Individual widget overrides take priority.": "Cài đặt riêng từng tiện ích được ưu tiên.",
   "Inner corners": "Góc trong",
@@ -8892,5 +8891,6 @@
   "iNiR Settings": "Cài đặt iNiR",
   "Over the desktop previews every change on the screen behind it. A window sits with your apps: Niri sizes, maximizes and moves it like any other.": "Trên màn hình nền hiển thị mọi thay đổi ngay trên màn hình phía sau. Cửa sổ nằm cùng ứng dụng của bạn: Niri đổi kích thước, phóng to và di chuyển nó như mọi cửa sổ khác.",
   "Open over the desktop": "Mở trên màn hình nền",
-  "Open as a window": "Mở dạng cửa sổ"
+  "Open as a window": "Mở dạng cửa sổ",
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Nếu bạn để một bản cập nhật chờ, iNiR sẽ hiện lại theo tần suất này, kể cả sau Để sau."
 }

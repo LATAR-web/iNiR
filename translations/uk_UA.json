@@ -7309,7 +7309,6 @@
   "How wide the shoulders are where the Island turns into its edge.": "Ширина плечей там, де Острів переходить у край.",
   "Hug its content in the middle, hug one end, or span the whole edge as a bar.": "Облягати вміст посередині, притиснутися до одного краю або зайняти весь край як панель.",
   "Hundredths": "Соті",
-  "If you leave an update sitting, iNiR mentions it again this often. Not now silences that version for good.": "Якщо відкласти оновлення, iNiR нагадає знову з такою частотою. «Не зараз» глушить цю версію назавжди.",
   "In progress": "Виконується",
   "Individual widget overrides take priority.": "Налаштування окремих віджетів важливіші.",
   "Inner corners": "Внутрішні кути",
@@ -8892,5 +8891,6 @@
   "iNiR Settings": "Налаштування iNiR",
   "Over the desktop previews every change on the screen behind it. A window sits with your apps: Niri sizes, maximizes and moves it like any other.": "Поверх робочого столу кожну зміну одразу видно на екрані позаду. Вікно живе поруч із застосунками: Niri змінює його розмір, розгортає й переміщує, як будь-яке інше.",
   "Open over the desktop": "Відкрити поверх робочого столу",
-  "Open as a window": "Відкрити у вікні"
+  "Open as a window": "Відкрити у вікні",
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Якщо оновлення чекає, iNiR знову показує його з такою частотою, навіть після «Не зараз»."
 }

@@ -3865,6 +3865,7 @@ Singleton {
                 property bool enabled: true
                 property int checkIntervalMinutes: 360
                 property string dismissedCommit: ""
+                property real dismissedAt: 0
                 property string lastNotifiedCommit: ""
                 // Days before a still-pending update is raised again. 0 tells it once and
                 // then stays quiet until the next upstream commit.

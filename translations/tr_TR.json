@@ -7309,7 +7309,6 @@
   "How wide the shoulders are where the Island turns into its edge.": "Ada'nın kenarına dönüştüğü yerdeki omuzların ne kadar geniş olduğu.",
   "Hug its content in the middle, hug one end, or span the whole edge as a bar.": "İçeriği ortada sarmak, bir uca yaslanmak ya da tüm kenarı bir çubuk gibi kaplamak.",
   "Hundredths": "Salise",
-  "If you leave an update sitting, iNiR mentions it again this often. Not now silences that version for good.": "Bir güncellemeyi beklemeye bırakırsanız iNiR bunu bu sıklıkla yeniden hatırlatır. Şimdi değil, o sürümü tamamen susturur.",
   "In progress": "Sürüyor",
   "Individual widget overrides take priority.": "Tek tek widget ayarları önceliklidir.",
   "Inner corners": "İç köşeler",
@@ -8892,5 +8891,6 @@
   "iNiR Settings": "iNiR Ayarları",
   "Over the desktop previews every change on the screen behind it. A window sits with your apps: Niri sizes, maximizes and moves it like any other.": "Masaüstünün üzerinde her değişikliği arkadaki ekranda gösterir. Pencere uygulamalarınla birlikte durur: Niri onu diğerleri gibi boyutlandırır, büyütür ve taşır.",
   "Open over the desktop": "Masaüstünün üzerinde aç",
-  "Open as a window": "Pencere olarak aç"
+  "Open as a window": "Pencere olarak aç",
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Bir güncellemeyi beklemede bırakırsan iNiR onu bu sıklıkla yeniden gösterir, Şimdi değil dedikten sonra da."
 }

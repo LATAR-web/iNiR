@@ -7304,7 +7304,6 @@
   "How wide the shoulders are where the Island turns into its edge.": "How wide the shoulders are where the Island turns into its edge.",
   "Hug its content in the middle, hug one end, or span the whole edge as a bar.": "Hug its content in the middle, hug one end, or span the whole edge as a bar.",
   "Hundredths": "Hundredths",
-  "If you leave an update sitting, iNiR mentions it again this often. Not now silences that version for good.": "If you leave an update sitting, iNiR mentions it again this often. Not now silences that version for good.",
   "In progress": "In progress",
   "Individual widget overrides take priority.": "Individual widget overrides take priority.",
   "Inner corners": "Inner corners",
@@ -8892,5 +8891,6 @@
   "iNiR Settings": "iNiR Settings",
   "Over the desktop previews every change on the screen behind it. A window sits with your apps: Niri sizes, maximizes and moves it like any other.": "Over the desktop previews every change on the screen behind it. A window sits with your apps: Niri sizes, maximizes and moves it like any other.",
   "Open over the desktop": "Open over the desktop",
-  "Open as a window": "Open as a window"
+  "Open as a window": "Open as a window",
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "If you leave an update sitting, iNiR brings it back this often, also after Not now."
 }

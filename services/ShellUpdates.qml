@@ -113,7 +113,11 @@ Singleton {
     readonly property int remindDays: Math.max(0, Number(Config.options?.shellUpdates?.remindDays ?? 3))
     readonly property real lastNotifiedAt: Number(Config.options?.shellUpdates?.lastNotifiedAt ?? 0)
     readonly property bool showUpdate: hasUpdate && !isDismissed && !isUpdating
+    readonly property real dismissedAt: Number(Config.options?.shellUpdates?.dismissedAt ?? 0)
+    // Not now hides that version until `remindDays` have passed, then it shows again; 0 keeps it hidden.
+    property real _clock: Date.now()
     readonly property bool isDismissed: dismissedCommit.length > 0 && remoteCommit === dismissedCommit
+        && !(root.remindDays > 0 && root.dismissedAt > 0 && root._clock - root.dismissedAt >= root.remindDays * 86400000)
 
     // Repo path - try to get from version.json, fallback to config dir
     readonly property string configDir: FileUtils.trimFileProtocol(Quickshell.shellPath("."))
@@ -201,6 +205,7 @@ Singleton {
 
     function check(): void {
         if (!enabled || isChecking || isUpdating || managedExternally) return
+        root._clock = Date.now()
         root.waitingForNetwork = !Network.online
         if (root.waitingForNetwork) return
         root.isChecking = true
@@ -319,7 +324,7 @@ Singleton {
 
     function dismiss(): void {
         if (remoteCommit.length > 0) {
-            Config.setNestedValue("shellUpdates.dismissedCommit", remoteCommit)
+            Config.setNestedValues({ "shellUpdates.dismissedCommit": remoteCommit, "shellUpdates.dismissedAt": Date.now() })
         }
         root.overlayOpen = false
     }
@@ -343,6 +348,8 @@ Singleton {
             lastError: root.lastError,
             consecutiveFetchErrors: root.consecutiveFetchErrors,
             hasUpdate: root.hasUpdate,
+            isDismissed: root.isDismissed,
+            showUpdate: root.showUpdate,
             commitsBehind: root.commitsBehind,
             commitsAhead: root.commitsAhead,
             repoRelation: root.repoRelation,

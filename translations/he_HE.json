@@ -7309,7 +7309,6 @@
   "How wide the shoulders are where the Island turns into its edge.": "כמה רחבות הכתפיים היכן שהאיילנד הופך לקצה שלו.",
   "Hug its content in the middle, hug one end, or span the whole edge as a bar.": "לעטוף את התוכן באמצע, להיצמד לקצה אחד, או לפרוש על כל הקצה כסרגל.",
   "Hundredths": "מאיות",
-  "If you leave an update sitting, iNiR mentions it again this often. Not now silences that version for good.": "אם תשאיר עדכון ממתין, iNiR יזכיר בתדירות הזו. לא עכשיו משתיק את הגרסה הזו לתמיד.",
   "In progress": "בתהליך",
   "Individual widget overrides take priority.": "הגדרות של ווידג'טים בודדים גוברות.",
   "Inner corners": "פינות פנימיות",
@@ -8892,5 +8891,6 @@
   "iNiR Settings": "הגדרות iNiR",
   "Over the desktop previews every change on the screen behind it. A window sits with your apps: Niri sizes, maximizes and moves it like any other.": "מעל שולחן העבודה מציג כל שינוי על המסך שמאחור. חלון יושב לצד האפליקציות שלך: Niri משנה את גודלו, מגדיל ומזיז אותו כמו כל חלון אחר.",
   "Open over the desktop": "פתח מעל שולחן העבודה",
-  "Open as a window": "פתח כחלון"
+  "Open as a window": "פתח כחלון",
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "אם משאירים עדכון ממתין, iNiR מחזיר אותו בתדירות הזו, גם אחרי „לא עכשיו”."
 }

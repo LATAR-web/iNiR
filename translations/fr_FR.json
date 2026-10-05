@@ -7309,7 +7309,6 @@
   "How wide the shoulders are where the Island turns into its edge.": "La largeur des épaules là où l'Îlot rejoint son bord.",
   "Hug its content in the middle, hug one end, or span the whole edge as a bar.": "Épouser son contenu au centre, épouser une extrémité, ou couvrir tout le bord comme une barre.",
   "Hundredths": "Centièmes",
-  "If you leave an update sitting, iNiR mentions it again this often. Not now silences that version for good.": "Si vous laissez traîner une mise à jour, iNiR vous le rappelle à cet intervalle. Pas maintenant fait taire cette version pour de bon.",
   "In progress": "En cours",
   "Individual widget overrides take priority.": "Les réglages propres à chaque widget sont prioritaires.",
   "Inner corners": "Coins intérieurs",
@@ -8892,5 +8891,6 @@
   "iNiR Settings": "Paramètres d'iNiR",
   "Over the desktop previews every change on the screen behind it. A window sits with your apps: Niri sizes, maximizes and moves it like any other.": "Sur le bureau, chaque changement s'affiche sur l'écran derrière. Une fenêtre vit avec vos applis : Niri la redimensionne, l'agrandit et la déplace comme les autres.",
   "Open over the desktop": "Ouvrir sur le bureau",
-  "Open as a window": "Ouvrir dans une fenêtre"
+  "Open as a window": "Ouvrir dans une fenêtre",
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Si vous laissez une mise à jour en attente, iNiR la remontre à cette fréquence, même après « Pas maintenant »."
 }

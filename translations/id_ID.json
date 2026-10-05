@@ -7302,7 +7302,6 @@
   "How wide the shoulders are where the Island turns into its edge.": "Seberapa lebar bahu tempat Pulau berubah menjadi tepinya.",
   "Hug its content in the middle, hug one end, or span the whole edge as a bar.": "Merapat ke isinya di tengah, merapat ke satu ujung, atau membentang di seluruh tepi sebagai bilah.",
   "Hundredths": "Perseratus detik",
-  "If you leave an update sitting, iNiR mentions it again this often. Not now silences that version for good.": "Jika Anda membiarkan pembaruan menunggu, iNiR menyebutkannya lagi sesering ini. Nanti saja membungkam versi itu untuk seterusnya.",
   "In progress": "Sedang berlangsung",
   "Individual widget overrides take priority.": "Penggantian per widget diutamakan.",
   "Inner corners": "Sudut dalam",
@@ -8892,5 +8891,6 @@
   "iNiR Settings": "Pengaturan iNiR",
   "Over the desktop previews every change on the screen behind it. A window sits with your apps: Niri sizes, maximizes and moves it like any other.": "Di atas desktop menampilkan setiap perubahan di layar di belakangnya. Jendela duduk bersama aplikasimu: Niri mengubah ukuran, memaksimalkan, dan memindahkannya seperti jendela lain.",
   "Open over the desktop": "Buka di atas desktop",
-  "Open as a window": "Buka sebagai jendela"
+  "Open as a window": "Buka sebagai jendela",
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Jika pembaruan dibiarkan, iNiR menampilkannya lagi sesering ini, juga setelah Nanti saja."
 }

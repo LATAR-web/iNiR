@@ -7309,7 +7309,6 @@
   "How wide the shoulders are where the Island turns into its edge.": "アイランドが端へ変わる部分の肩の幅。",
   "Hug its content in the middle, hug one end, or span the whole edge as a bar.": "中央で内容に沿わせる、片端に寄せる、または辺全体をバーとして覆います。",
   "Hundredths": "1/100 秒",
-  "If you leave an update sitting, iNiR mentions it again this often. Not now silences that version for good.": "アップデートを放置すると、iNiR はこの間隔で再度知らせます。「今はしない」でそのバージョンは二度と知らせません。",
   "In progress": "進行中",
   "Individual widget overrides take priority.": "各ウィジェットの個別設定が優先されます。",
   "Inner corners": "内側の角",
@@ -8892,5 +8891,6 @@
   "iNiR Settings": "iNiR の設定",
   "Over the desktop previews every change on the screen behind it. A window sits with your apps: Niri sizes, maximizes and moves it like any other.": "デスクトップの上では、変更がすぐ背後の画面に反映されます。ウィンドウはアプリと並び、Niri がほかのウィンドウと同じようにサイズ変更・最大化・移動します。",
   "Open over the desktop": "デスクトップの上で開く",
-  "Open as a window": "ウィンドウで開く"
+  "Open as a window": "ウィンドウで開く",
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "アップデートを放置すると、「今はしない」の後でも、iNiR はこの間隔で再び表示します。"
 }

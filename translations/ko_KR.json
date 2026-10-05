@@ -7309,7 +7309,6 @@
   "How wide the shoulders are where the Island turns into its edge.": "아일랜드가 가장자리로 바뀌는 곳의 어깨 폭.",
   "Hug its content in the middle, hug one end, or span the whole edge as a bar.": "가운데에서 내용을 감싸거나, 한쪽 끝에 붙이거나, 가장자리 전체를 막대처럼 덮습니다.",
   "Hundredths": "1/100초",
-  "If you leave an update sitting, iNiR mentions it again this often. Not now silences that version for good.": "업데이트를 미뤄 두면 iNiR가 이 주기로 다시 알립니다. 나중에는 그 버전을 영영 조용히 합니다.",
   "In progress": "진행 중",
   "Individual widget overrides take priority.": "개별 위젯 설정이 우선합니다.",
   "Inner corners": "안쪽 모서리",
@@ -8892,5 +8891,6 @@
   "iNiR Settings": "iNiR 설정",
   "Over the desktop previews every change on the screen behind it. A window sits with your apps: Niri sizes, maximizes and moves it like any other.": "데스크톱 위에서는 모든 변경이 뒤쪽 화면에 바로 보입니다. 창은 앱과 함께 놓이며, Niri가 다른 창처럼 크기를 바꾸고 최대화하고 옮깁니다.",
   "Open over the desktop": "데스크톱 위에서 열기",
-  "Open as a window": "창으로 열기"
+  "Open as a window": "창으로 열기",
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "업데이트를 미뤄 두면 '나중에'를 눌렀어도 iNiR가 이 간격으로 다시 보여 줍니다."
 }

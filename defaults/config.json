@@ -2347,6 +2347,7 @@
         "enabled": true,
         "checkIntervalMinutes": 360,
         "dismissedCommit": "",
+        "dismissedAt": 0,
         "lastNotifiedCommit": "",
         "remindDays": 3,
         "lastNotifiedAt": 0,

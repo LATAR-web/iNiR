@@ -7309,7 +7309,6 @@
   "How wide the shoulders are where the Island turns into its edge.": "जहाँ द्वीप अपने किनारे में बदलता है वहाँ कंधे कितने चौड़े हैं।",
   "Hug its content in the middle, hug one end, or span the whole edge as a bar.": "बीच में सामग्री को घेरें, एक सिरे से सटें, या पूरे किनारे पर बार की तरह फैलें।",
   "Hundredths": "सौवाँ हिस्सा",
-  "If you leave an update sitting, iNiR mentions it again this often. Not now silences that version for good.": "अगर आप अपडेट पड़ा रहने दें, तो iNiR इतनी बार फिर याद दिलाता है। अभी नहीं उस वर्ज़न को हमेशा के लिए चुप कर देता है।",
   "In progress": "जारी है",
   "Individual widget overrides take priority.": "अलग-अलग विजेट की सेटिंग्स प्राथमिक हैं।",
   "Inner corners": "भीतरी कोने",
@@ -8892,5 +8891,6 @@
   "iNiR Settings": "iNiR सेटिंग्स",
   "Over the desktop previews every change on the screen behind it. A window sits with your apps: Niri sizes, maximizes and moves it like any other.": "डेस्कटॉप के ऊपर हर बदलाव पीछे की स्क्रीन पर दिखाता है। विंडो आपके ऐप्स के साथ रहती है: Niri उसे बाकी विंडो की तरह आकार देता, बड़ा करता और हिलाता है।",
   "Open over the desktop": "डेस्कटॉप के ऊपर खोलें",
-  "Open as a window": "विंडो में खोलें"
+  "Open as a window": "विंडो में खोलें",
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "अगर अपडेट बाकी छोड़ दें, तो iNiR उसे इतनी बार वापस दिखाता है, \"अभी नहीं\" के बाद भी।"
 }

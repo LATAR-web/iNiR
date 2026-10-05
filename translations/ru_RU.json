@@ -7309,7 +7309,6 @@
   "How wide the shoulders are where the Island turns into its edge.": "Ширина плеч там, где Остров переходит в край.",
   "Hug its content in the middle, hug one end, or span the whole edge as a bar.": "Облегать содержимое посередине, прижаться к одному краю или занять весь край как панель.",
   "Hundredths": "Сотые",
-  "If you leave an update sitting, iNiR mentions it again this often. Not now silences that version for good.": "Если отложить обновление, iNiR напомнит снова с такой частотой. «Не сейчас» заглушает эту версию навсегда.",
   "In progress": "Выполняется",
   "Individual widget overrides take priority.": "Настройки отдельных виджетов важнее.",
   "Inner corners": "Внутренние углы",
@@ -8892,5 +8891,6 @@
   "iNiR Settings": "Настройки iNiR",
   "Over the desktop previews every change on the screen behind it. A window sits with your apps: Niri sizes, maximizes and moves it like any other.": "Поверх рабочего стола каждое изменение сразу видно на экране позади. Окно живёт рядом с приложениями: Niri меняет его размер, разворачивает и перемещает, как любое другое.",
   "Open over the desktop": "Открыть поверх рабочего стола",
-  "Open as a window": "Открыть в окне"
+  "Open as a window": "Открыть в окне",
+  "If you leave an update sitting, iNiR brings it back this often, also after Not now.": "Если обновление ждёт, iNiR снова показывает его с такой частотой, даже после «Не сейчас»."
 }
