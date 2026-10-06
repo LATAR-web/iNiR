@@ -6,6 +6,7 @@ import Quickshell
 import qs
 import qs.services
 import qs.modules.common
+import qs.modules.settings
 import qs.modules.iris.style
 import qs.modules.iris.widgets
 import qs.modules.background.widgets
