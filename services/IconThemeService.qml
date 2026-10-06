@@ -21,6 +21,11 @@ Singleton {
     property bool _initialized: false
     property bool _restartQueued: false
 
+    // The mode is known only once the colours load (it starts dark): pick the sibling again then and on every switch,
+    // or a light scheme keeps the dark variant's white icons.
+    readonly property bool _dark: Appearance.m3colors.darkmode
+    on_DarkChanged: if (root._initialized && root.currentTheme.length > 0) root._apply(root.currentTheme, true)
+
     // Smart icon resolution: preserve app-provided identity whenever possible.
     // Only repair the duplicated Electron resources path that is known-broken.
     function smartIconName(icon, appId) {
