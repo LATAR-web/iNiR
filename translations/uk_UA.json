@@ -8914,5 +8914,9 @@
   "Terminals stay dark: Terminals always dark is on under App colours.": "Термінали лишаються темними: у «Кольорах застосунків» увімкнено «Термінали завжди темні».",
   "Your terminals and apps sit on the same surfaces as the shell.": "Термінали й застосунки лежать на тих самих поверхнях, що й оболонка.",
   "Apps use this accent": "Застосунки використовують цей акцент",
-  "Your apps and terminals are coloured from this accent instead of the wallpaper, so they and the shell wear one colour.": "Застосунки й термінали фарбуються цим акцентом замість шпалер, щоб вони й оболонка мали один колір."
+  "Your apps and terminals are coloured from this accent instead of the wallpaper, so they and the shell wear one colour.": "Застосунки й термінали фарбуються цим акцентом замість шпалер, щоб вони й оболонка мали один колір.",
+  "Shape and type": "Форма й шрифт",
+  "Apps and extras": "Застосунки та інше",
+  "What it shows": "Що показує",
+  "Locking": "Блокування"
 }

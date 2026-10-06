@@ -8914,5 +8914,9 @@
   "Terminals stay dark: Terminals always dark is on under App colours.": "Terminals bleiben dunkel: Terminals immer dunkel ist unter App-Farben aktiv.",
   "Your terminals and apps sit on the same surfaces as the shell.": "Deine Terminals und Apps liegen auf denselben Flächen wie die Shell.",
   "Apps use this accent": "Apps nutzen diesen Akzent",
-  "Your apps and terminals are coloured from this accent instead of the wallpaper, so they and the shell wear one colour.": "Deine Apps und Terminals werden aus diesem Akzent statt aus dem Hintergrund eingefärbt, damit sie und die Shell eine Farbe tragen."
+  "Your apps and terminals are coloured from this accent instead of the wallpaper, so they and the shell wear one colour.": "Deine Apps und Terminals werden aus diesem Akzent statt aus dem Hintergrund eingefärbt, damit sie und die Shell eine Farbe tragen.",
+  "Shape and type": "Form und Schrift",
+  "Apps and extras": "Apps und Extras",
+  "What it shows": "Was sie zeigt",
+  "Locking": "Sperren"
 }

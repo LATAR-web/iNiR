@@ -1255,13 +1255,43 @@ QtObject {
     }
     // The order a section's groups are listed in: what someone came to change first, the rest as they were declared.
     readonly property var groupOrder: ({
-        appearance: ["Look", "Themes", "Colour theme", "Scheme", "Dark look", "Ink look", "Light look", "Material", "Texture", "Adaptive", "Glass", "Edges", "Shape", "Icons", "Corners per surface", "Frame", "Accent", "Highlight", "Colour layer", "Light", "Badges", "Wallpaper",
-            "Text", "Faces", "Settings", "Menus", "Material per surface", "Customize", "Previews", "App colours"],
+        appearance: ["Look", "Themes", "Colour theme", "Scheme", "Accent", "Highlight", "Dark look", "Ink look", "Light look",
+            "Material", "Glass", "Texture", "Edges", "Light", "Adaptive", "Shape", "Corners per surface", "Frame", "Icons",
+            "Text", "Faces", "Badges", "Colour layer", "Wallpaper", "App colours", "Material per surface", "Menus", "Settings",
+            "Customize", "Previews"],
         bar: ["Notch", "Layout", "Shape", "At rest", "Resting Island", "Bar", "Pages", "Desktop page", "Player page", "Interaction", "Visibility", "Connections"],
         bubbles: ["Size", "Behaviour", "On the contour", "Floating", "Opening bodies", "Cards", "Card contents", "Joining", "Tray"],
         dock: ["Notch", "Look", "Icons", "Visibility"],
         desktop: ["Widgets", "Wallpaper shuffle", "Live wallpapers", "Behind windows", "Parallax", "Overview backdrop", "Wallpaper gallery", "Desktop menu"],
         lock: ["When idle", "Security", "Scene", "Clock", "At a glance", "Now playing", "Activity", "Status", "Sign in", "Type"]
+    })
+    // How a section's page reads: named blocks of groups, by what someone came to change.
+    readonly property var groupClusters: ({
+        appearance: [
+            { caption: "Colour", groups: ["Look", "Themes", "Colour theme", "Scheme", "Dark look", "Ink look", "Light look", "Accent", "Highlight"] },
+            { caption: "Material", groups: ["Material", "Glass", "Texture", "Edges", "Light", "Adaptive"] },
+            { caption: "Shape and type", groups: ["Shape", "Corners per surface", "Frame", "Text", "Faces", "Icons", "Badges"] },
+            { caption: "Apps and extras", groups: ["App colours", "Wallpaper", "Colour layer"] },
+            { caption: "Per surface", groups: ["Material per surface", "Menus", "Settings", "Customize", "Previews"] }
+        ],
+        bar: [
+            { caption: "Shape", groups: ["Notch", "Layout", "Shape"] },
+            { caption: "What it shows", groups: ["At rest", "Resting Island", "Bar", "Pages", "Desktop page", "Player page"] },
+            { caption: "Behaviour", groups: ["Interaction", "Visibility", "Connections"] }
+        ],
+        bubbles: [
+            { caption: "Bubbles", groups: ["Size", "Behaviour", "On the contour", "Floating"] },
+            { caption: "Cards", groups: ["Opening bodies", "Cards", "Card contents", "Joining", "Tray"] }
+        ],
+        desktop: [
+            { caption: "Desktop", groups: ["Widgets", "Desktop menu"] },
+            { caption: "Wallpaper", groups: ["Wallpaper shuffle", "Live wallpapers", "Wallpaper gallery", "Behind windows", "Parallax", "Overview backdrop"] }
+        ],
+        lock: [
+            { caption: "Locking", groups: ["When idle", "Security"] },
+            { caption: "Look", groups: ["Scene", "Clock", "Type"] },
+            { caption: "What it shows", groups: ["At a glance", "Now playing", "Activity", "Status", "Sign in"] }
+        ]
     })
     readonly property var settings: {
         const rows = root.behaviour.concat(root.shared).concat(root.niriRows)

@@ -8914,5 +8914,9 @@
   "Terminals stay dark: Terminals always dark is on under App colours.": "终端保持深色：应用颜色中开启了“终端始终深色”。",
   "Your terminals and apps sit on the same surfaces as the shell.": "你的终端和应用使用与外壳相同的界面底色。",
   "Apps use this accent": "应用使用此强调色",
-  "Your apps and terminals are coloured from this accent instead of the wallpaper, so they and the shell wear one colour.": "应用和终端改用此强调色而不是壁纸来着色，让它们与外壳同为一种颜色。"
+  "Your apps and terminals are coloured from this accent instead of the wallpaper, so they and the shell wear one colour.": "应用和终端改用此强调色而不是壁纸来着色，让它们与外壳同为一种颜色。",
+  "Shape and type": "形状与字体",
+  "Apps and extras": "应用与其他",
+  "What it shows": "显示内容",
+  "Locking": "锁定"
 }

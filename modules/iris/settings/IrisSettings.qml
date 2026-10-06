@@ -109,10 +109,24 @@ Item {
     }
     readonly property var shownGroups: root.searching ? root.groups
         : root.openGroup.length > 0 ? root.groups.filter(entry => entry.title === root.openGroup) : []
+    // A section's groups in named blocks, by what someone came to change (IrisOptions.groupClusters); a section without
+    // blocks is cut into even cards. Groups a block does not name close the page in a last block of their own.
     readonly property var groupChunks: {
-        const size = root.groups.length > 7 ? Math.ceil(root.groups.length / Math.ceil(root.groups.length / 6)) : root.groups.length
+        const clusters = IrisOptions.groupClusters[root.section] ?? []
         const out = []
-        for (let i = 0; i < root.groups.length; i += Math.max(1, size)) out.push(root.groups.slice(i, i + size))
+        if (clusters.length > 0) {
+            const placed = new Set()
+            for (const cluster of clusters) {
+                const groups = cluster.groups.map(key => root.groups.find(entry => entry.key === key)).filter(entry => entry !== undefined)
+                groups.forEach(entry => placed.add(entry.key))
+                if (groups.length > 0) out.push({ caption: Translation.tr(cluster.caption), groups: groups })
+            }
+            const rest = root.groups.filter(entry => !placed.has(entry.key))
+            if (rest.length > 0) out.push({ caption: out.length > 0 ? Translation.tr("More") : "", groups: rest })
+            return out
+        }
+        const size = root.groups.length > 7 ? Math.ceil(root.groups.length / Math.ceil(root.groups.length / 6)) : root.groups.length
+        for (let i = 0; i < root.groups.length; i += Math.max(1, size)) out.push({ caption: "", groups: root.groups.slice(i, i + size) })
         return out
     }
     function valueText(spec: var): string {
@@ -1146,19 +1160,32 @@ Item {
         }
     }
 
-    component GroupList: Rectangle {
+    component GroupList: ColumnLayout {
         id: list
         required property var modelData
         Layout.fillWidth: true
-        implicitHeight: listColumn.implicitHeight
-        radius: IrisStyle.radiusTile
-        color: IrisStyle.readingCard
-        Column {
-            id: listColumn
-            width: parent.width
-            Repeater {
-                model: ScriptModel { objectProp: "title"; values: list.modelData }
-                GroupRow { last: index === list.modelData.length - 1 }
+        spacing: 6 * root.d
+        IrisText {
+            visible: text.length > 0
+            Layout.leftMargin: 16 * root.d
+            text: list.modelData.caption
+            color: IrisStyle.label
+            font.family: IrisStyle.fontTitle
+            font.pixelSize: IrisStyle.typeMeta
+            font.weight: IrisStyle.weight(Font.DemiBold)
+        }
+        Rectangle {
+            Layout.fillWidth: true
+            implicitHeight: listColumn.implicitHeight
+            radius: IrisStyle.radiusTile
+            color: IrisStyle.readingCard
+            Column {
+                id: listColumn
+                width: parent.width
+                Repeater {
+                    model: ScriptModel { objectProp: "title"; values: list.modelData.groups }
+                    GroupRow { last: index === list.modelData.groups.length - 1 }
+                }
             }
         }
     }

@@ -8914,5 +8914,9 @@
   "Terminals stay dark: Terminals always dark is on under App colours.": "터미널이 어둡게 유지됩니다: 앱 색상에서 '터미널 항상 어둡게'가 켜져 있습니다.",
   "Your terminals and apps sit on the same surfaces as the shell.": "터미널과 앱이 셸과 같은 표면 위에 놓입니다.",
   "Apps use this accent": "앱에 이 강조색 사용",
-  "Your apps and terminals are coloured from this accent instead of the wallpaper, so they and the shell wear one colour.": "앱과 터미널이 배경화면 대신 이 강조색으로 물들어, 셸과 하나의 색을 입습니다."
+  "Your apps and terminals are coloured from this accent instead of the wallpaper, so they and the shell wear one colour.": "앱과 터미널이 배경화면 대신 이 강조색으로 물들어, 셸과 하나의 색을 입습니다.",
+  "Shape and type": "모양과 글꼴",
+  "Apps and extras": "앱 및 기타",
+  "What it shows": "표시 내용",
+  "Locking": "잠금"
 }

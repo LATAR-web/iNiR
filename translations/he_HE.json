@@ -8914,5 +8914,9 @@
   "Terminals stay dark: Terminals always dark is on under App colours.": "המסופים נשארים כהים: ‏'מסופים תמיד כהים' מופעל בצבעי היישומים.",
   "Your terminals and apps sit on the same surfaces as the shell.": "המסופים והיישומים שלך יושבים על אותם משטחים כמו המעטפת.",
   "Apps use this accent": "היישומים משתמשים בצבע ההדגשה הזה",
-  "Your apps and terminals are coloured from this accent instead of the wallpaper, so they and the shell wear one colour.": "היישומים והמסופים נצבעים מצבע ההדגשה הזה במקום מהטפט, כך שהם והמעטפת לובשים צבע אחד."
+  "Your apps and terminals are coloured from this accent instead of the wallpaper, so they and the shell wear one colour.": "היישומים והמסופים נצבעים מצבע ההדגשה הזה במקום מהטפט, כך שהם והמעטפת לובשים צבע אחד.",
+  "Shape and type": "צורה וגופן",
+  "Apps and extras": "אפליקציות ותוספות",
+  "What it shows": "מה מוצג",
+  "Locking": "נעילה"
 }

@@ -8914,5 +8914,9 @@
   "Terminals stay dark: Terminals always dark is on under App colours.": "Terminal vẫn tối: Terminal luôn tối đang bật trong Màu ứng dụng.",
   "Your terminals and apps sit on the same surfaces as the shell.": "Terminal và ứng dụng của bạn nằm trên cùng các bề mặt với shell.",
   "Apps use this accent": "Ứng dụng dùng màu nhấn này",
-  "Your apps and terminals are coloured from this accent instead of the wallpaper, so they and the shell wear one colour.": "Ứng dụng và terminal được tô màu từ màu nhấn này thay vì hình nền, để chúng và shell cùng một màu."
+  "Your apps and terminals are coloured from this accent instead of the wallpaper, so they and the shell wear one colour.": "Ứng dụng và terminal được tô màu từ màu nhấn này thay vì hình nền, để chúng và shell cùng một màu.",
+  "Shape and type": "Hình dạng và kiểu chữ",
+  "Apps and extras": "Ứng dụng và tiện ích",
+  "What it shows": "Những gì hiển thị",
+  "Locking": "Khóa"
 }

@@ -8914,5 +8914,9 @@
   "Terminals stay dark: Terminals always dark is on under App colours.": "Terminaller koyu kalır: Uygulama renklerinde Terminaller her zaman koyu açık.",
   "Your terminals and apps sit on the same surfaces as the shell.": "Terminalleriniz ve uygulamalarınız kabukla aynı yüzeylerde durur.",
   "Apps use this accent": "Uygulamalar bu vurguyu kullansın",
-  "Your apps and terminals are coloured from this accent instead of the wallpaper, so they and the shell wear one colour.": "Uygulamalarınız ve terminalleriniz duvar kâğıdı yerine bu vurgudan renk alır; böylece kabukla tek bir renk giyerler."
+  "Your apps and terminals are coloured from this accent instead of the wallpaper, so they and the shell wear one colour.": "Uygulamalarınız ve terminalleriniz duvar kâğıdı yerine bu vurgudan renk alır; böylece kabukla tek bir renk giyerler.",
+  "Shape and type": "Şekil ve yazı",
+  "Apps and extras": "Uygulamalar ve ekstralar",
+  "What it shows": "Ne gösterir",
+  "Locking": "Kilitleme"
 }
