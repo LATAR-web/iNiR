@@ -494,6 +494,11 @@ Scope {
 
         required property var modelData
         readonly property Item wallpaperLayer: wallpaperContainer
+        // Bumped whenever what the wallpaper layer shows can change (picture, parallax, Afterglow arriving): iRiS glass
+        // copies the layer only after a bump instead of every frame the desktop redraws.
+        property int wallpaperLayerRevision: 0
+        readonly property bool wallpaperLayerAnimating: bgRoot.internalShaderTransitionRequested
+        onWallpaperPathRawChanged: bgRoot.wallpaperLayerRevision++
 
         // Hide when fullscreen
         property list<HyprlandWorkspace> workspacesForMonitor: CompositorService.isHyprland ? Hyprland.workspaces.values.filter(workspace => workspace.monitor && workspace.monitor.name == monitor.name) : []
@@ -1423,6 +1428,8 @@ Scope {
                 )
                 property real effectiveValueX: Math.max(0, Math.min(1, valueX))
                 property real effectiveValueY: Math.max(0, Math.min(1, valueY))
+                onEffectiveValueXChanged: bgRoot.wallpaperLayerRevision++
+                onEffectiveValueYChanged: bgRoot.wallpaperLayerRevision++
                 
                 // Internal rendering and parallax geometry are separate concerns.
                 // Shader transitions temporarily move static wallpaper ownership into
@@ -1667,6 +1674,7 @@ Scope {
                 anchors.fill: wallpaperContainer
                 active: bgRoot.afterglowWallpaperActive && bgRoot._familyOwnsScreen
                 sourceComponent: IrisAfterglowWallpaper {
+                    onShown: bgRoot.wallpaperLayerRevision++
                     imagePath: bgRoot.wallpaperPathRaw
                     devicePixelRatio: bgRoot.devicePixelRatio
                     fillMode: bgRoot.fillMode === "fit" ? Image.PreserveAspectFit

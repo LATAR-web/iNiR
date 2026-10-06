@@ -112,12 +112,24 @@ Item {
         visible: root.plated
         sourceComponent: ClippingRectangle {
             id: glassPane
-            // The desktop's own wallpaper layer: live, parallax included, no second decoder.
-            readonly property Item desktopLayer: root.QsWindow?.window?.wallpaperLayer ?? null
+            // The desktop's own wallpaper layer, parallax included, no second decoder. It is copied again only when
+            // the layer or this widget moved: copying it every frame the desktop redraws (music playing, a clock)
+            // cost the shell 17 % CPU with Afterglow against 6 % for solid widgets.
+            readonly property var host: root.QsWindow?.window ?? null
+            readonly property Item desktopLayer: glassPane.host?.wallpaperLayer ?? null
+            readonly property int layerRevision: glassPane.host?.wallpaperLayerRevision ?? 0
+            readonly property bool moving: settling.running || GlobalStates.widgetEditMode
+                || Boolean(glassPane.host?.wallpaperLayerAnimating)
             readonly property point at: {
                 void (root.widget.x + root.widget.y + (root.widget.parent?.x ?? 0) + (root.widget.parent?.y ?? 0))
                 return glassPane.desktopLayer ? root.mapToItem(glassPane.desktopLayer, 0, 0) : Qt.point(root.widget.x, root.widget.y)
             }
+            // Parallax and Afterglow's fade run up to about a second after the bump that announced them.
+            Timer { id: settling; interval: 1500 }
+            onLayerRevisionChanged: settling.restart()
+            onAtChanged: crop.scheduleUpdate()
+            onWidthChanged: crop.scheduleUpdate()
+            onHeightChanged: crop.scheduleUpdate()
             visible: glassPane.desktopLayer !== null || wallpaper.status === Image.Ready
             radius: root.radius
             color: "transparent"
@@ -134,6 +146,7 @@ Item {
                 cache: true
                 sourceSize.width: Math.round(root.widget.screenWidth / 2)
                 sourceSize.height: Math.round(root.widget.screenHeight / 2)
+                onStatusChanged: crop.scheduleUpdate()
             }
 
             ShaderEffectSource {
@@ -143,6 +156,7 @@ Item {
                 width: root.width + glassPane.margin * 2
                 height: root.height + glassPane.margin * 2
                 sourceItem: glassPane.desktopLayer ?? wallpaper
+                live: glassPane.moving
                 sourceRect: Qt.rect(glassPane.at.x - glassPane.margin, glassPane.at.y - glassPane.margin, crop.width, crop.height)
                 textureSize: Qt.size(Math.max(1, Math.round(crop.width / 2)), Math.max(1, Math.round(crop.height / 2)))
                 smooth: true

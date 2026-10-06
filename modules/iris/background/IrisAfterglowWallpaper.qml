@@ -12,6 +12,8 @@ Item {
     property string imagePath: ""
     property int fillMode: Image.PreserveAspectCrop
     property real devicePixelRatio: 1
+    // What it shows changed: a picture or a grade started or finished arriving.
+    signal shown()
 
     component Slot: Item {
         id: slot
@@ -91,6 +93,9 @@ Item {
     Component.onCompleted: root.frontSlot.path = root.imagePath
 
     function arrived(slot: Item): void {
+        // The new grade re-captures the outgoing picture too: only the picture asked for may take the front.
+        if (slot.path !== root.imagePath) return
+        root.shown()
         if (slot !== root.frontSlot) {
             root.front = 1 - root.front
             slot.z = 1
@@ -120,6 +125,6 @@ Item {
         to: 1
         duration: IrisStyle.duration(700)
         easing.type: Easing.OutCubic
-        onFinished: root.release()
+        onFinished: { root.release(); root.shown() }
     }
 }
