@@ -32,6 +32,13 @@ Item {
         return IrisOptions.currentValue(root.spec)
     }
     function commit(next: var): void { IrisOptions.commit(root.spec, next) }
+    // A range shows the drag's own value while it moves (written at a pace, see rangeWrite).
+    property real dragValue: NaN
+    readonly property var shownValue: Number.isFinite(root.dragValue) ? root.dragValue : root.value
+    function flushDrag(): void {
+        if (!Number.isFinite(root.dragValue)) return
+        if (root.dragValue !== Number(root.value)) { root.commit(root.dragValue); rangeWrite.restart() }
+    }
     function previewFace(choice: var): string {
         if (!root.spec.previewFont) return IrisStyle.fontMain
         const bundle = root.spec.bundle ?? []
@@ -176,7 +183,7 @@ Item {
                 Layout.alignment: Qt.AlignTop
                 Layout.preferredHeight: label.implicitHeight
                 verticalAlignment: Text.AlignVCenter
-                text: Translation.tr(IrisOptions.rangeText(root.spec, root.value))
+                text: Translation.tr(IrisOptions.rangeText(root.spec, root.shownValue))
                 color: IrisStyle.subtext
                 font.features: ({ "tnum": 1 })
                 font.pixelSize: IrisStyle.typeLabel
@@ -228,7 +235,7 @@ Item {
             stepSize: (root.spec.step ?? 1) / Math.max(1, root.spec.max - root.spec.min)
             fillColor: IrisStyle.accent
             trackColor: IrisStyle.fill
-            value: root.spec.kind === "range" ? (Number(root.value) - root.spec.min) / (root.spec.max - root.spec.min) : 0
+            value: root.spec.kind === "range" ? (Number(root.shownValue) - root.spec.min) / (root.spec.max - root.spec.min) : 0
             onMoved: next => {
                 const step = root.spec.step ?? 1
                 const span = root.spec.max - root.spec.min
@@ -237,8 +244,17 @@ Item {
                 const home = Number(root.spec.fallback)
                 const held = rangeScrubber.dragging && Number.isFinite(home) && Math.abs(raw - home) < span * 0.02
                 const value = held ? home : Number((Math.round(raw / step) * step).toFixed(4))
-                if (value !== Number(root.value)) root.commit(value)
+                if (!rangeScrubber.dragging) { if (value !== Number(root.value)) root.commit(value); return }
+                root.dragValue = value
+                if (!rangeWrite.running) root.flushDrag()
             }
+            onDraggingChanged: if (!dragging) { rangeWrite.stop(); root.flushDrag(); root.dragValue = NaN }
+        }
+        // Every write re-reads every row of Settings: a drag writes at most ten times a second, and its last value on release.
+        Timer {
+            id: rangeWrite
+            interval: 100
+            onTriggered: root.flushDrag()
         }
 
         Loader {
