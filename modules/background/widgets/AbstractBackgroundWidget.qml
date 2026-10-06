@@ -2266,9 +2266,9 @@ AbstractWidget {
     function setIrisOption(key: string, value: var): void {
         root._setOutputValue("iris." + key, value)
     }
+    // The sheet's own slider: not a gesture, so the sheet stays under the pointer that drags it.
     function previewIrisScale(percent: int): void {
-        root._resizePreviewValues = ({ widgetScale: percent })
-        root._irisSizing = true
+        root.previewIrisValue("widgetScale", percent)
     }
     function previewIrisValue(key: string, value: var): void {
         const preview = ({})
@@ -2289,9 +2289,8 @@ AbstractWidget {
         }
     }
     function commitIrisScale(percent: int): void {
-        if (percent !== Math.round(root._baseScale * 100) || root._irisSizing)
-            root._setOutputValue("widgetScale", percent)
-        root.commitIrisSize(root.irisSize)
+        root.commitIrisValue("widgetScale", percent)
+        _irisSizeSettle.restart()
     }
 
     readonly property Item irisFaceView: irisFaceLoader.item
