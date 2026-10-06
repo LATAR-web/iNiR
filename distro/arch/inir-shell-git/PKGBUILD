@@ -15,6 +15,7 @@ depends=(
   fish
   grim
   jq
+  go
   kirigami
   libnotify
   networkmanager

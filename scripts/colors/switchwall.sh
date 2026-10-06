@@ -538,6 +538,8 @@ switch() {
             if [[ "$cfg_iris_material_apps" == "true" ]]; then
                 iris_surface_seed=$(jq -r '.seed // empty' "$iris_surface_file" 2>/dev/null)
                 [[ "$iris_surface_seed" =~ ^#[0-9A-Fa-f]{6}$ ]] && generate_colors_material_args+=(--surface-seed "$iris_surface_seed")
+                jq -e '.roles.background // empty' "$iris_surface_file" >/dev/null 2>&1 \
+                    && generate_colors_material_args+=(--washi-roles "$iris_surface_file")
             fi
             iris_accent_seed=$(jq -r '.accent // empty' "$iris_surface_file" 2>/dev/null)
             [[ "$iris_accent_seed" =~ ^#[0-9A-Fa-f]{6}$ ]] && generate_colors_material_args+=(--accent-seed "$iris_accent_seed")

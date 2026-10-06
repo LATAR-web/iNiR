@@ -1761,7 +1761,8 @@ AbstractWidget {
         ?? (root._manifestKeyList.length > 0 ? root._autoPopoverComponent : null)
     property string _quickTab: "widget"
     readonly property string identityGlyph: DesktopWidgetIdentity.glyph(root.configEntryName)
-    readonly property color identityTint: DesktopWidgetIdentity.tint(root.configEntryName)
+    readonly property color identityTint: root.widgetIrisFamily ? IrisStyle.identityOf(DesktopWidgetIdentity.tint(root.configEntryName))
+        : DesktopWidgetIdentity.tint(root.configEntryName)
     // The page that holds position, lock and removal: "arrange" in an iRiS face's sheet, "layout" otherwise.
     readonly property string _arrangeTab: root.irisFaced ? "arrange" : "layout"
     readonly property Component _effectivePopover: root.irisFaced ? _irisPopoverRef : root._semanticPalettePopover

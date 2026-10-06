@@ -67,6 +67,7 @@ depends=(
   wget
   ripgrep
   jq
+  go
   python
   rsync
   git

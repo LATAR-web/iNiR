@@ -41,16 +41,24 @@ Item {
     // Glass and transparent faces over a light region turn over: frost and near-black ink instead of
     // a veil darkened until the glass is gone. An opaque plate keeps its own polarity.
     // In the light scheme a plate is light, so its ink is the dark one; a bare widget still follows the wallpaper.
-    readonly property bool lightBackdrop: IrisStyle.light && !root.clear ? true : root.opaque ? root.widget.forceDarkInk
-        : root.clear ? root.widget.inkOnLight : root.widget.glassInkOnLight
+    // A glass face is the shell's material in every scheme, veiled as reading needs: turning it white over a bright region
+    // left white cards among a dark shell. Only a transparent face, which has no material, follows the wallpaper.
+    readonly property bool lightBackdrop: IrisStyle.light && !root.clear ? true : root.clear ? root.widget.inkOnLight
+        : root.widget.forceDarkInk
     readonly property bool ownInk: root.lightBackdrop || (IrisStyle.light && root.clear)
+    // A paper scheme's face is the shell's paper with the shell's own ink and accents, as the quick-controls sheet is;
+    // the light-backdrop path (white frost, accents deepened to 0.3-0.4 lightness) turned orange brown there.
+    readonly property bool paper: IrisStyle.light && !root.clear
     readonly property real textShadow: root.clear ? 1
         : root.glass && !root.widget.legibleAlways ? Math.min(1, (1 - root.strength) * 1.4) : 0
     readonly property real veil: root.opaque ? root.strength
         : root.clear && !root.widget.legibleAlways ? 0
-        : (root.lightBackdrop ? IrisStyle.legibleFrost(root.readMaterial, root.frostLevel, root.readSpread, 1)
+        : (root.paper ? IrisStyle.legibleVeil(root.readMaterial, root.frostLevel, root.readSpread, 1)
+            : root.lightBackdrop ? IrisStyle.legibleFrost(root.readMaterial, root.frostLevel, root.readSpread, 1)
             : IrisStyle.legibleVeil(root.readMaterial, root.readLevel, root.readSpread, 1))
-            * (root.widget.legibleAlways ? 1 : root.strength)
+            * (root.widget.legibleAlways ? 1 : root.paperGlass ? 0.52 + 0.48 * root.strength : root.strength)
+    // On paper, Surface opacity thins a frost; it never turns the face into clear glass lit by the wallpaper's colour.
+    readonly property bool paperGlass: root.paper && root.glass
     // Lume on every widget: the veil (light ink) is solved as if the region were bright and busy, the frost
     // (dark ink) as if it were dim and busy.
     readonly property real readLevel: root.widget.legibleAlways ? Math.max(0.72, root.widget.regionBrightness) : root.widget.regionBrightness
@@ -59,12 +67,20 @@ Item {
     readonly property real frostLevel: root.widget.legibleAlways ? Math.min(0.5, root.widget.regionBrightness) : root.widget.regionBrightness
     readonly property real readSpread: root.widget.legibleAlways ? Math.max(0.24, root.widget.regionBrightnessSpread) : root.widget.regionBrightnessSpread
 
-    readonly property color accent: root.lightBackdrop ? IrisStyle.deepAccent(root.widget.irisAccent, IrisStyle.inkOnLight) : root.widget.irisAccent
-    readonly property color highlight: root.lightBackdrop ? IrisStyle.deepAccent(root.widget.irisAccent3, IrisStyle.inkOnLight) : root.widget.irisAccent3
-    readonly property color accent2: root.lightBackdrop ? IrisStyle.deepAccent(root.widget.irisAccent2, IrisStyle.inkOnLight) : root.widget.irisAccent2
-    readonly property color warm: root.lightBackdrop ? IrisStyle.deepAccent(IrisStyle.secondaryAccent, IrisStyle.inkOnLight) : IrisStyle.secondaryAccent
-    readonly property color danger: root.lightBackdrop ? IrisStyle.deepAccent(IrisStyle.danger, IrisStyle.inkOnLight) : IrisStyle.danger
-    readonly property color ink: root.lightBackdrop ? IrisStyle.inkOnLight : IrisStyle.light ? IrisStyle.inkOnDark : IrisStyle.text
+    // One palette: the widget's data colours and the shell's status colours. Only a face that is not paper and sits over a
+    // light region (a transparent face, or forced dark ink) solves them again, against what Lume read behind it.
+    readonly property bool resolvesMarks: root.lightBackdrop && !root.paper
+    readonly property real seenLevel: root.clear ? root.widget.regionBrightness
+        : root.widget.regionBrightness * (1 - root.veil) + Math.pow(ColorUtils.relativeLuminance(IrisStyle.frost), 1 / 2.2) * root.veil
+    function mark(seed: color): color {
+        return root.resolvesMarks ? Lume.mark(seed, root.seenLevel, root.clear ? root.readSpread : 0, true, 3) : seed
+    }
+    readonly property color accent: root.mark(root.widget.irisAccent)
+    readonly property color highlight: root.mark(root.widget.irisAccent3)
+    readonly property color accent2: root.mark(root.widget.irisAccent2)
+    readonly property color warm: root.mark(IrisStyle.secondaryAccent)
+    readonly property color danger: root.mark(IrisStyle.danger)
+    readonly property color ink: root.paper ? IrisStyle.text : root.lightBackdrop ? IrisStyle.inkOnLight : IrisStyle.light ? IrisStyle.inkOnDark : IrisStyle.text
     readonly property color inkSecondary: IrisStyle.secondaryOf(root.ink)
     readonly property color inkTertiary: IrisStyle.tertiaryOf(root.ink)
     readonly property color fillQuiet: root.ownInk ? IrisStyle.fillQuietOf(root.ink) : IrisStyle.fillQuiet
@@ -73,7 +89,7 @@ Item {
     readonly property color fillActive: root.ownInk ? IrisStyle.fillActiveOf(root.ink) : IrisStyle.fillActive
     readonly property color hairline: root.ownInk ? IrisStyle.hairlineOf(root.ink) : IrisStyle.hairline
     // Ink on a filled accent: light on the deep accents of a light face, the Island's dark otherwise.
-    function onFill(tint: color): color { return root.lightBackdrop ? IrisStyle.onTint : IrisStyle.onTintFor(tint) }
+    function onFill(tint: color): color { return IrisStyle.onTintFor(tint) }
     readonly property int figureWeight: root.widget.widgetTitleWeight
     readonly property string fontMain: IrisStyle.fontMain
     readonly property string fontNumbers: IrisStyle.fontNumbers
@@ -85,8 +101,8 @@ Item {
     readonly property bool flatRim: root.rimShown && !root.glassEdge
         && !(root.glass && !root.lightBackdrop && root.widget.irisOutline === "auto" && !GlobalStates.widgetEditMode)
     readonly property color plateColor: ColorUtils.applyAlpha(root.opaque ? root.widget.irisPlate
-        : root.lightBackdrop ? IrisStyle.frost : IrisStyle.surface, root.veil)
-    readonly property color knockout: root.opaque ? root.plateColor : root.lightBackdrop ? IrisStyle.frost : IrisStyle.surface
+        : root.lightBackdrop && !root.paper ? IrisStyle.frost : IrisStyle.surface, root.veil)
+    readonly property color knockout: root.opaque ? root.plateColor : root.lightBackdrop && !root.paper ? IrisStyle.frost : IrisStyle.surface
 
     // In a stack the plate stays and the pages' contents slide over it (DesktopWidgetStacks).
     readonly property bool stacked: root.widget.stacked
@@ -96,9 +112,10 @@ Item {
     function dp(value: real): real { return Math.round(value * root.k) }
     function px(value: real): real { return Math.round(value * root.t) }
 
+    // A shadow under glass shows through it: the body darkens toward its middle and its top edge reads as a glow.
     RectangularShadow {
         anchors.fill: parent
-        visible: !root.clear && root.plated
+        visible: root.opaque && root.plated
         radius: root.radius
         blur: root.dp(28)
         spread: -root.dp(4)
@@ -266,7 +283,7 @@ Item {
             scale: root.widget.stackDropHint ? 1 : 0.8
             Behavior on scale { NumberAnimation { duration: IrisStyle.feedbackDuration; easing.type: IrisStyle.feedbackEasing } }
             gradient: Gradient {
-                GradientStop { position: 0; color: Qt.lighter(root.accent, 1.18) }
+                GradientStop { position: 0; color: IrisStyle.tileTop(root.accent) }
                 GradientStop { position: 1; color: root.accent }
             }
             MaterialSymbol {

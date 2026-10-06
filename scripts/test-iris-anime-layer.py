@@ -34,9 +34,9 @@ PIECES = ROOT / "modules" / "iris" / "pieces" / "IrisPieces.qml"
 
 PALETTE_KEYS = ["sakura", "neo-tokyo", "unit-01", "magical-girl", "spirit-forest"]
 FUNCTIONS = ["animePaletteEntry", "animeBlend", "animeAccent", "animeHighlight", "wrapHue",
-             "accentFrom", "highlightFrom", "legibleAccent", "vividHighlight"]
+             "accentFrom", "highlightFrom", "readableAccent", "readableHighlight"]
 SLICES = [
-    ("readonly property color themeAccent:", "readonly property var accents:"),
+    ("readonly property var accents:", "// A choice as this scheme would solve it"),
     ("readonly property string animeDefaultPalette:", "function animePaletteEntry("),
     ("readonly property var animeLayer:", "readonly property bool animeEnabled:"),
     ("readonly property bool animeEnabled:", "readonly property string animePaletteName:"),
@@ -76,18 +76,14 @@ def extract_between(text, start_marker, end_marker):
 def build_harness():
     style = STYLE.read_text(encoding="utf-8")
     colors = COLOR_UTILS.read_text(encoding="utf-8")
-    parts = [
-        extract_between(style, "readonly property var accents", "readonly property var highlights"),
-        extract_balanced(style, "readonly property var highlights", "(", ")"),
-        extract_balanced(style, "readonly property var animePalettes", "(", ")"),
-    ]
+    parts = [extract_balanced(style, "readonly property var animePalettes", "(", ")")]
     parts += [extract_between(style, start, end) for start, end in SLICES]
     parts += [extract_balanced(style, f"function {name}(", "{", "}") for name in FUNCTIONS]
     mix = extract_balanced(colors, "function mix(", "{", "}")
 
     # Ids cannot start uppercase in QML; the owner's ColorUtils/Appearance are
     # singleton types. Only the dependency qualifier is rewritten, never the logic.
-    body = "\n    ".join(parts).replace("ColorUtils.", "colorUtils.").replace("Appearance.", "appearanceStub.")
+    body = "\n    ".join(parts).replace("ColorUtils.", "colorUtils.").replace("Appearance.", "appearanceStub.").replace("Lume.", "lumeStub.")
 
     return f"""import QtQuick
 import QtTest
@@ -101,13 +97,26 @@ TestCase {{
     // The scheme tuning is not under test: this is the dark scheme at full colour.
     readonly property bool light: false
     readonly property bool ink: false
-    function chroma(c) {{ return c }}
+    readonly property bool followsTheme: false
+    readonly property real markLevel: 0.1
+    // The solved palette (scripts/colors/washi) as the shell receives it: one swatch per choice, custom at the hue in use.
+    readonly property var washi: ({{
+        accents: {{ blue: "#8bb9ff", mint: "#6fdcb4", rose: "#ffa8b8", lilac: "#c9b3ff", theme: "#9ec2ff", wallpaper: "#8fb8e8",
+            custom: Qt.hsla(root.wrapHue(root.appearance?.theme?.accentHue, 212), 0.7, 0.78, 1).toString() }},
+        highlights: {{ orange: "#ff9f45", yellow: "#f0c64a", red: "#ff8a7a", pink: "#ff8fb0", green: "#6fd88a", theme: "#f5b860",
+            wallpaper: "#e9a87a", custom: Qt.hsla(root.wrapHue(root.appearance?.theme?.highlightHue, 32), 0.92, 0.7, 1).toString() }}
+    }})
 
     {body}
 
     QtObject {{
         id: colorUtils
         {mix}
+    }}
+
+    QtObject {{
+        id: lumeStub
+        function mark(c, level, spread, dark, contrast) {{ return c }}
     }}
 
     QtObject {{

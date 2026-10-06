@@ -394,6 +394,7 @@ Scope {
             Config.setNestedValue("iris.appearance.adaptive", Math.max(0, Math.min(100, value)))
             return String(Math.max(0, Math.min(100, value)))
         }
+        function tokens(): string { return JSON.stringify(IrisStyle.audit()) }
         function palette(id: string): string {
             const known = IrisOptions.colourThemeIds
             if (id === "list") return JSON.stringify(known)

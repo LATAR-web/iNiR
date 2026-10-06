@@ -93,7 +93,7 @@ Loader {
                     implicitHeight: implicitWidth
                     radius: IrisStyle.iconRadius(width)
                     gradient: Gradient {
-                        GradientStop { position: 0; color: Qt.lighter(section.tint, 1.2) }
+                        GradientStop { position: 0; color: IrisStyle.tileTop(section.tint) }
                         GradientStop { position: 1; color: section.tint }
                     }
                     MaterialSymbol { anchors.centerIn: parent; text: section.glyph; fill: 1; iconSize: Math.round(15 * root.d); color: IrisStyle.onTint }

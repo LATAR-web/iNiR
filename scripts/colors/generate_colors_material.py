@@ -150,6 +150,12 @@ parser.add_argument(
     help="hex colour the accents are drawn from instead of the source (the shell's own accent)",
 )
 parser.add_argument(
+    "--washi-roles",
+    type=str,
+    default=None,
+    help="iris-surface.json whose 'roles' are iRiS's solved palette in Material role names: the apps wear them as they are",
+)
+parser.add_argument(
     "--render-templates",
     type=str,
     default=None,
@@ -556,7 +562,8 @@ def build_app_palette(base_palette: dict[str, str]) -> dict[str, str]:
     outline_variant = base_palette.get("outline_variant") or mix_hex(layer1, outline, 0.72)
 
     on_layer0 = readable_hex(on_surface, layer0, 4.5)
-    on_layer1 = readable_hex(on_surface_variant, layer1, 4.5)
+    # Body text is onSurface on every layer; the variant is for secondary text (app_subtext), never the main ink.
+    on_layer1 = readable_hex(on_surface, layer1, 4.5)
     on_layer2 = readable_hex(on_surface, layer2, 4.5)
     on_layer3 = readable_hex(on_surface, layer3, 4.5)
     on_layer4 = readable_hex(on_surface, layer4, 4.5)
@@ -848,6 +855,37 @@ if args.surface_seed and re.fullmatch(r"#?[0-9A-Fa-f]{6}", args.surface_seed.str
                 argb = ensure_contrast(argb, background, 4.5, bool(darkmode), 94.0 if darkmode else 8.0)
                 material_colors[key] = argb_to_hex(argb)
 
+# iRiS: the shell's palette (scripts/colors/washi) already solved every role against every surface of its ramp. The apps
+# wear it as it is, so window, sidebar, text and accent are the shell's own colours, not a second reading of the seed.
+if args.washi_roles:
+    # The shell's "theme" and "wallpaper" colours are read from these, never from the roles it handed over (a loop
+    # that kept whatever accent once passed through).
+    try:
+        seeds_path = os.path.join(os.path.dirname(args.washi_roles), "iris-seeds.json")
+        seeds = {k: material_colors.get(k, "") for k in ("primary", "secondary", "tertiary", "background")}
+        seeds_text = json.dumps(seeds)
+        try:
+            with open(seeds_path) as f:
+                unchanged = f.read() == seeds_text
+        except OSError:
+            unchanged = False
+        if not unchanged:
+            with open(seeds_path + ".tmp", "w") as f:
+                f.write(seeds_text)
+            os.replace(seeds_path + ".tmp", seeds_path)
+    except OSError:
+        pass
+    try:
+        with open(args.washi_roles) as f:
+            washi_roles = json.load(f).get("roles") or {}
+        background = washi_roles.get("background", "")
+        if re.fullmatch(r"#[0-9A-Fa-f]{6}", background) and (Hct.from_int(hex_to_argb(background)).tone < 50) == bool(darkmode):
+            for key, value in washi_roles.items():
+                if re.fullmatch(r"#[0-9A-Fa-f]{6}", str(value)):
+                    material_colors[key] = value
+    except (OSError, ValueError):
+        pass
+
 # Terminal Colors
 if args.termscheme is not None:
     with open(args.termscheme, "r") as f:
@@ -1135,6 +1173,10 @@ def build_palette_json():
         "success_container": material_colors.get("successContainer", ""),
         "on_success_container": material_colors.get("onSuccessContainer", ""),
     }
+    # iRiS's filled alert (badges): a pigment that is a shape, not text. Absent outside iRiS; readers fall back to error.
+    if material_colors.get("errorFill"):
+        palette["error_fill"] = material_colors["errorFill"]
+        palette["on_error_fill"] = material_colors.get("onErrorFill", "")
     return palette
 
 

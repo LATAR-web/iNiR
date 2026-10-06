@@ -1928,7 +1928,7 @@ Item {
                     Layout.preferredHeight: root.compactHeight - Math.round(10 * root.d)
                     Layout.preferredWidth: doneLabel.implicitWidth + Math.round(24 * root.d)
                     radius: height / 2
-                    color: compactPress.containsMouse ? Qt.lighter(IrisStyle.accent, 1.08) : IrisStyle.accent
+                    color: compactPress.containsMouse ? IrisStyle.accentHover : IrisStyle.accent
                     Behavior on color { ColorAnimation { duration: IrisStyle.duration(110); easing.type: IrisStyle.feedbackEasing } }
                     IrisText {
                         id: doneLabel

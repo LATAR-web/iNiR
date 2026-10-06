@@ -8918,5 +8918,10 @@
   "Shape and type": "Şekil ve yazı",
   "Apps and extras": "Uygulamalar ve ekstralar",
   "What it shows": "Ne gösterir",
-  "Locking": "Kilitleme"
+  "Locking": "Kilitleme",
+  "Palette style": "Palet stili",
+  "Material style": "Material stili",
+  "Material You": "Material You",
+  "Washi is paper and pigment. Material You tints every surface with your wallpaper's colour, as Android does.": "Washi kâğıt ve pigmenttir. Material You, Android'deki gibi her yüzeyi duvar kâğıdınızın rengiyle boyar.",
+  "How much colour Material You draws from the wallpaper.": "Material You'nun duvar kâğıdından ne kadar renk aldığı."
 }

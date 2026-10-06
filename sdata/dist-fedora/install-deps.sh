@@ -483,6 +483,7 @@ FEDORA_TOOLKIT_PKGS=(
   ydotool
   python3-evdev
   python3-pillow
+  golang
   brightnessctl
   ddcutil
   geoclue2

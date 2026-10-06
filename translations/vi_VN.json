@@ -8918,5 +8918,10 @@
   "Shape and type": "Hình dạng và kiểu chữ",
   "Apps and extras": "Ứng dụng và tiện ích",
   "What it shows": "Những gì hiển thị",
-  "Locking": "Khóa"
+  "Locking": "Khóa",
+  "Palette style": "Kiểu bảng màu",
+  "Material style": "Kiểu Material",
+  "Material You": "Material You",
+  "Washi is paper and pigment. Material You tints every surface with your wallpaper's colour, as Android does.": "Washi là giấy và sắc tố. Material You nhuộm mọi bề mặt bằng màu hình nền của bạn, như Android.",
+  "How much colour Material You draws from the wallpaper.": "Lượng màu Material You lấy từ hình nền."
 }

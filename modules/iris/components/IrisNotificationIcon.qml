@@ -105,7 +105,7 @@ Item {
             border.width: root.hasImage || tile.insignia ? Math.max(1, Math.round(root.width * 0.04)) : 0
             border.color: tile.insignia ? IrisStyle.hairlineStrong : IrisStyle.surface
             gradient: Gradient {
-                GradientStop { position: 0; color: Qt.lighter(tile.base, 1.18) }
+                GradientStop { position: 0; color: IrisStyle.tileTop(tile.base) }
                 GradientStop { position: 1; color: tile.base }
             }
             IrisMark {

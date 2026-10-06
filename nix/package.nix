@@ -49,6 +49,7 @@ let
       gawk
       git
       gnugrep
+      go
       gnused
       jq
       procps

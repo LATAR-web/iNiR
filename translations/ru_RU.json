@@ -8918,5 +8918,10 @@
   "Shape and type": "Форма и шрифт",
   "Apps and extras": "Приложения и прочее",
   "What it shows": "Что показывает",
-  "Locking": "Блокировка"
+  "Locking": "Блокировка",
+  "Palette style": "Стиль палитры",
+  "Material style": "Стиль Material",
+  "Material You": "Material You",
+  "Washi is paper and pigment. Material You tints every surface with your wallpaper's colour, as Android does.": "Washi — это бумага и пигмент. Material You окрашивает каждую поверхность в цвет ваших обоев, как Android.",
+  "How much colour Material You draws from the wallpaper.": "Сколько цвета Material You берёт из обоев."
 }

@@ -8918,5 +8918,10 @@
   "Shape and type": "الشكل والخط",
   "Apps and extras": "التطبيقات والإضافات",
   "What it shows": "ما يعرضه",
-  "Locking": "القفل"
+  "Locking": "القفل",
+  "Palette style": "نمط لوحة الألوان",
+  "Material style": "نمط Material",
+  "Material You": "Material You",
+  "Washi is paper and pigment. Material You tints every surface with your wallpaper's colour, as Android does.": "Washi ورق وصباغ. يصبغ Material You كل سطح بلون خلفيتك، كما في Android.",
+  "How much colour Material You draws from the wallpaper.": "مقدار اللون الذي يأخذه Material You من الخلفية."
 }

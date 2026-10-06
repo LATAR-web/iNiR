@@ -42,11 +42,10 @@ IrisWidgetFace {
         function onDataChanged(): void { root.revision++ }
     }
 
-    component AppIcon: IconImage {
+    component AppIcon: SmartAppIcon {
         required property var app
         implicitSize: root.dp(root.small ? 22 : 20)
-        source: Quickshell.iconPath(IrisPieces.appIcon(String(app?.originalId ?? app?.id ?? "")), "application-x-executable")
-        asynchronous: true
+        icon: IrisPieces.appIcon(String(app?.originalId ?? app?.id ?? ""))
     }
 
     component HourBars: Row {

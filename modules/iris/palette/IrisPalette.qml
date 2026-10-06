@@ -938,7 +938,7 @@ Item {
                                                                 && result.modelData?.iconType !== LauncherSearchResult.IconType.Text
                                                             radius: IrisStyle.iconRadius(width)
                                                             gradient: Gradient {
-                                                                GradientStop { position: 0; color: Qt.lighter(result.mark.tint, 1.18) }
+                                                                GradientStop { position: 0; color: IrisStyle.tileTop(result.mark.tint) }
                                                                 GradientStop { position: 1; color: result.mark.tint }
                                                             }
                                                             MaterialSymbol {

@@ -8918,5 +8918,10 @@
   "Shape and type": "Bentuk dan huruf",
   "Apps and extras": "Aplikasi dan ekstra",
   "What it shows": "Yang ditampilkan",
-  "Locking": "Penguncian"
+  "Locking": "Penguncian",
+  "Palette style": "Gaya palet",
+  "Material style": "Gaya Material",
+  "Material You": "Material You",
+  "Washi is paper and pigment. Material You tints every surface with your wallpaper's colour, as Android does.": "Washi adalah kertas dan pigmen. Material You mewarnai setiap permukaan dengan warna wallpaper Anda, seperti Android.",
+  "How much colour Material You draws from the wallpaper.": "Seberapa banyak warna yang diambil Material You dari wallpaper."
 }

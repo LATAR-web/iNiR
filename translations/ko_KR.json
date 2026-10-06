@@ -8918,5 +8918,10 @@
   "Shape and type": "모양과 글꼴",
   "Apps and extras": "앱 및 기타",
   "What it shows": "표시 내용",
-  "Locking": "잠금"
+  "Locking": "잠금",
+  "Palette style": "팔레트 스타일",
+  "Material style": "Material 스타일",
+  "Material You": "Material You",
+  "Washi is paper and pigment. Material You tints every surface with your wallpaper's colour, as Android does.": "Washi는 종이와 안료입니다. Material You는 Android처럼 모든 표면을 배경화면의 색으로 물들입니다.",
+  "How much colour Material You draws from the wallpaper.": "Material You가 배경화면에서 가져오는 색의 양."
 }

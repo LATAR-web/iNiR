@@ -7266,5 +7266,10 @@
   "Shape and type": "Shape and type",
   "Apps and extras": "Apps and extras",
   "What it shows": "What it shows",
-  "Locking": "Locking"
+  "Locking": "Locking",
+  "Palette style": "Qalipaatit ilusaat",
+  "Material style": "Material ilusaa",
+  "Material You": "Material You",
+  "Washi is paper and pigment. Material You tints every surface with your wallpaper's colour, as Android does.": "Washi tassaavoq pappiara qalipaammillu. Material You-p qaavi tamarmik tunuliaqutaasup qalipaataanik qalipaavai, Android-itut.",
+  "How much colour Material You draws from the wallpaper.": "Material You-p tunuliaqutamit qanoq qalipaatitigisumik tiguisarnera."
 }

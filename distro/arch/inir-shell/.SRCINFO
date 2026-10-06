@@ -12,6 +12,7 @@ pkgbase = inir-shell
 	depends = fish
 	depends = grim
 	depends = jq
+	depends = go
 	depends = kirigami
 	depends = libnotify
 	depends = networkmanager

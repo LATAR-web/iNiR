@@ -44,7 +44,7 @@ RippleButton {
         : root.danger
             ? IrisStyle.tintFill(IrisStyle.danger)
         : root.emphasized
-            ? ColorUtils.mix(IrisStyle.accent, IrisStyle.inkOnAccent, 0.90)
+            ? IrisStyle.accentHover
             : root.quiet
                 ? IrisStyle.fillHover
             : IrisStyle.surfaceHighest

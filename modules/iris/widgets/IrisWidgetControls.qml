@@ -132,7 +132,7 @@ ColumnLayout {
             Layout.preferredHeight: Layout.preferredWidth
             radius: IrisStyle.iconRadius(width)
             gradient: Gradient {
-                GradientStop { position: 0; color: Qt.lighter(root.widget.identityTint, 1.18) }
+                GradientStop { position: 0; color: IrisStyle.tileTop(root.widget.identityTint) }
                 GradientStop { position: 1; color: root.widget.identityTint }
             }
             MaterialSymbol {

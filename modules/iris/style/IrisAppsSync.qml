@@ -17,7 +17,9 @@ Item {
     readonly property string seed: root.wanted ? root.hex(IrisStyle.appsSurface) : ""
     readonly property bool accentWanted: ThemeService.panelFamily === "iris" && ThemeService.isAutoTheme && IrisStyle.appsShareAccent
     readonly property string accent: root.accentWanted ? root.hex(IrisStyle.appsAccent) : ""
-    readonly property string key: root.seed + "|" + root.accent
+    // The palette's own app roles (IrisWashi): with them the apps wear the shell's paper, ink and accent exactly.
+    readonly property string roles: root.wanted ? JSON.stringify(IrisStyle.washi?.apps ?? ({})) : "{}"
+    readonly property string key: root.seed + "|" + root.accent + "|" + root.roles
     // Glass waits for the wallpaper to be read: until then the seed is only the bare material.
     readonly property bool ready: !root.wanted || IrisStyle.appsSurfaceReady
     property string applied: ""
@@ -37,8 +39,9 @@ Item {
     function push(): void {
         if (!root.loaded || !root.ready || root.key === root.applied) return
         root.applied = root.key
-        Quickshell.execDetached(["/usr/bin/bash", "-c", 'mkdir -p "$(dirname "$1")" && printf \'{"seed": "%s", "accent": "%s"}\\n\' "$2" "$3" > "$1"',
-            "iris-surface", root.path, root.seed, root.accent])
+        const body = JSON.stringify({ seed: root.seed, accent: root.accent, roles: JSON.parse(root.roles) })
+        Quickshell.execDetached(["/usr/bin/bash", "-c", 'mkdir -p "$(dirname "$1")" && printf \'%s\\n\' "$2" > "$1"',
+            "iris-surface", root.path, body])
         ThemeService.regenerateAutoTheme()
     }
     onKeyChanged: if (root.loaded) settle.restart()
@@ -52,7 +55,7 @@ Item {
         onLoaded: {
             try {
                 const saved = JSON.parse(text())
-                root.applied = String(saved.seed ?? "") + "|" + String(saved.accent ?? "")
+                root.applied = String(saved.seed ?? "") + "|" + String(saved.accent ?? "") + "|" + JSON.stringify(saved.roles ?? {})
             } catch (e) { root.applied = "" }
             root.loaded = true
             if (root.key !== root.applied) settle.restart()
@@ -60,7 +63,7 @@ Item {
         onLoadFailed: {
             root.applied = ""
             root.loaded = true
-            if (root.key !== "|") settle.restart()
+            if (root.key !== "||{}") settle.restart()
         }
     }
 }

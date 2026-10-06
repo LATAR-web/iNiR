@@ -3978,6 +3978,8 @@ Singleton {
                     property string morph: "direct" // IrisStyle.morphStyles: direct, liquid, glide, snap, elastic, instant
                     property string accent: "blue" // "blue", "mint", "rose", "lilac" or "wallpaper"
                     property string scheme: "auto" // "auto" (follows the system), "dark", "ink" or "light"
+                    property string language: "washi" // the palette's style: "washi" (paper and pigment) or "material" (Material You)
+                    property string variant: "tonalSpot" // Material You's scheme: "tonalSpot", "vibrant", "expressive", "fidelity" or "monochrome"
                     property bool followTheme: true // with a colour theme chosen, the shell wears its accent, highlight and material
                     property bool materialForApps: true // with the wallpaper colour theme, terminals and apps sit on the shell's material
                     property bool accentForApps: true // with the wallpaper colour theme, apps take the shell's own accent when it has one

@@ -8918,5 +8918,10 @@
   "Shape and type": "形状与字体",
   "Apps and extras": "应用与其他",
   "What it shows": "显示内容",
-  "Locking": "锁定"
+  "Locking": "锁定",
+  "Palette style": "调色板风格",
+  "Material style": "Material 风格",
+  "Material You": "Material You",
+  "Washi is paper and pigment. Material You tints every surface with your wallpaper's colour, as Android does.": "Washi 是纸与颜料。Material You 像 Android 一样，用壁纸的颜色为每个表面着色。",
+  "How much colour Material You draws from the wallpaper.": "Material You 从壁纸中取用多少颜色。"
 }

@@ -2,7 +2,7 @@
 # Auto-generated from QML IpcHandler declarations + docs/IPC.md metadata.
 # Do not edit manually.
 # Regenerate: python3 scripts/lib/generate-ipc-registry.py
-# IPC.md hash: 5bbd5281c06f56fb
+# IPC.md hash: a2e4ec7a832c3861
 # Targets: 70
 
 declare -gA IPC_TARGET_DESC=(
@@ -175,7 +175,7 @@ declare -gA IPC_TARGET_FUNCTIONS=(
   [gamemode]="toggle activate deactivate status"
   [globalActions]="run runWithArgs list search open"
   [globalStyle]="set get list"
-  [iris]="open page close toggle card theme settings bubble dock dockApp dockMove appBubble focus today controlCenter pin layout strip edge dockEdge zone barPiece arrange edit studio notch surround accent spotlight gallerySource orbit orbitCorner orbitClose spotlightClose bubbleCard tap bubbleMenu morph activity activities set adaptive palette preset icon control lock utility watch watchPick desktopAction desktopMenu menuClose watchSubs watchSeek watchSkip motion motioned status"
+  [iris]="open page close toggle card theme settings bubble dock dockApp dockMove appBubble focus today controlCenter pin layout strip edge dockEdge zone barPiece arrange edit studio notch surround accent spotlight gallerySource orbit orbitCorner orbitClose spotlightClose bubbleCard tap bubbleMenu morph activity activities set adaptive tokens palette preset icon control lock utility watch watchPick desktopAction desktopMenu menuClose watchSubs watchSeek watchSkip motion motioned status"
   [keyboard]="switchLayout switchLayoutPrevious getCurrentLayout getLayouts"
   [lock]="activate prepareSleep deactivate status focus"
   [mascot]="poke status setVoice romp chase hideSeek tidy appear appearContextual appearWithLine hide snooze"
@@ -393,6 +393,7 @@ declare -gA IPC_FUNCTION_DESC=(
   ["iris:activities"]="Return the live activities scripts have published, as JSON"
   ["iris:set"]="Set any iRiS option by path, e.g. \`iris.appearance.theme.pieceShape squircle\` or \`iris.bubbles.scale 120\` (values are JSON when they parse)"
   ["iris:adaptive"]="How much the wallpaper shapes iRiS, \`0\`-\`100\`; any other word prints what was read from the wallpaper"
+  ["iris:tokens"]="JSON with the colours iRiS resolved for the current look and the contrast of each text, accent and fill on the surface it sits on (worst case over glass), plus the ones below their target"
   ["iris:palette"]="The colour theme the shell and your apps wear: an id such as \`catppuccin-mocha\` or \`iris-ink\`, \`auto\` to follow the wallpaper, \`list\` for the ones iRiS shows, or \`current\` for the one in use"
   ["iris:preset"]="Set the iRiS appearance preset: \`iris\`, \`soft\`, \`round\`, \`crisp\`, \`angular\` or \`contrast\`"
   ["iris:icon"]="Choose the glyph a piece wears: \`controls\`, \`tools\`, \`focus\`, \`notifications\`, \`bluetooth\`, \`updates\`, \`anime\` or \`watching\`, then a Material Symbol name (e.g. \`inir iris icon controls settings\`) or \`reset\` to go back to its own face"

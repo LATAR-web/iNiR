@@ -8918,5 +8918,10 @@
   "Shape and type": "आकार और टाइप",
   "Apps and extras": "ऐप्स और अतिरिक्त",
   "What it shows": "यह क्या दिखाता है",
-  "Locking": "लॉक करना"
+  "Locking": "लॉक करना",
+  "Palette style": "पैलेट शैली",
+  "Material style": "Material शैली",
+  "Material You": "Material You",
+  "Washi is paper and pigment. Material You tints every surface with your wallpaper's colour, as Android does.": "Washi कागज़ और रंगद्रव्य है। Material You, Android की तरह, हर सतह को आपके वॉलपेपर के रंग से रंगता है।",
+  "How much colour Material You draws from the wallpaper.": "Material You वॉलपेपर से कितना रंग लेता है।"
 }

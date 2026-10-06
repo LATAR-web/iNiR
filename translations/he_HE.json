@@ -8918,5 +8918,10 @@
   "Shape and type": "צורה וגופן",
   "Apps and extras": "אפליקציות ותוספות",
   "What it shows": "מה מוצג",
-  "Locking": "נעילה"
+  "Locking": "נעילה",
+  "Palette style": "סגנון ערכת הצבעים",
+  "Material style": "סגנון Material",
+  "Material You": "Material You",
+  "Washi is paper and pigment. Material You tints every surface with your wallpaper's colour, as Android does.": "Washi הוא נייר ופיגמנט. Material You צובע כל משטח בצבע הטפט שלך, כמו ב-Android.",
+  "How much colour Material You draws from the wallpaper.": "כמה צבע Material You לוקח מהטפט."
 }

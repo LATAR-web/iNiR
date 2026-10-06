@@ -459,7 +459,7 @@ Loader {
                                             height: width
                                             radius: IrisStyle.iconRadius(width)
                                             gradient: Gradient {
-                                                GradientStop { position: 0; color: Qt.lighter(menuItem.tint, 1.2) }
+                                                GradientStop { position: 0; color: IrisStyle.tileTop(menuItem.tint) }
                                                 GradientStop { position: 1; color: menuItem.tint }
                                             }
                                         }

@@ -8918,5 +8918,10 @@
   "Shape and type": "形と文字",
   "Apps and extras": "アプリとその他",
   "What it shows": "表示する内容",
-  "Locking": "ロック"
+  "Locking": "ロック",
+  "Palette style": "パレットのスタイル",
+  "Material style": "Material のスタイル",
+  "Material You": "Material You",
+  "Washi is paper and pigment. Material You tints every surface with your wallpaper's colour, as Android does.": "Washi は紙と顔料。Material You は Android のように、すべての面を壁紙の色で染めます。",
+  "How much colour Material You draws from the wallpaper.": "Material You が壁紙から取り込む色の量。"
 }

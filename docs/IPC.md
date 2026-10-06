@@ -878,6 +878,7 @@ iRiS bar and Island design. Available while the iRiS bar is enabled.
 | `morph` | Set how iRiS morphs: `direct`, `liquid`, `glide`, `snap`, `elastic` or `instant` |
 | `set` | Set any iRiS option by path, e.g. `iris.appearance.theme.pieceShape squircle` or `iris.bubbles.scale 120` (values are JSON when they parse) |
 | `adaptive` | How much the wallpaper shapes iRiS, `0`-`100`; any other word prints what was read from the wallpaper |
+| `tokens` | JSON with the colours iRiS resolved for the current look and the contrast of each text, accent and fill on the surface it sits on (worst case over glass), plus the ones below their target |
 | `spotlight` | Open Spotlight with a query already typed, e.g. `firefox` or `12*7` (empty for suggestions); while it is open, replaces the query |
 | `spotlightClose` | Close Spotlight |
 | `orbit` | Open Orbit with a search already typed, e.g. `firefox` (empty for all the workspaces) |

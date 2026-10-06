@@ -121,8 +121,7 @@ QtObject {
             const hue = root.identities[id] ?? ""
             return hue === "gray" ? IrisStyle.textSecondary : IrisStyle.identityColor(hue)
         }
-        return id === "gameMode" || id === "vpn" ? IrisStyle.identity.green
-            : id === "focus" ? IrisStyle.identity.indigo : IrisStyle.accent
+        return IrisStyle.accent
     }
     readonly property real libraryWidth: 312
     readonly property real editorExtra: root.libraryWidth + 21

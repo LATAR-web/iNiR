@@ -10,6 +10,7 @@ import qs.modules.common
 import qs.modules.common.functions
 import qs.modules.common.widgets
 import qs.modules.iris.components
+import qs.modules.iris.style
 
 Variants {
     id: root
@@ -85,7 +86,7 @@ Variants {
         Rectangle {
             anchors.fill: parent
             visible: !panel.externalWallpaper && panel.effectivePath.length === 0
-            color: Appearance.m3colors.m3background
+            color: IrisStyle.surfaceOpaque
         }
 
         MouseArea {

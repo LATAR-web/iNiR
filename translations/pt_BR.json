@@ -8918,5 +8918,10 @@
   "Shape and type": "Forma e tipografia",
   "Apps and extras": "Apps e extras",
   "What it shows": "O que mostra",
-  "Locking": "Bloqueio"
+  "Locking": "Bloqueio",
+  "Palette style": "Estilo da paleta",
+  "Material style": "Estilo do Material",
+  "Material You": "Material You",
+  "Washi is paper and pigment. Material You tints every surface with your wallpaper's colour, as Android does.": "Washi é papel e pigmento. O Material You tinge cada superfície com a cor do seu papel de parede, como o Android.",
+  "How much colour Material You draws from the wallpaper.": "Quanta cor o Material You tira do papel de parede."
 }

@@ -2431,6 +2431,8 @@
             "motionDuration": 220,
             "accent": "blue",
             "scheme": "auto",
+            "language": "washi",
+            "variant": "tonalSpot",
             "followTheme": true,
             "materialForApps": true,
             "accentForApps": true,

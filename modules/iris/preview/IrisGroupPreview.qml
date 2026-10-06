@@ -1741,7 +1741,7 @@ ClippingRectangle {
                                         Layout.preferredHeight: Layout.preferredWidth
                                         radius: IrisStyle.iconRadius(width)
                                         gradient: Gradient {
-                                            GradientStop { position: 0; color: Qt.lighter(menuRow.tint, 1.2) }
+                                            GradientStop { position: 0; color: IrisStyle.tileTop(menuRow.tint) }
                                             GradientStop { position: 1; color: menuRow.tint }
                                         }
                                         MaterialSymbol { anchors.centerIn: parent; text: String(menuRow.modelData.glyph ?? ""); fill: 1; iconSize: Math.round(13 * root.d); color: IrisStyle.onTint }
