@@ -291,6 +291,8 @@ void main() {
         // Blended by nearness so a join shades from one body into the other instead of creasing.
         float gouraudSum = 0.0;
         float weightSum = 0.0;
+        float nearest = frameDistance;
+        float nearestHalf = 1e4;
         if (u.field.y > 0.5) {
             float w = exp(-clamp(frameDistance - united, 0.0, 60.0) / 12.0);
             vec2 t = clamp(frameP / size, 0.0, 1.0);
@@ -305,7 +307,13 @@ void main() {
             vec2 t = clamp((p - s.xy + s.zw) / max(2.0 * s.zw, vec2(1.0)), 0.0, 1.0);
             gouraudSum += w * mix(mix(1.0, 0.82, t.x), mix(0.34, 0.22, t.x), t.y);
             weightSum += w;
+            if (bodies[i] < nearest) {
+                nearest = bodies[i];
+                nearestHalf = min(s.z, s.w);
+            }
         }
+        // A small body wears a lip in proportion, never a panel's.
+        float lip = min(bevel, max(2.0, 0.3 * nearestHalf));
         float gouraud = weightSum > 0.0 ? gouraudSum / weightSum : 0.6;
         // Normals from the joined field (central differences): per-body normals break at welds. Corners tighter than the
         // bevel are rounded for the normal only, or a box's gradient creases along its diagonal. Costly: near edges only.
@@ -372,16 +380,18 @@ void main() {
             ? base * mix(vec3(1.0), mix(shade, key, gouraud), atmosphere * 0.16) * mix(0.9, 1.0, gouraud)
             : base + shade * atmosphere * (0.05 + 0.42 * (1.0 - gouraud) * (1.0 - gouraud)) + key * atmosphere * 0.14 * gouraud * gouraud;
 
+        // Paper: one pearl lip, no dark ground band (it read as a second contour).
         vec3 sky = paper ? vec3(1.0) : key * 0.92;
-        vec3 hot = paper ? mix(key, vec3(1.0), 0.25) : mix(key, vec3(1.0), 0.55);
-        vec3 ground = paper ? base * 0.7 + shade * 0.08 : lit * 0.5 + shade * (0.55 + 0.6 * atmosphere);
-        vec3 deep = paper ? base * 0.93 : lit;
-        float spread = u.glowShape.z * signal;
+        vec3 hot = paper ? mix(key, vec3(1.0), 0.7) : mix(key, vec3(1.0), 0.55);
+        vec3 ground = paper ? mix(lit, vec3(1.0), 0.25) : lit * 0.5 + shade * (0.55 + 0.6 * atmosphere);
+        vec3 deep = lit;
+        // Misconverged guns at more than a fraction of a pixel drew a rainbow outline round every body.
+        float spread = paper ? 0.0 : min(0.6, u.glowShape.z * signal);
         vec3 env = vec3(0.0);
         vec3 amount = vec3(0.0);
         for (int c = 0; c < 3; ++c) {
             float d = depth + n.x * spread * float(c - 1);
-            float t = clamp(d / bevel, 0.0, 1.0);
+            float t = clamp(d / lip, 0.0, 1.0);
             float slope = (1.0 - t) * (1.0 - t * 0.5);
             float e = (-n.y * 0.95 - n.x * 0.3) * (slope * 1.55 - 0.55) - 0.12 * (1.0 - slope);
             vec3 reflected = chromeAt(e, sky, hot, ground, deep);
@@ -394,12 +404,12 @@ void main() {
         colour = min(material, vec3(1.0)) * a;
         alpha = a;
 
-        // The band round the screen blooms at half: it is a frame, not a light.
-        if (united > 0.0) {
+        // The band round the screen blooms at half: it is a frame, not a light. Paper never blooms: it read as a white cloud.
+        if (united > 0.0 && !paper) {
             float halo = bloom * exp(-united / radiusBloom) * (0.45 + 0.55 * max(facing, 0.0)) * (1.0 - coverage) * u.qt_Opacity;
             if (u.field.y > 0.5 && frameDistance - united < 0.5)
                 halo *= 0.5;
-            colour += u.glowBloom.rgb * halo * (paper ? 0.22 : 0.42);
+            colour += u.glowBloom.rgb * halo * 0.42;
         }
         float pitch = max(2.0, u.glowShape.y);
         float line = 0.5 + 0.5 * cos(6.2831853 * (frameP.y + 0.5) / pitch);
