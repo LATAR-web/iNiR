@@ -1,0 +1,38 @@
+name: "Sync Upstream (Snowarch)"
+
+on:
+  schedule:
+    # Se ejecuta todos los lunes a las 04:00 UTC
+    - cron: "0 4 * * 1"
+  workflow_dispatch: # Permite ejecutar la sincronización manualmente con un clic en GitHub
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    name: "Sync with snowarch/inir"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Add and Fetch Upstream
+        run: |
+          git remote add upstream https://github.com/snowarch/inir.git
+          git fetch upstream main
+
+      - name: Merge Upstream into main
+        run: |
+          git merge upstream/main -m "chore(sync): merge upstream snowarch/inir updates" --no-edit || (echo "Conflicto detectado; resolver manualmente" && exit 1)
+
+      - name: Push Changes
+        run: |
+          git push origin main
