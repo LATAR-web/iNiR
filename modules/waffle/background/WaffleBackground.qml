@@ -272,8 +272,10 @@ Variants {
                     sourceSize: panelRoot.fillMode === "tile" || panelRoot.fillMode === "center" ? Qt.size(0, 0)
                         : Qt.size(Math.ceil(wallpaperContainer.width * panelRoot.devicePixelRatio),
                             Math.ceil(wallpaperContainer.height * panelRoot.devicePixelRatio))
+                    // A scaling awww does not draw (fit, stretch, tile, center, span) hides awww's transition: this one runs.
                     enableTransitions: (!AwwwBackend.active
-                            || panelRoot.internalShaderTransitionRequested)
+                            || panelRoot.internalShaderTransitionRequested
+                            || !AwwwBackend.supportsFillMode(panelRoot.fillMode))
                         && (Config.options?.background?.transition?.enable ?? true)
                     transitionType: Config.options?.background?.transition?.type ?? "crossfade"
                     transitionDirection: Config.options?.background?.transition?.direction ?? "right"

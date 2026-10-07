@@ -1615,9 +1615,11 @@ Scope {
                         ? "" : bgRoot.wallpaperPath
                     // NEVER use crossfader transitions when awww is active — awww handles all transitions.
                     // When parallax is on, the crossfader fades out to reveal awww's native transition.
+                    // A scaling awww does not draw (fit, stretch, tile, center, span) hides its transition: this one runs.
                     enableTransitions: (!AwwwBackend.active
                             || bgRoot.internalShaderTransitionRequested
-                            || bgRoot.afterglowWallpaperActive)
+                            || bgRoot.afterglowWallpaperActive
+                            || !AwwwBackend.supportsFillMode(bgRoot.fillMode))
                         && (Config.options?.background?.transition?.enable ?? true)
                     transitionType: Config.options?.background?.transition?.type ?? "crossfade"
                     transitionDirection: Config.options?.background?.transition?.direction ?? "right"

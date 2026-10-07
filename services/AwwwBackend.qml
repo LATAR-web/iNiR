@@ -210,8 +210,10 @@ Singleton {
         root.forceSync()
     }
 
+    // awww is the visible picture only for fill. Fit and center are drawn by the shell with its own black bars: handed
+    // to awww, what showed was whatever sat under the transparent desktop (#284: fit looked like fill on two screens).
     function supportsFillMode(fillModeValue: string): bool {
-        return fillModeValue === "fill" || fillModeValue === "fit" || fillModeValue === "center"
+        return fillModeValue === "fill"
     }
 
     function resizeModeForFillMode(fillModeValue: string): string {
