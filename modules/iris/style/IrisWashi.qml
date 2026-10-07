@@ -48,7 +48,8 @@ Singleton {
             primary: root.appsWearPalette ? String(root.wallpaperSeeds?.primary ?? "") : root.hex(Appearance.colors.colPrimary),
             secondary: root.appsWearPalette ? String(root.wallpaperSeeds?.secondary ?? "") : root.hex(Appearance.colors.colSecondary),
             tertiary: root.appsWearPalette ? String(root.wallpaperSeeds?.tertiary ?? "") : root.hex(Appearance.colors.colTertiary),
-            background: root.hex(Appearance.m3colors.m3background)
+            background: root.appsWearPalette ? String(root.wallpaperSeeds?.background ?? root.hex(Appearance.m3colors.m3background))
+                : root.hex(Appearance.m3colors.m3background)
         }
     })
     // While the apps wear this palette, the Material colours are its own output: the wallpaper's seeds come from the

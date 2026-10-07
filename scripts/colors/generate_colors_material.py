@@ -812,6 +812,9 @@ SURFACE_RAMP = [
     "surfaceContainerLowest", "surfaceContainerLow", "surfaceContainer",
     "surfaceContainerHigh", "surfaceContainerHighest",
 ]
+# The scheme's own background before the shell's surface moves it: iRiS's "Theme" material is read from this, never
+# from the paper it handed over (each pass would carry the person's tone again).
+seed_background = material_colors.get("background", "")
 if args.surface_seed and re.fullmatch(r"#?[0-9A-Fa-f]{6}", args.surface_seed.strip()):
     seed_hct = Hct.from_int(hex_to_argb("#" + args.surface_seed.strip().lstrip("#")))
     # A seed of the other polarity is a scheme change still on its way: ignore it.
@@ -862,7 +865,8 @@ if args.washi_roles:
     # that kept whatever accent once passed through).
     try:
         seeds_path = os.path.join(os.path.dirname(args.washi_roles), "iris-seeds.json")
-        seeds = {k: material_colors.get(k, "") for k in ("primary", "secondary", "tertiary", "background")}
+        seeds = {k: material_colors.get(k, "") for k in ("primary", "secondary", "tertiary")}
+        seeds["background"] = seed_background
         seeds_text = json.dumps(seeds)
         try:
             with open(seeds_path) as f:
