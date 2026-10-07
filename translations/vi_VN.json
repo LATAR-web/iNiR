@@ -7835,7 +7835,7 @@
   "Where they sit": "Vị trí của chúng",
   "Which end of the Island carries them. On a side Island, before means above.": "Đầu nào của Đảo mang chúng. Với Đảo bên cạnh, phía trước nghĩa là phía trên.",
   "Which sliders stand side by side in Levels.": "Thanh trượt nào đứng cạnh nhau trong Mức.",
-  "Whole screen, with sound": "Toàn màn hình, có âm thanh",
+  "With sound": "Có âm thanh",
   "Wi-Fi and Ethernet.": "Wi-Fi và Ethernet.",
   "Wi-Fi is off": "Wi-Fi đang tắt",
   "Wi-Fi off": "Tắt Wi-Fi",
@@ -8699,7 +8699,7 @@
   "Shape and response of the music-driven frame": "Hình dạng và phản hồi của khung chuyển động theo nhạc",
   "Choose The frame to make the screen contour move with your music.": "Chọn Khung để đường viền màn hình chuyển động theo nhạc của bạn.",
   "%1 is back to how iRiS comes": "%1 đã trở lại như mặc định của iRiS",
-  "Apps, settings, actions… / lists them all": "Ứng dụng, cài đặt, thao tác… / liệt kê tất cả",
+  "Apps, settings, actions…": "Ứng dụng, cài đặt, thao tác…",
   "Customize on the shell": "Tùy chỉnh ngay trên màn hình",
   "Every area": "Mọi khu vực",
   "No results. Try fewer letters, or / for every action.": "Không có kết quả. Thử ít chữ hơn, hoặc / để xem mọi thao tác.",
@@ -8997,5 +8997,6 @@
   "Tile": "Lát gạch",
   "Span": "Trải rộng",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "Lấp đầy cắt bớt, Vừa khít chừa viền, Trải rộng phủ một ảnh lên mọi màn hình.",
-  "Fill crops, Fit shows bars, Span lays one picture across every screen": "Lấp đầy cắt bớt, Vừa khít chừa viền, Trải rộng phủ một ảnh lên mọi màn hình"
+  "Fill crops, Fit shows bars, Span lays one picture across every screen": "Lấp đầy cắt bớt, Vừa khít chừa viền, Trải rộng phủ một ảnh lên mọi màn hình",
+  "Open %1": "Mở %1"
 }

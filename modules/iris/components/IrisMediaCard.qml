@@ -6,6 +6,7 @@ import qs.modules.common
 import qs.modules.common.functions
 import qs.modules.common.widgets
 import qs.modules.mediaControls.components
+import qs.modules.iris.pieces
 import qs.modules.iris.style
 
 Item {
@@ -53,6 +54,16 @@ Item {
             || root.grewSamples >= 2
             || root.atEndSamples >= 2)
     readonly property bool hasTimeline: root.hasPlayer && !root.liveStream && media.effectiveLength > 0
+    // Nothing playing: the card says where music comes from and opens it.
+    readonly property bool offersMusic: !root.hasPlayer && IrisPieces.musicAppName.length > 0
+    readonly property string emptyDetail: root.offersMusic ? Translation.tr("Open %1").arg(IrisPieces.musicAppName) : Translation.tr("Your music appears here")
+    readonly property string emptyIcon: root.offersMusic ? String(IrisPieces.musicApp?.icon ?? "") : ""
+    MouseArea {
+        anchors.fill: parent
+        visible: root.offersMusic
+        cursorShape: Qt.PointingHandCursor
+        onClicked: IrisPieces.openMusic()
+    }
     implicitHeight: (root.compact ? compactBody.implicitHeight : body.implicitHeight) + 28 * IrisStyle.density
     implicitWidth: 360 * IrisStyle.density
     PlayerBase { id: media; player: root.player; positionUpdatesActive: root.active }
@@ -82,15 +93,16 @@ Item {
             spacing: 14 * IrisStyle.density
             IrisArtwork {
                 source: media.displayedArtFilePath
+                appIcon: root.emptyIcon
                 circular: Config.options?.iris?.player?.roundCover ?? false
                 Layout.preferredWidth: 68 * IrisStyle.density
                 Layout.preferredHeight: 68 * IrisStyle.density
             }
             ColumnLayout {
                 Layout.fillWidth: true
-                spacing: 3
+                spacing: Math.round(4 * IrisStyle.density)
                 IrisText { Layout.fillWidth: true; text: root.hasPlayer ? media.effectiveTitle : Translation.tr("Nothing playing"); color: root.ink; font.weight: IrisStyle.weight(Font.DemiBold); elide: Text.ElideRight }
-                IrisText { Layout.fillWidth: true; text: root.hasPlayer ? media.effectiveArtist : Translation.tr("Your music appears here"); role: IrisText.Meta; color: root.inkMeta; elide: Text.ElideRight }
+                IrisText { Layout.fillWidth: true; text: root.hasPlayer ? media.effectiveArtist : root.emptyDetail; role: IrisText.Meta; color: root.inkMeta; elide: Text.ElideRight }
             }
         }
         IrisScrubber {
@@ -161,9 +173,23 @@ Item {
                 controlHeight: Math.round(34 * IrisStyle.density)
                 RowLayout {
                     spacing: Math.round(4 * IrisStyle.density)
-                    IrisIconButton { buttonRadius: transport.framed ? transport.controlRadius : IrisStyle.radiusSmall; buttonRadiusPressed: transport.framed ? transport.controlRadius : Math.max(3, IrisStyle.radiusSmall - 2); foreground: root.ink; materialIcon: "skip_previous"; Accessible.name: Translation.tr("Previous track"); enabled: media.effectiveCanGoPrevious; onClicked: media.previous() }
-                    IrisIconButton { buttonRadius: transport.framed ? transport.controlRadius : IrisStyle.radiusSmall; buttonRadiusPressed: transport.framed ? transport.controlRadius : Math.max(3, IrisStyle.radiusSmall - 2); foreground: root.ink; materialIcon: media.effectiveIsPlaying ? "pause" : "play_arrow"; Accessible.name: media.effectiveIsPlaying ? Translation.tr("Pause") : Translation.tr("Play"); enabled: root.hasPlayer; onClicked: media.togglePlaying(); iconSize: 28 }
-                    IrisIconButton { buttonRadius: transport.framed ? transport.controlRadius : IrisStyle.radiusSmall; buttonRadiusPressed: transport.framed ? transport.controlRadius : Math.max(3, IrisStyle.radiusSmall - 2); foreground: root.ink; materialIcon: "skip_next"; Accessible.name: Translation.tr("Next track"); enabled: media.effectiveCanGoNext; onClicked: media.next() }
+                    // On the plate each takes its concentric radius, bare the row radius.
+                    Repeater {
+                        model: ["previous", "toggle", "next"]
+                        IrisIconButton {
+                            required property string modelData
+                            readonly property bool toggle: modelData === "toggle"
+                            buttonRadius: transport.framed ? transport.controlRadius : IrisStyle.radiusSmall
+                            buttonRadiusPressed: transport.framed ? transport.controlRadius : Math.max(IrisStyle.radiusMicro, IrisStyle.radiusSmall - Math.round(2 * IrisStyle.density))
+                            foreground: root.ink
+                            materialIcon: toggle ? (media.effectiveIsPlaying ? "pause" : "play_arrow") : modelData === "previous" ? "skip_previous" : "skip_next"
+                            iconSize: toggle ? Math.round(28 * IrisStyle.density) : Math.round(18 * IrisStyle.density)
+                            Accessible.name: toggle ? (media.effectiveIsPlaying ? Translation.tr("Pause") : Translation.tr("Play"))
+                                : modelData === "previous" ? Translation.tr("Previous track") : Translation.tr("Next track")
+                            enabled: toggle ? root.hasPlayer : modelData === "previous" ? media.effectiveCanGoPrevious : media.effectiveCanGoNext
+                            onClicked: toggle ? media.togglePlaying() : modelData === "previous" ? media.previous() : media.next()
+                        }
+                    }
                 }
             }
             Item { Layout.fillWidth: true }
@@ -188,15 +214,16 @@ Item {
         spacing: 12 * IrisStyle.density
         IrisArtwork {
             source: media.displayedArtFilePath
+            appIcon: root.emptyIcon
             circular: Config.options?.iris?.player?.roundCover ?? false
             Layout.preferredWidth: 46 * IrisStyle.density
             Layout.preferredHeight: 46 * IrisStyle.density
         }
         ColumnLayout {
             Layout.fillWidth: true
-            spacing: 2
+            spacing: Math.round(2 * IrisStyle.density)
             IrisText { Layout.fillWidth: true; text: root.hasPlayer ? media.effectiveTitle : Translation.tr("Nothing playing"); color: root.ink; font.weight: IrisStyle.weight(Font.DemiBold); elide: Text.ElideRight }
-            IrisText { Layout.fillWidth: true; text: root.hasPlayer ? media.effectiveArtist : Translation.tr("Your music appears here"); role: IrisText.Meta; color: root.inkMeta; elide: Text.ElideRight }
+            IrisText { Layout.fillWidth: true; text: root.hasPlayer ? media.effectiveArtist : root.emptyDetail; role: IrisText.Meta; color: root.inkMeta; elide: Text.ElideRight }
             Rectangle {
                 Layout.fillWidth: true
                 Layout.topMargin: 5 * IrisStyle.density
@@ -212,8 +239,9 @@ Item {
                 }
             }
         }
-        IrisIconButton { foreground: root.ink; materialIcon: "skip_previous"; Accessible.name: Translation.tr("Previous track"); enabled: media.effectiveCanGoPrevious; onClicked: media.previous() }
-        IrisIconButton { foreground: root.ink; materialIcon: media.effectiveIsPlaying ? "pause" : "play_arrow"; Accessible.name: media.effectiveIsPlaying ? Translation.tr("Pause") : Translation.tr("Play"); enabled: root.hasPlayer; onClicked: media.togglePlaying(); iconSize: 24 }
-        IrisIconButton { foreground: root.ink; materialIcon: "skip_next"; Accessible.name: Translation.tr("Next track"); enabled: media.effectiveCanGoNext; onClicked: media.next() }
+        // With no player the row is its empty state: three dead buttons only cut its words short.
+        IrisIconButton { visible: root.hasPlayer; foreground: root.ink; materialIcon: "skip_previous"; Accessible.name: Translation.tr("Previous track"); enabled: media.effectiveCanGoPrevious; onClicked: media.previous() }
+        IrisIconButton { visible: root.hasPlayer; foreground: root.ink; materialIcon: media.effectiveIsPlaying ? "pause" : "play_arrow"; Accessible.name: media.effectiveIsPlaying ? Translation.tr("Pause") : Translation.tr("Play"); onClicked: media.togglePlaying(); iconSize: Math.round(24 * IrisStyle.density) }
+        IrisIconButton { visible: root.hasPlayer; foreground: root.ink; materialIcon: "skip_next"; Accessible.name: Translation.tr("Next track"); enabled: media.effectiveCanGoNext; onClicked: media.next() }
     }
 }

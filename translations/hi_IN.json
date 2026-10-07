@@ -7835,7 +7835,7 @@
   "Where they sit": "वे कहाँ हैं",
   "Which end of the Island carries them. On a side Island, before means above.": "द्वीप का कौन-सा सिरा उन्हें रखता है। किनारे वाले द्वीप पर, पहले का मतलब ऊपर है।",
   "Which sliders stand side by side in Levels.": "स्तर में कौन-से स्लाइडर अगल-बगल खड़े हैं।",
-  "Whole screen, with sound": "पूरी स्क्रीन, आवाज़ के साथ",
+  "With sound": "आवाज़ के साथ",
   "Wi-Fi and Ethernet.": "Wi-Fi और Ethernet।",
   "Wi-Fi is off": "Wi-Fi बंद है",
   "Wi-Fi off": "Wi-Fi बंद",
@@ -8699,7 +8699,7 @@
   "Shape and response of the music-driven frame": "संगीत से चलने वाले फ़्रेम का आकार और प्रतिक्रिया",
   "Choose The frame to make the screen contour move with your music.": "स्क्रीन की रूपरेखा को अपने संगीत के साथ चलाने के लिए फ़्रेम चुनें।",
   "%1 is back to how iRiS comes": "%1 फिर से iRiS के डिफ़ॉल्ट जैसा हो गया",
-  "Apps, settings, actions… / lists them all": "ऐप्स, सेटिंग्स, ऐक्शन… / सब दिखाता है",
+  "Apps, settings, actions…": "ऐप्स, सेटिंग्स, ऐक्शन…",
   "Customize on the shell": "स्क्रीन पर ही कस्टमाइज़ करें",
   "Every area": "सभी क्षेत्र",
   "No results. Try fewer letters, or / for every action.": "कोई परिणाम नहीं। कम अक्षर आज़माएँ, या सभी ऐक्शन के लिए / लिखें।",
@@ -8997,5 +8997,6 @@
   "Tile": "टाइल",
   "Span": "फैलाएँ",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "फ़िल काटता है, फ़िट किनारे छोड़ता है, फैलाएँ एक तस्वीर को सभी स्क्रीन पर बिछाता है।",
-  "Fill crops, Fit shows bars, Span lays one picture across every screen": "फ़िल काटता है, फ़िट किनारे छोड़ता है, फैलाएँ एक तस्वीर को सभी स्क्रीन पर बिछाता है"
+  "Fill crops, Fit shows bars, Span lays one picture across every screen": "फ़िल काटता है, फ़िट किनारे छोड़ता है, फैलाएँ एक तस्वीर को सभी स्क्रीन पर बिछाता है",
+  "Open %1": "%1 खोलें"
 }

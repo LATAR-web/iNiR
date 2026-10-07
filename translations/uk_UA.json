@@ -7835,7 +7835,7 @@
   "Where they sit": "Де вони розташовані",
   "Which end of the Island carries them. On a side Island, before means above.": "Який кінець Острова їх несе. На бічному Острові «перед» означає «згори».",
   "Which sliders stand side by side in Levels.": "Які повзунки стоять поруч у «Рівнях».",
-  "Whole screen, with sound": "Увесь екран, зі звуком",
+  "With sound": "Зі звуком",
   "Wi-Fi and Ethernet.": "Wi-Fi та Ethernet.",
   "Wi-Fi is off": "Wi-Fi вимкнено",
   "Wi-Fi off": "Wi-Fi вимк.",
@@ -8699,7 +8699,7 @@
   "Shape and response of the music-driven frame": "Форма й відгук рамки, яку рухає музика",
   "Choose The frame to make the screen contour move with your music.": "Виберіть «Рамка», щоб контур екрана рухався з вашою музикою.",
   "%1 is back to how iRiS comes": "%1: повернулося до вигляду iRiS за замовчуванням",
-  "Apps, settings, actions… / lists them all": "Застосунки, параметри, дії… / покаже всі",
+  "Apps, settings, actions…": "Застосунки, параметри, дії…",
   "Customize on the shell": "Налаштувати просто на екрані",
   "Every area": "Усі розділи",
   "No results. Try fewer letters, or / for every action.": "Нічого не знайдено. Спробуйте менше літер або / для всіх дій.",
@@ -8997,5 +8997,6 @@
   "Tile": "Плитка",
   "Span": "Розтягнути на всі",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "Заповнити обрізає, Вписати лишає поля, Розтягнути на всі кладе одне зображення на всі екрани.",
-  "Fill crops, Fit shows bars, Span lays one picture across every screen": "Заповнити обрізає, Вписати лишає поля, Розтягнути на всі кладе одне зображення на всі екрани"
+  "Fill crops, Fit shows bars, Span lays one picture across every screen": "Заповнити обрізає, Вписати лишає поля, Розтягнути на всі кладе одне зображення на всі екрани",
+  "Open %1": "Відкрити %1"
 }

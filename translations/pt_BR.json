@@ -7835,7 +7835,7 @@
   "Where they sit": "Onde ficam",
   "Which end of the Island carries them. On a side Island, before means above.": "Qual ponta da Ilha as carrega. Numa Ilha lateral, antes quer dizer acima.",
   "Which sliders stand side by side in Levels.": "Quais controles deslizantes ficam lado a lado em Níveis.",
-  "Whole screen, with sound": "Tela inteira, com som",
+  "With sound": "Com som",
   "Wi-Fi and Ethernet.": "Wi-Fi e Ethernet.",
   "Wi-Fi is off": "O Wi-Fi está desligado",
   "Wi-Fi off": "Wi-Fi desligado",
@@ -8699,7 +8699,7 @@
   "Shape and response of the music-driven frame": "Forma e resposta da moldura movida pela música",
   "Choose The frame to make the screen contour move with your music.": "Escolha A moldura para que o contorno da tela se mova com sua música.",
   "%1 is back to how iRiS comes": "%1 voltou a como o iRiS vem",
-  "Apps, settings, actions… / lists them all": "Apps, configurações, ações… / mostra todas",
+  "Apps, settings, actions…": "Apps, configurações, ações…",
   "Customize on the shell": "Personalizar na tela",
   "Every area": "Todas as áreas",
   "No results. Try fewer letters, or / for every action.": "Nenhum resultado. Tente menos letras, ou / para todas as ações.",
@@ -8997,5 +8997,6 @@
   "Tile": "Lado a lado",
   "Span": "Estender",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "Preencher corta, Ajustar mostra barras, Estender põe uma imagem em todas as telas.",
-  "Fill crops, Fit shows bars, Span lays one picture across every screen": "Preencher corta, Ajustar mostra barras, Estender põe uma imagem em todas as telas"
+  "Fill crops, Fit shows bars, Span lays one picture across every screen": "Preencher corta, Ajustar mostra barras, Estender põe uma imagem em todas as telas",
+  "Open %1": "Abrir %1"
 }

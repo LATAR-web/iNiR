@@ -7835,7 +7835,7 @@
   "Where they sit": "Где они находятся",
   "Which end of the Island carries them. On a side Island, before means above.": "Какой конец Острова их несёт. На боковом Острове «перед» значит «сверху».",
   "Which sliders stand side by side in Levels.": "Какие ползунки стоят рядом в «Уровнях».",
-  "Whole screen, with sound": "Весь экран, со звуком",
+  "With sound": "Со звуком",
   "Wi-Fi and Ethernet.": "Wi-Fi и Ethernet.",
   "Wi-Fi is off": "Wi-Fi выключен",
   "Wi-Fi off": "Wi-Fi выкл.",
@@ -8699,7 +8699,7 @@
   "Shape and response of the music-driven frame": "Форма и отклик рамки, управляемой музыкой",
   "Choose The frame to make the screen contour move with your music.": "Выберите «Рамка», чтобы контур экрана двигался с вашей музыкой.",
   "%1 is back to how iRiS comes": "%1: вернулось к виду iRiS по умолчанию",
-  "Apps, settings, actions… / lists them all": "Приложения, настройки, действия… / покажет все",
+  "Apps, settings, actions…": "Приложения, настройки, действия…",
   "Customize on the shell": "Настроить прямо на экране",
   "Every area": "Все разделы",
   "No results. Try fewer letters, or / for every action.": "Ничего не найдено. Попробуйте меньше букв или / для всех действий.",
@@ -8997,5 +8997,6 @@
   "Tile": "Плитка",
   "Span": "Растянуть на все",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "Заполнить обрезает, Вписать оставляет поля, Растянуть на все кладёт одну картинку на все экраны.",
-  "Fill crops, Fit shows bars, Span lays one picture across every screen": "Заполнить обрезает, Вписать оставляет поля, Растянуть на все кладёт одну картинку на все экраны"
+  "Fill crops, Fit shows bars, Span lays one picture across every screen": "Заполнить обрезает, Вписать оставляет поля, Растянуть на все кладёт одну картинку на все экраны",
+  "Open %1": "Открыть %1"
 }

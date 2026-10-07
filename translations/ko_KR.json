@@ -7835,7 +7835,7 @@
   "Where they sit": "위치",
   "Which end of the Island carries them. On a side Island, before means above.": "아일랜드의 어느 쪽 끝에 둘지. 측면 아일랜드에서 앞은 위를 뜻합니다.",
   "Which sliders stand side by side in Levels.": "레벨에서 나란히 설 슬라이더.",
-  "Whole screen, with sound": "전체 화면, 소리 포함",
+  "With sound": "소리 포함",
   "Wi-Fi and Ethernet.": "Wi-Fi와 이더넷.",
   "Wi-Fi is off": "Wi-Fi가 꺼져 있음",
   "Wi-Fi off": "Wi-Fi 끔",
@@ -8699,7 +8699,7 @@
   "Shape and response of the music-driven frame": "음악에 반응하는 프레임의 모양과 반응",
   "Choose The frame to make the screen contour move with your music.": "화면 윤곽이 음악에 맞춰 움직이게 하려면 프레임을 고르세요.",
   "%1 is back to how iRiS comes": "%1을(를) iRiS 기본값으로 되돌렸습니다",
-  "Apps, settings, actions… / lists them all": "앱, 설정, 동작… / 모두 보기",
+  "Apps, settings, actions…": "앱, 설정, 동작…",
   "Customize on the shell": "화면에서 사용자 지정",
   "Every area": "모든 영역",
   "No results. Try fewer letters, or / for every action.": "결과가 없습니다. 글자 수를 줄이거나 / 로 모든 동작을 보세요.",
@@ -8997,5 +8997,6 @@
   "Tile": "바둑판식",
   "Span": "확장",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "채우기는 잘라내고, 맞춤은 여백을 두며, 확장은 한 장의 그림을 모든 화면에 걸칩니다.",
-  "Fill crops, Fit shows bars, Span lays one picture across every screen": "채우기는 잘라내고, 맞춤은 여백을 두며, 확장은 한 장의 그림을 모든 화면에 걸칩니다"
+  "Fill crops, Fit shows bars, Span lays one picture across every screen": "채우기는 잘라내고, 맞춤은 여백을 두며, 확장은 한 장의 그림을 모든 화면에 걸칩니다",
+  "Open %1": "%1 열기"
 }

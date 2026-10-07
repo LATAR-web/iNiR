@@ -2778,7 +2778,7 @@
             "sections": ["connectivity", "media", "shortcuts", "levels", "notifications"],
             "preset": "iris",
             "columns": 4,
-            "labels": false,
+            "labels": true,
             "modules": ["platter", "media", "darkMode", "nightLight", "levels", "idle", "snip", "devices", "record", "notifications"],
             "sizes": ["devices:2x1", "record:2x1"],
             "platter": ["network", "bluetooth", "focus", "gameMode"],

@@ -257,7 +257,12 @@ ColumnLayout {
                 }
                 IrisWallpaperView {
                     id: heroImage
-                    anchors.fill: parent
+                    // The wallpaper as this screen shows it, its band taken from the upper third: heads and skies sit
+                    // there, where a centred band of a portrait shows the subject's knees.
+                    readonly property real screenAspect: (page.island.targetScreen?.height ?? 1080) / Math.max(1, page.island.targetScreen?.width ?? 1920)
+                    width: parent.width
+                    height: Math.max(parent.height, Math.round(parent.width * heroImage.screenAspect))
+                    y: -Math.round((heroImage.height - parent.height) * 0.3)
                     active: page.showBanner
                     screen: page.island.targetScreen
                     live: page.current && page.island.visualExpanded

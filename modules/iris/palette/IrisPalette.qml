@@ -54,7 +54,8 @@ Item {
         .filter(entry => String(entry?.name ?? "").length > 0
             && (root.mathQuery || entry?.type !== Translation.tr("Math")))
     // A plain query also reaches iRiS's switches, actions and options (IrisSearch): a strong one leads when no
-    // app name starts with what was typed, the rest follow the apps; the calculator, command and web come last.
+    // word of the first app's name starts with what was typed, the rest follow the apps; the calculator, command
+    // and web come last.
     readonly property bool plainQuery: {
         const prefix = Config.options?.search?.prefix ?? ({})
         const q = root.settled
@@ -81,8 +82,10 @@ Item {
         const allApps = root.launcherResults.filter(entry => entry?.type === Translation.tr("App"))
         const apps = hits.length > 0 ? allApps.slice(0, 3) : allApps
         const rest = root.launcherResults.filter(entry => entry?.type !== Translation.tr("App"))
-        const typed = IrisSearch.fold(root.settled).trim()
-        const appLeads = apps.length > 0 && IrisSearch.fold(apps[0].name).startsWith(typed)
+        // "code" names Visual Studio Code: an app keeps the lead when any of its words starts with what was typed.
+        const typed = IrisSearch.tokens(root.settled).join(" ")
+        const appLeads = apps.length > 0 && typed.length > 0
+            && (" " + IrisSearch.tokens(apps[0].name).join(" ")).includes(" " + typed)
         const best = acts.concat(opens).sort((a, b) => b.score - a.score)[0] ?? null
         if (best && best.score >= 0.9 && !appLeads) {
             const others = acts.concat(opens).filter(hit => hit !== best)
@@ -514,7 +517,7 @@ Item {
                             IrisText {
                                 anchors.verticalCenter: parent.verticalCenter
                                 visible: input.text.length === 0
-                                text: Translation.tr("Apps, settings, actions… / lists them all")
+                                text: Translation.tr("Apps, settings, actions…")
                                 color: IrisStyle.muted
                                 font.pixelSize: input.font.pixelSize
                                 font.weight: IrisStyle.weight(Font.Normal)
@@ -557,7 +560,17 @@ Item {
                             Layout.rightMargin: 16 * stage.d
                             Layout.topMargin: 6 * stage.d
                             readonly property real tileWidth: width / 8
-                            implicitHeight: Math.round(92 * stage.d)
+                            // Icon, dot and the name; a second line only while one of the names needs it.
+                            // Recounted by the tiles: a binding over itemAt() never hears a label wrap.
+                            property bool wraps: false
+                            function recount(): void {
+                                let wraps = false
+                                for (let i = 0; i < tileRepeater.count; ++i)
+                                    if ((tileRepeater.itemAt(i)?.lines ?? 1) > 1) wraps = true
+                                tiles.wraps = wraps
+                            }
+                            Timer { id: recountLater; interval: 0; onTriggered: tiles.recount() }
+                            implicitHeight: Math.round((tiles.wraps ? 104 : 92) * stage.d)
 
                             Rectangle {
                                 visible: root.suggestions.length > 0
@@ -573,6 +586,9 @@ Item {
                                 anchors.fill: parent
                                 Repeater {
                                     id: tileRepeater
+                                    onItemAdded: tiles.recount()
+                                    // The removed tile still answers itemAt() during the signal.
+                                    onItemRemoved: recountLater.restart()
                                     // Keyed by app: suggestions rebuild on every window event.
                                     model: ScriptModel {
                                         objectProp: "appId"
@@ -583,6 +599,8 @@ Item {
                                         required property var modelData
                                         required property int index
                                         readonly property var live: root.suggestions[tile.index] ?? tile.modelData
+                                        readonly property int lines: tileLabel.lineCount
+                                        onLinesChanged: tiles.recount()
                                         width: tiles.tileWidth
                                         height: tiles.height
                                         hoverEnabled: true
@@ -620,14 +638,19 @@ Item {
                                             color: IrisStyle.textTertiary
                                         }
                                         IrisText {
+                                            id: tileLabel
                                             anchors.left: parent.left
                                             anchors.right: parent.right
                                             anchors.leftMargin: 4 * stage.d
                                             anchors.rightMargin: 4 * stage.d
-                                            anchors.bottom: parent.bottom
-                                            anchors.bottomMargin: 8 * stage.d
+                                            anchors.top: tileIcon.bottom
+                                            anchors.topMargin: 10 * stage.d
                                             horizontalAlignment: Text.AlignHCenter
-                                            text: tile.modelData.name
+                                            // An AppImage's version ("limusic (1.1.0)") is not its name; a long name takes a
+                                            // second line at the same size ("Visual Studio / Code") before it elides.
+                                            text: String(tile.modelData.name ?? "").replace(/\s*\(v?\d[^)]*\)\s*$/, "")
+                                            wrapMode: Text.Wrap
+                                            maximumLineCount: 2
                                             elide: Text.ElideRight
                                             font.pixelSize: IrisStyle.typeFootnote
                                             color: root.selectedIndex === tile.index ? IrisStyle.text : IrisStyle.subtext

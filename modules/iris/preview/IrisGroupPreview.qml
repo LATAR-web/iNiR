@@ -183,16 +183,19 @@ ClippingRectangle {
         }
     }
 
-    component IslandPill: Rectangle {
+    // The resting Island, drawn by the field like the real one: its rim, glass edge, Afterglow and shadow come from the
+    // same pass instead of a bordered Rectangle that only resembled them.
+    component IslandPill: Item {
         id: pill
         property bool vertical: false
+        readonly property real radius: Math.min(width, height) / 2
         width: pill.vertical ? Math.round(IrisFrame.islandBand) : Math.round(150 * root.d)
         height: pill.vertical ? Math.round(150 * root.d) : Math.round(IrisFrame.islandBand)
-        radius: Math.min(width, height) / 2
-        color: IrisStyle.bodySurface
-        border.width: IrisStyle.rim.a > 0 ? 1 : 0
-        border.color: IrisStyle.rim
-        IrisGlassEdge { anchors.fill: parent; z: 10; visible: IrisStyle.edgeLit && shown; radius: parent.radius }
+        Field.IrisField {
+            anchors.fill: parent
+            framed: false
+            shapes: [{ id: "island", x: 0, y: 0, width: pill.width, height: pill.height, radius: pill.radius }]
+        }
         IrisClock {
             visible: !pill.vertical
             anchors.centerIn: parent
@@ -2975,17 +2978,19 @@ ClippingRectangle {
                 repeat: true
                 onTriggered: actRoot.level = Math.min(0.85, actRoot.level + 0.05)
             }
-            Rectangle {
+            Item {
                 id: pill
                 anchors.horizontalCenter: parent.horizontalCenter
                 y: IrisFrame.band + IrisFrame.islandMargin
                 width: actRoot.pillW
                 height: actRoot.pillH
-                radius: actRoot.expanded ? IrisStyle.radius : height / 2
-                color: IrisStyle.bodySurface
-                border.width: IrisStyle.rim.a > 0 ? 1 : 0
-                border.color: IrisStyle.rim
-                IrisGlassEdge { anchors.fill: parent; z: 10; visible: IrisStyle.edgeLit && shown; radius: parent.radius }
+                property real radius: actRoot.expanded ? IrisStyle.radius : height / 2
+                // Drawn by the field, as the Island it shows.
+                Field.IrisField {
+                    anchors.fill: parent
+                    framed: false
+                    shapes: [{ id: "island", x: 0, y: 0, width: pill.width, height: pill.height, radius: pill.radius }]
+                }
                 Behavior on width { NumberAnimation { duration: IrisStyle.morphDuration; easing.type: Easing.BezierSpline; easing.bezierCurve: IrisStyle.morphCurve } }
                 Behavior on height { NumberAnimation { duration: IrisStyle.morphDuration; easing.type: Easing.BezierSpline; easing.bezierCurve: IrisStyle.morphCurve } }
                 Behavior on radius { NumberAnimation { duration: IrisStyle.morphDuration; easing.type: Easing.BezierSpline; easing.bezierCurve: IrisStyle.morphCurve } }
@@ -3043,8 +3048,8 @@ ClippingRectangle {
                 x: actRoot.step === 0 ? parent.width * 0.72 : pill.x + pill.width * 0.55
                 y: actRoot.step === 0 ? parent.height * 0.7 : pill.y + Math.min(pill.height - 8, IrisFrame.islandBand * 0.6)
                 visible: actRoot.step < 3
-                Behavior on x { NumberAnimation { duration: 520; easing.type: Easing.OutCubic } }
-                Behavior on y { NumberAnimation { duration: 520; easing.type: Easing.OutCubic } }
+                Behavior on x { NumberAnimation { duration: IrisStyle.moveDuration; easing.type: Easing.BezierSpline; easing.bezierCurve: IrisStyle.moveCurve } }
+                Behavior on y { NumberAnimation { duration: IrisStyle.moveDuration; easing.type: Easing.BezierSpline; easing.bezierCurve: IrisStyle.moveCurve } }
                 Rectangle {
                     anchors.centerIn: parent
                     width: actRoot.clicked ? parent.width * 1.6 : 0
@@ -3054,8 +3059,8 @@ ClippingRectangle {
                     border.width: 2
                     border.color: IrisStyle.accent
                     opacity: actRoot.clicked ? 0 : 1
-                    Behavior on width { NumberAnimation { duration: 320; easing.type: Easing.BezierSpline; easing.bezierCurve: IrisStyle.moveCurve } }
-                    Behavior on opacity { NumberAnimation { duration: 420; easing.type: IrisStyle.feedbackEasing } }
+                    Behavior on width { NumberAnimation { duration: IrisStyle.moveDuration; easing.type: Easing.BezierSpline; easing.bezierCurve: IrisStyle.moveCurve } }
+                    Behavior on opacity { NumberAnimation { duration: IrisStyle.emergeDuration; easing.type: IrisStyle.feedbackEasing } }
                 }
             }
             Caption {

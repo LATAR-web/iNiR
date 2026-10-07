@@ -7835,7 +7835,7 @@
   "Where they sit": "Dove si trovano",
   "Which end of the Island carries them. On a side Island, before means above.": "Quale estremità dell'Isola le porta. Su un'Isola laterale, prima significa sopra.",
   "Which sliders stand side by side in Levels.": "Quali cursori stanno affiancati in Livelli.",
-  "Whole screen, with sound": "Schermo intero, con audio",
+  "With sound": "Con audio",
   "Wi-Fi and Ethernet.": "Wi-Fi ed Ethernet.",
   "Wi-Fi is off": "Il Wi-Fi è spento",
   "Wi-Fi off": "Wi-Fi spento",
@@ -8699,7 +8699,7 @@
   "Shape and response of the music-driven frame": "Forma e risposta della cornice guidata dalla musica",
   "Choose The frame to make the screen contour move with your music.": "Scegli La cornice per far muovere il contorno dello schermo con la tua musica.",
   "%1 is back to how iRiS comes": "%1 è tornato come arriva iRiS",
-  "Apps, settings, actions… / lists them all": "App, impostazioni, azioni… / le mostra tutte",
+  "Apps, settings, actions…": "App, impostazioni, azioni…",
   "Customize on the shell": "Personalizza sullo schermo",
   "Every area": "Tutte le aree",
   "No results. Try fewer letters, or / for every action.": "Nessun risultato. Prova con meno lettere, o / per tutte le azioni.",
@@ -8997,5 +8997,6 @@
   "Tile": "Affianca",
   "Span": "Estendi",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "Riempi ritaglia, Adatta mostra bande, Estendi stende un'immagine su tutti gli schermi.",
-  "Fill crops, Fit shows bars, Span lays one picture across every screen": "Riempi ritaglia, Adatta mostra bande, Estendi stende un'immagine su tutti gli schermi"
+  "Fill crops, Fit shows bars, Span lays one picture across every screen": "Riempi ritaglia, Adatta mostra bande, Estendi stende un'immagine su tutti gli schermi",
+  "Open %1": "Apri %1"
 }

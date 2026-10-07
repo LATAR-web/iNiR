@@ -1572,7 +1572,15 @@ AbstractWidget {
         z: 202
         widget: root
         visible: GlobalStates.widgetEditMode && root.irisFaced && root.irisSizeChoices.length > 1 && !root.locked
-            && (root.editSelected || widgetEditHover.hovered || root._irisSizing)
+            && (root.editSelected || root._gripHover || root._irisSizing)
+    }
+    // The grip reads the hover a tick late: hiding it under the pointer re-delivers hover at once and
+    // re-entered its own visibility (a binding loop while editing).
+    property bool _gripHover: false
+    Timer { id: gripHoverSettle; interval: 0; onTriggered: root._gripHover = widgetEditHover.hovered }
+    Connections {
+        target: root.irisFaced ? widgetEditHover : null
+        function onHoveredChanged(): void { gripHoverSettle.restart() }
     }
 
     function commitIrisSize(size: string): void {

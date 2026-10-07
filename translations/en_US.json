@@ -7832,7 +7832,7 @@
   "Where they sit": "Where they sit",
   "Which end of the Island carries them. On a side Island, before means above.": "Which end of the Island carries them. On a side Island, before means above.",
   "Which sliders stand side by side in Levels.": "Which sliders stand side by side in Levels.",
-  "Whole screen, with sound": "Whole screen, with sound",
+  "With sound": "With sound",
   "Wi-Fi and Ethernet.": "Wi-Fi and Ethernet.",
   "Wi-Fi is off": "Wi-Fi is off",
   "Wi-Fi off": "Wi-Fi off",
@@ -8703,7 +8703,7 @@
   "Shape and response of the music-driven frame": "Shape and response of the music-driven frame",
   "Choose The frame to make the screen contour move with your music.": "Choose The frame to make the screen contour move with your music.",
   "%1 is back to how iRiS comes": "%1 is back to how iRiS comes",
-  "Apps, settings, actions… / lists them all": "Apps, settings, actions… / lists them all",
+  "Apps, settings, actions…": "Apps, settings, actions…",
   "Customize on the shell": "Customize on the shell",
   "Every area": "Every area",
   "No results. Try fewer letters, or / for every action.": "No results. Try fewer letters, or / for every action.",
@@ -8997,5 +8997,6 @@
   "Tile": "Tile",
   "Span": "Span",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "Fill crops, Fit shows bars, Span lays one picture across every screen.",
-  "Fill crops, Fit shows bars, Span lays one picture across every screen": "Fill crops, Fit shows bars, Span lays one picture across every screen"
+  "Fill crops, Fit shows bars, Span lays one picture across every screen": "Fill crops, Fit shows bars, Span lays one picture across every screen",
+  "Open %1": "Open %1"
 }

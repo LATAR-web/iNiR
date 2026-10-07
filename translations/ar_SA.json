@@ -7835,7 +7835,7 @@
   "Where they sit": "مكانها",
   "Which end of the Island carries them. On a side Island, before means above.": "أي طرف من الجزيرة يحملها. في الجزيرة الجانبية، «قبل» تعني فوق.",
   "Which sliders stand side by side in Levels.": "أي المنزلقات تقف متجاورة في المستويات.",
-  "Whole screen, with sound": "الشاشة كاملة، مع الصوت",
+  "With sound": "مع الصوت",
   "Wi-Fi and Ethernet.": "Wi-Fi وEthernet.",
   "Wi-Fi is off": "Wi-Fi متوقف",
   "Wi-Fi off": "Wi-Fi متوقف",
@@ -8699,7 +8699,7 @@
   "Shape and response of the music-driven frame": "شكل واستجابة الإطار الذي تحرّكه الموسيقى",
   "Choose The frame to make the screen contour move with your music.": "اختر «الإطار» ليتحرك محيط الشاشة مع موسيقاك.",
   "%1 is back to how iRiS comes": "عاد %1 إلى إعدادات iRiS الأصلية",
-  "Apps, settings, actions… / lists them all": "تطبيقات، إعدادات، إجراءات… / يعرضها كلها",
+  "Apps, settings, actions…": "تطبيقات، إعدادات، إجراءات…",
   "Customize on the shell": "التخصيص على الشاشة",
   "Every area": "كل المجالات",
   "No results. Try fewer letters, or / for every action.": "لا توجد نتائج. جرّب أحرفًا أقل، أو / لكل الإجراءات.",
@@ -8997,5 +8997,6 @@
   "Tile": "تجانب",
   "Span": "امتداد",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "الملء يقص، والملاءمة تترك أشرطة، والامتداد يمد صورة واحدة على كل الشاشات.",
-  "Fill crops, Fit shows bars, Span lays one picture across every screen": "الملء يقص، والملاءمة تترك أشرطة، والامتداد يمد صورة واحدة على كل الشاشات"
+  "Fill crops, Fit shows bars, Span lays one picture across every screen": "الملء يقص، والملاءمة تترك أشرطة، والامتداد يمد صورة واحدة على كل الشاشات",
+  "Open %1": "افتح %1"
 }

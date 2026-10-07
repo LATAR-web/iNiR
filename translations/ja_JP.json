@@ -7835,7 +7835,7 @@
   "Where they sit": "置き場所",
   "Which end of the Island carries them. On a side Island, before means above.": "アイランドのどちらの端に付けるか。横向きのアイランドでは「前」は上を意味します。",
   "Which sliders stand side by side in Levels.": "「レベル」で横に並ぶスライダー。",
-  "Whole screen, with sound": "画面全体、音声付き",
+  "With sound": "音声付き",
   "Wi-Fi and Ethernet.": "Wi-Fi と Ethernet。",
   "Wi-Fi is off": "Wi-Fi はオフです",
   "Wi-Fi off": "Wi-Fi オフ",
@@ -8699,7 +8699,7 @@
   "Shape and response of the music-driven frame": "音楽で動くフレームの形と反応",
   "Choose The frame to make the screen contour move with your music.": "「フレーム」を選ぶと、画面の輪郭が音楽に合わせて動きます。",
   "%1 is back to how iRiS comes": "%1 を iRiS の初期状態に戻しました",
-  "Apps, settings, actions… / lists them all": "アプリ、設定、アクション… / ですべて表示",
+  "Apps, settings, actions…": "アプリ、設定、アクション…",
   "Customize on the shell": "画面上でカスタマイズ",
   "Every area": "すべての領域",
   "No results. Try fewer letters, or / for every action.": "結果がありません。文字数を減らすか、/ ですべてのアクションを表示します。",
@@ -8997,5 +8997,6 @@
   "Tile": "並べて表示",
   "Span": "スパン",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "塗りつぶしは切り抜き、フィットは余白を残し、スパンは1枚の画像をすべての画面にまたがせます。",
-  "Fill crops, Fit shows bars, Span lays one picture across every screen": "塗りつぶしは切り抜き、フィットは余白を残し、スパンは1枚の画像をすべての画面にまたがせます"
+  "Fill crops, Fit shows bars, Span lays one picture across every screen": "塗りつぶしは切り抜き、フィットは余白を残し、スパンは1枚の画像をすべての画面にまたがせます",
+  "Open %1": "%1を開く"
 }

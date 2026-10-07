@@ -7835,7 +7835,7 @@
   "Where they sit": "Wo sie sitzen",
   "Which end of the Island carries them. On a side Island, before means above.": "An welchem Ende der Insel sie sitzen. Bei einer seitlichen Insel heißt „vorher“ oben.",
   "Which sliders stand side by side in Levels.": "Welche Regler unter Pegel nebeneinander stehen.",
-  "Whole screen, with sound": "Ganzer Bildschirm, mit Ton",
+  "With sound": "Mit Ton",
   "Wi-Fi and Ethernet.": "WLAN und Ethernet.",
   "Wi-Fi is off": "WLAN ist aus",
   "Wi-Fi off": "WLAN aus",
@@ -8699,7 +8699,7 @@
   "Shape and response of the music-driven frame": "Form und Reaktion des musikgesteuerten Rahmens",
   "Choose The frame to make the screen contour move with your music.": "Wähle Der Rahmen, damit sich die Bildschirmkontur mit deiner Musik bewegt.",
   "%1 is back to how iRiS comes": "%1 ist wieder so, wie iRiS kommt",
-  "Apps, settings, actions… / lists them all": "Apps, Einstellungen, Aktionen… / zeigt alle",
+  "Apps, settings, actions…": "Apps, Einstellungen, Aktionen…",
   "Customize on the shell": "Auf dem Desktop anpassen",
   "Every area": "Alle Bereiche",
   "No results. Try fewer letters, or / for every action.": "Keine Ergebnisse. Versuch es mit weniger Buchstaben oder / für alle Aktionen.",
@@ -8997,5 +8997,6 @@
   "Tile": "Kacheln",
   "Span": "Spannen",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "Füllen schneidet zu, Einpassen zeigt Balken, Spannen legt ein Bild über alle Bildschirme.",
-  "Fill crops, Fit shows bars, Span lays one picture across every screen": "Füllen schneidet zu, Einpassen zeigt Balken, Spannen legt ein Bild über alle Bildschirme"
+  "Fill crops, Fit shows bars, Span lays one picture across every screen": "Füllen schneidet zu, Einpassen zeigt Balken, Spannen legt ein Bild über alle Bildschirme",
+  "Open %1": "%1 öffnen"
 }

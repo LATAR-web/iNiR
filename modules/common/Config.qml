@@ -4467,7 +4467,7 @@ Singleton {
                     property list<string> sections: ["connectivity", "media", "shortcuts", "levels", "notifications"]
                     property string preset: "iris"
                     property int columns: 4
-                    property bool labels: false
+                    property bool labels: true
                     property list<string> modules: ["platter", "media", "darkMode", "nightLight", "levels", "idle", "snip", "devices", "record", "notifications"]
                     // Per-module shapes, as "<id>:<columns>x<rows>" ("F" = full width).
                     property list<string> sizes: ["devices:2x1", "record:2x1"]

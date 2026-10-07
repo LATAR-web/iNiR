@@ -562,7 +562,8 @@ QtObject {
     readonly property color fillActive: ColorUtils.applyAlpha(root.fillInk, root.fillAlpha(0.26))
     // A strong fill (a slider's level, a scrubber) is ink, not a film: the body's hue at 60 % turned paper's levels brown.
     // On paper the strong fill is ink: at the night's 0.6 it read as a dark grey slab beside the controls; 0.46 is a pencil line.
-    readonly property color fillStrong: ColorUtils.applyAlpha(root.light ? root.text : root.fillInk, Math.min(0.9, (root.light ? 0.46 : 0.6) * root.preset.fill * root.tweak("fill", 0.3, 2)))
+    // A level's fill (sliders, scrubbers, the Island's levels). Dark at 0.6 read as a disabled grey beside lit tiles.
+    readonly property color fillStrong: ColorUtils.applyAlpha(root.light ? root.text : root.fillInk, Math.min(0.9, (root.light ? 0.46 : 0.82) * root.preset.fill * root.tweak("fill", 0.3, 2)))
     // The palette solves the accent as text on this wash (washi.go): it stays within that, whatever Fills says.
     function tintFill(tint: color): color { return ColorUtils.applyAlpha(tint, Math.min(0.15, root.fillAlpha(0.13))) }
     function tintFillHover(tint: color): color { return ColorUtils.applyAlpha(tint, root.fillAlpha(0.2)) }
@@ -714,6 +715,12 @@ QtObject {
                 level < 0 || strength <= 0 || material === "clear" ? 0 : root.paperFloor(root.surfaceOpaque, Math.max(0, level - spread), strength),
                 material === "clear" || strength <= 0 ? 0 : root.paperGlass * strength)
             : Lume.veil(level, spread, root.materialSpread[material] ?? 1, root.surfaceOpaque, root.text, contrast, floor, 0.86)
+    }
+    // A Place over imagery (Session) keeps its dark veil and onMedia ink in every scheme (§0.3); Lume solves how thick,
+    // at the reading contrast so the secondary ink still holds. `veil` is the floor: a dark wallpaper looks as before.
+    function mediaVeil(level: real, spread: real): real {
+        return Lume.veil(level, spread, root.materialSpread.panel, root.darkSurfaceOpaque, root.onMedia,
+            root.materialContrast.panel, root.veil.a, 0.86)
     }
 
     // Lume for Places: a Place keeps the glass tint the person chose and plates only its reading surfaces

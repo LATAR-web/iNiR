@@ -7828,7 +7828,7 @@
   "Where they sit": "Letaknya",
   "Which end of the Island carries them. On a side Island, before means above.": "Ujung Pulau yang membawanya. Pada Pulau di samping, sebelum berarti di atas.",
   "Which sliders stand side by side in Levels.": "Slider yang berdampingan di Level.",
-  "Whole screen, with sound": "Seluruh layar, dengan suara",
+  "With sound": "Dengan suara",
   "Wi-Fi and Ethernet.": "Wi-Fi dan Ethernet.",
   "Wi-Fi is off": "Wi-Fi mati",
   "Wi-Fi off": "Wi-Fi mati",
@@ -8699,7 +8699,7 @@
   "Shape and response of the music-driven frame": "Bentuk dan respons bingkai yang digerakkan musik",
   "Choose The frame to make the screen contour move with your music.": "Pilih Bingkai agar kontur layar bergerak mengikuti musik Anda.",
   "%1 is back to how iRiS comes": "%1 kembali seperti bawaan iRiS",
-  "Apps, settings, actions… / lists them all": "Aplikasi, pengaturan, aksi… / menampilkan semuanya",
+  "Apps, settings, actions…": "Aplikasi, pengaturan, aksi…",
   "Customize on the shell": "Sesuaikan di layar",
   "Every area": "Semua area",
   "No results. Try fewer letters, or / for every action.": "Tidak ada hasil. Coba lebih sedikit huruf, atau / untuk semua aksi.",
@@ -8997,5 +8997,6 @@
   "Tile": "Ubin",
   "Span": "Rentang",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "Isi memotong, Paskan menyisakan bilah, Rentang membentangkan satu gambar di semua layar.",
-  "Fill crops, Fit shows bars, Span lays one picture across every screen": "Isi memotong, Paskan menyisakan bilah, Rentang membentangkan satu gambar di semua layar"
+  "Fill crops, Fit shows bars, Span lays one picture across every screen": "Isi memotong, Paskan menyisakan bilah, Rentang membentangkan satu gambar di semua layar",
+  "Open %1": "Buka %1"
 }

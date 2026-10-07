@@ -7835,7 +7835,7 @@
   "Where they sit": "它们的位置",
   "Which end of the Island carries them. On a side Island, before means above.": "由岛屿的哪一端承载。在侧边岛屿上，“之前”表示上方。",
   "Which sliders stand side by side in Levels.": "“电平”中哪些滑块并排显示。",
-  "Whole screen, with sound": "全屏，带声音",
+  "With sound": "带声音",
   "Wi-Fi and Ethernet.": "Wi-Fi 和以太网。",
   "Wi-Fi is off": "Wi-Fi 已关闭",
   "Wi-Fi off": "Wi-Fi 关",
@@ -8699,7 +8699,7 @@
   "Shape and response of the music-driven frame": "随音乐律动的边框的形状和响应",
   "Choose The frame to make the screen contour move with your music.": "选择“边框”，让屏幕轮廓随你的音乐移动。",
   "%1 is back to how iRiS comes": "%1 已恢复为 iRiS 默认",
-  "Apps, settings, actions… / lists them all": "应用、设置、操作… 输入 / 查看全部",
+  "Apps, settings, actions…": "应用、设置、操作…",
   "Customize on the shell": "在屏幕上自定义",
   "Every area": "所有区域",
   "No results. Try fewer letters, or / for every action.": "没有结果。试试少打几个字，或输入 / 查看所有操作。",
@@ -8997,5 +8997,6 @@
   "Tile": "平铺",
   "Span": "跨屏",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "填充会裁切，适应会留边，跨屏把一张图铺满所有屏幕。",
-  "Fill crops, Fit shows bars, Span lays one picture across every screen": "填充会裁切，适应会留边，跨屏把一张图铺满所有屏幕"
+  "Fill crops, Fit shows bars, Span lays one picture across every screen": "填充会裁切，适应会留边，跨屏把一张图铺满所有屏幕",
+  "Open %1": "打开 %1"
 }

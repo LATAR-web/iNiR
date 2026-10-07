@@ -7835,7 +7835,7 @@
   "Where they sit": "Nerede durdukları",
   "Which end of the Island carries them. On a side Island, before means above.": "Onları Ada'nın hangi ucunun taşıdığı. Yandaki bir Ada'da önce, üstte demektir.",
   "Which sliders stand side by side in Levels.": "Seviyeler'de hangi kaydırıcıların yan yana durduğu.",
-  "Whole screen, with sound": "Tüm ekran, sesli",
+  "With sound": "Sesli",
   "Wi-Fi and Ethernet.": "Wi-Fi ve Ethernet.",
   "Wi-Fi is off": "Wi-Fi kapalı",
   "Wi-Fi off": "Wi-Fi kapalı",
@@ -8699,7 +8699,7 @@
   "Shape and response of the music-driven frame": "Müzikle hareket eden çerçevenin şekli ve tepkisi",
   "Choose The frame to make the screen contour move with your music.": "Ekranın kenarının müziğinizle hareket etmesi için Çerçeve'yi seçin.",
   "%1 is back to how iRiS comes": "%1, iRiS'in varsayılan hâline döndü",
-  "Apps, settings, actions… / lists them all": "Uygulamalar, ayarlar, eylemler… / hepsini listeler",
+  "Apps, settings, actions…": "Uygulamalar, ayarlar, eylemler…",
   "Customize on the shell": "Ekranda özelleştir",
   "Every area": "Tüm alanlar",
   "No results. Try fewer letters, or / for every action.": "Sonuç yok. Daha az harf deneyin ya da tüm eylemler için / yazın.",
@@ -8997,5 +8997,6 @@
   "Tile": "Döşe",
   "Span": "Yay",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "Doldur kırpar, Sığdır kenar boşluğu bırakır, Yay tek resmi tüm ekranlara yayar.",
-  "Fill crops, Fit shows bars, Span lays one picture across every screen": "Doldur kırpar, Sığdır kenar boşluğu bırakır, Yay tek resmi tüm ekranlara yayar"
+  "Fill crops, Fit shows bars, Span lays one picture across every screen": "Doldur kırpar, Sığdır kenar boşluğu bırakır, Yay tek resmi tüm ekranlara yayar",
+  "Open %1": "Aç: %1"
 }

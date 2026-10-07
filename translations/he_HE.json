@@ -7835,7 +7835,7 @@
   "Where they sit": "היכן הן יושבות",
   "Which end of the Island carries them. On a side Island, before means above.": "איזה קצה של האיילנד נושא אותן. באיילנד צידי, לפני פירושו למעלה.",
   "Which sliders stand side by side in Levels.": "אילו מחוונים עומדים זה לצד זה בעוצמות.",
-  "Whole screen, with sound": "כל המסך, עם צליל",
+  "With sound": "עם צליל",
   "Wi-Fi and Ethernet.": "Wi-Fi ו־Ethernet.",
   "Wi-Fi is off": "ה־Wi-Fi כבוי",
   "Wi-Fi off": "Wi-Fi כבוי",
@@ -8699,7 +8699,7 @@
   "Shape and response of the music-driven frame": "הצורה והתגובה של המסגרת שהמוזיקה מניעה",
   "Choose The frame to make the screen contour move with your music.": "בחרו „המסגרת” כדי שקו המתאר של המסך יזוז עם המוזיקה שלכם.",
   "%1 is back to how iRiS comes": "%1 חזר למצב ברירת המחדל של iRiS",
-  "Apps, settings, actions… / lists them all": "אפליקציות, הגדרות, פעולות… / מציג את כולן",
+  "Apps, settings, actions…": "אפליקציות, הגדרות, פעולות…",
   "Customize on the shell": "התאמה אישית על המסך",
   "Every area": "כל האזורים",
   "No results. Try fewer letters, or / for every action.": "אין תוצאות. נסו פחות אותיות, או / לכל הפעולות.",
@@ -8997,5 +8997,6 @@
   "Tile": "פרישה",
   "Span": "פריסה על כל המסכים",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "מילוי חותך, התאמה משאירה פסים, פריסה מניחה תמונה אחת על כל המסכים.",
-  "Fill crops, Fit shows bars, Span lays one picture across every screen": "מילוי חותך, התאמה משאירה פסים, פריסה מניחה תמונה אחת על כל המסכים"
+  "Fill crops, Fit shows bars, Span lays one picture across every screen": "מילוי חותך, התאמה משאירה פסים, פריסה מניחה תמונה אחת על כל המסכים",
+  "Open %1": "פתח את %1"
 }

@@ -1,6 +1,7 @@
 pragma Singleton
 
 import QtQuick
+import Quickshell
 import Quickshell.Services.SystemTray
 import qs.services
 import qs.services.deferred
@@ -63,6 +64,33 @@ QtObject {
     }
 
     readonly property bool hasPlayer: String(MprisController.titleOf(MprisController.activePlayer) ?? "").length > 0
+
+    // The music app an empty player offers to open, so "nothing playing" has a next step: the last app that played
+    // this session (never a browser), else the first installed of the players people use most, else none.
+    property string lastMusicApp: ""
+    readonly property Connections musicSeen: Connections {
+        target: MprisController
+        function onActivePlayerChanged(): void {
+            const id = String(MprisController.activePlayer?.desktopEntry ?? "")
+            const entry = id.length > 0 ? AppSearch.lookupDesktopEntry(id) : null
+            if (entry && !Array.from(entry.categories ?? []).includes("WebBrowser"))
+                root.lastMusicApp = String(entry.id ?? id)
+        }
+    }
+    readonly property var knownMusicApps: ["spotify", "com.github.th-ch.youtube-music", "tidal-hifi", "cider",
+        "feishin", "io.bassi.Amberol", "org.gnome.Rhythmbox3", "org.kde.elisa", "org.strawberrymusicplayer.strawberry",
+        "org.gnome.Lollypop", "com.spotify.Client"]
+    readonly property var musicApp: {
+        void AppSearch.list
+        for (const id of [root.lastMusicApp].concat(root.knownMusicApps)) {
+            const entry = id.length > 0 ? DesktopEntries.byId(id) : null
+            if (entry) return entry
+        }
+        return null
+    }
+    readonly property string musicAppName: String(root.musicApp?.name ?? "")
+    function openMusic(): bool { return root.musicApp ? AppSearch.launchEntry(root.musicApp) : false }
+
     readonly property int trayCount: SystemTray.items.values.filter(item => item && item.id).length
     function available(id: string): bool {
         if (id === "media" || id === "visualizer") return root.hasPlayer

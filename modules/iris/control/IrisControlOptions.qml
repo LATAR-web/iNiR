@@ -89,7 +89,7 @@ QtObject {
     readonly property var spare: root.catalogueIds.filter(id => !root.modules.includes(id))
 
     readonly property int columns: Math.max(3, Math.min(6, Number(root.options?.columns ?? 4)))
-    readonly property bool labelled: Boolean(root.options?.labels ?? false)
+    readonly property bool labelled: Boolean(root.options?.labels ?? true)
     readonly property bool roundControls: String(root.options?.controls ?? "tiles") === "round"
     readonly property var toggleIds: root.catalogue.filter(entry => entry.kind === "toggle" || entry.kind === "action").map(entry => entry.id)
     readonly property var levelKinds: ["brightness", "volume", "microphone"]
@@ -260,7 +260,7 @@ QtObject {
 
     readonly property var presets: [
         { id: "iris", label: "iRiS", description: "Connections beside the player, quiet tiles beside slim sliders.",
-            columns: 4, labels: false, controls: "tiles",
+            columns: 4, labels: true, controls: "tiles",
             modules: root.shippedModules, sizes: root.shippedSizes,
             platter: ["network", "bluetooth", "focus", "gameMode"], levels: ["brightness", "volume", "microphone"] },
         { id: "discs", label: "Discs", description: "The same, every switch a disc with its name under it.",

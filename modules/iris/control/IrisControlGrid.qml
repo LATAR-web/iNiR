@@ -13,6 +13,7 @@ import qs.modules.common.models.quickToggles
 import qs.modules.common.widgets
 import qs.modules.mediaControls.components
 import qs.modules.iris.components
+import qs.modules.iris.pieces
 import qs.modules.iris.style
 
 Item {
@@ -373,8 +374,8 @@ Item {
         readonly property string glyph: ctl.moduleId === "record" ? (ctl.recording ? "stop_circle" : "radio_button_checked")
             : ctl.moduleId === "devices" ? (ctl.headphones ? "headphones" : "speaker")
             : String(ctl.model?.icon ?? IrisControlOptions.glyphOf(ctl.moduleId))
-        readonly property string detail: ctl.moduleId === "devices" ? String(Audio.defaultSink?.description ?? "")
-            : ctl.moduleId === "record" ? (ctl.recording ? Translation.tr("Recording") : Translation.tr("Whole screen, with sound"))
+        readonly property string detail: ctl.moduleId === "devices" ? Audio.friendlyDeviceName(Audio.defaultSink)
+            : ctl.moduleId === "record" ? (ctl.recording ? Translation.tr("Recording") : Translation.tr("With sound"))
             : String(ctl.model?.statusText ?? "")
         readonly property bool lit: ctl.moduleId === "record" ? ctl.recording
             : ctl.moduleId === "devices" ? root.picker === "devices"
@@ -392,8 +393,10 @@ Item {
             : IrisControlOptions.categoryOf(ctl.moduleId) === "system" ? "system"
             : IrisControlOptions.categoryOf(ctl.moduleId) === "sound" ? "devices" : ""
         readonly property bool listOnClick: ctl.moduleId === "network" || ctl.moduleId === "bluetooth"
-        readonly property string caption: ["network", "bluetooth", "vpn", "hotspot"].includes(ctl.moduleId)
-            && ctl.lit && ctl.detail.length > 0 ? ctl.detail : ctl.label
+        // A connection's name when it says something: a cable's is NetworkManager's generic "Wired connection 1",
+        // so a wired network reads Ethernet.
+        readonly property string caption: ctl.moduleId === "network" && Network.ethernet && !Network.wifi ? Translation.tr("Ethernet")
+            : ["network", "bluetooth", "vpn", "hotspot"].includes(ctl.moduleId) && ctl.lit && ctl.detail.length > 0 ? ctl.detail : ctl.label
         function activate(): void {
             if (!ctl.ready || root.editing) return
             if (ctl.moduleId === "devices") { root.picker = root.picker === "devices" ? "" : "devices"; return }
@@ -546,6 +549,9 @@ Item {
                     Layout.fillWidth: true
                     visible: text.length > 0
                     text: faceState.ready ? faceState.detail : Translation.tr("Unavailable")
+                    // A device or network name fits by one step of the ladder before it elides, as the 1×1 names do.
+                    fontSizeMode: Text.HorizontalFit
+                    minimumPixelSize: IrisStyle.typeCaption
                     elide: Text.ElideRight
                     color: IrisStyle.textSecondary
                     font.pixelSize: IrisStyle.typeFootnote
@@ -614,6 +620,8 @@ Item {
                             width: Math.min(implicitWidth, platterSlot.width - 4 * root.d)
                             text: slotControl.caption
                             horizontalAlignment: Text.AlignHCenter
+                            fontSizeMode: Text.HorizontalFit
+                            minimumPixelSize: IrisStyle.typeCaption
                             elide: Text.ElideRight
                             color: slotControl.ready ? IrisStyle.subtext : IrisStyle.textTertiary
                             font.pixelSize: IrisStyle.typeFootnote
@@ -735,6 +743,8 @@ Item {
             readonly property bool wide: !nowPlaying.strip && nowPlaying.width > nowPlaying.height * 1.6
             readonly property real pad: Math.round((nowPlaying.strip ? 8 : 12) * root.d)
             readonly property bool hasPlayer: MprisController.activePlayer !== null && MprisController.activePlayer !== undefined
+            // Nothing playing: the tile names the music app and opens it.
+            readonly property bool offersMusic: !nowPlaying.hasPlayer && IrisPieces.musicAppName.length > 0
             radius: nowPlaying.strip && IrisControlOptions.roundControls ? height / 2 : IrisStyle.radiusPlate
             color: IrisStyle.fillQuiet
             clip: true
@@ -760,6 +770,7 @@ Item {
                     Layout.preferredHeight: side
                     Layout.alignment: nowPlaying.strip || nowPlaying.wide ? Qt.AlignVCenter : Qt.AlignLeft | Qt.AlignTop
                     source: MediaArtwork.displaySource
+                    appIcon: nowPlaying.offersMusic ? String(IrisPieces.musicApp?.icon ?? "") : ""
                     circular: (Config.options?.iris?.player?.roundCover ?? false) && !nowPlaying.wide
                     radius: circular ? width / 2 : IrisStyle.radiusTile
                 }
@@ -773,13 +784,14 @@ Item {
                     IrisText {
                         Layout.fillWidth: true
                         text: nowPlaying.hasPlayer ? media.effectiveTitle : Translation.tr("Not playing")
-                        font.pixelSize: (nowPlaying.wide ? 14 : 13) * IrisStyle.typeScale
+                        font.pixelSize: nowPlaying.wide ? IrisStyle.typeBody : IrisStyle.typeLabel
                         font.weight: IrisStyle.weight(Font.DemiBold)
                         elide: Text.ElideRight
                     }
                     IrisText {
                         Layout.fillWidth: true
-                        text: nowPlaying.hasPlayer ? media.effectiveArtist : Translation.tr("Music will show here")
+                        text: nowPlaying.hasPlayer ? media.effectiveArtist
+                            : nowPlaying.offersMusic ? Translation.tr("Open %1").arg(IrisPieces.musicAppName) : Translation.tr("Music will show here")
                         color: IrisStyle.textSecondary
                         font.pixelSize: IrisStyle.typeMeta
                         elide: Text.ElideRight
@@ -798,6 +810,12 @@ Item {
                     player: media
                     live: nowPlaying.hasPlayer
                 }
+            }
+            MouseArea {
+                anchors.fill: parent
+                visible: nowPlaying.offersMusic && !root.editing
+                cursorShape: Qt.PointingHandCursor
+                onClicked: IrisPieces.openMusic()
             }
         }
     }
