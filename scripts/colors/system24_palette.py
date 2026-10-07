@@ -468,6 +468,13 @@ def _discord_roles_css(palette: Dict[str, str]) -> str:
     lines = [":is(.theme-dark, .theme-light):not(.custom-user-profile-theme), :is(.theme-dark, .theme-light) .theme-dark, :is(.theme-dark, .theme-light) .theme-light {"]
     lines += [f"    {key}: var({value});" for key, value in roles.items()]
     lines.append("}")
+    if sum(_hex_to_rgb(palette["--bg-4"])) > 3 * 128:
+        # Discord keeps its dark theme under a light palette and writes role colours inline as they are: a white role
+        # name vanished on the paper. It reads in the palette's ink instead.
+        lines.append(
+            ':is([class*="username"], [class*="roleColor"], [class*="mention"])[style*="color: rgb(255, 255, 255)"] '
+            "{ color: var(--text-1) !important; }"
+        )
     return "\n".join(lines)
 
 
