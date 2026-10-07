@@ -118,6 +118,46 @@ Singleton {
         return root.internalPreviewPath
     }
 
+    // How the wallpaper meets the screen (`background.fillMode`), one answer for every family's desktop and for awww:
+    // fill crops, fit shows bars, stretch ignores the aspect, tile repeats, center keeps the picture's own size, span
+    // lays one picture across every screen. Span on a single screen is fill.
+    readonly property var fillModes: ["fill", "fit", "stretch", "tile", "center", "span"]
+    readonly property string fillMode: {
+        const mode = String(Config.options?.background?.fillMode ?? "fill")
+        if (!root.fillModes.includes(mode)) return "fill"
+        return mode === "span" && Quickshell.screens.length < 2 ? "fill" : mode
+    }
+    function imageFillFor(mode: string): int {
+        switch (mode) {
+        case "fit": return Image.PreserveAspectFit
+        case "stretch": return Image.Stretch
+        case "tile": return Image.Tile
+        case "center": return Image.Pad
+        default: return Image.PreserveAspectCrop
+        }
+    }
+    // A video has no tile or natural size: those keep the cover. Values are VideoOutput's (Qt.AspectRatioMode).
+    function videoFillFor(mode: string): int {
+        switch (mode) {
+        case "fit": return Qt.KeepAspectRatio
+        case "stretch": return Qt.IgnoreAspectRatio
+        default: return Qt.KeepAspectRatioByExpanding
+        }
+    }
+    // Span's canvas: the box around every screen, in the same logical coordinates as each screen's x and y.
+    readonly property rect spanArea: {
+        const screens = Quickshell.screens
+        if (screens.length === 0) return Qt.rect(0, 0, 0, 0)
+        let left = Infinity, top = Infinity, right = -Infinity, bottom = -Infinity
+        for (const screen of screens) {
+            left = Math.min(left, screen.x)
+            top = Math.min(top, screen.y)
+            right = Math.max(right, screen.x + screen.width)
+            bottom = Math.max(bottom, screen.y + screen.height)
+        }
+        return Qt.rect(left, top, right - left, bottom - top)
+    }
+
     // Wallpaper path resolution for aurora/backdrop
     readonly property bool isWaffleFamily: (Config.options?.panelFamily ?? "ii") === "waffle"
     readonly property bool useBackdropWallpaper: isWaffleFamily

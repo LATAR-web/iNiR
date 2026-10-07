@@ -2302,7 +2302,7 @@ Singleton {
                 }
                 property string wallpaperPath: ""
                 property string thumbnailPath: ""
-                property string fillMode: "fill" // "fill", "fit", "center", "tile"
+                property string fillMode: "fill" // "fill", "fit", "stretch", "tile", "center" or "span" (one picture across every screen); Wallpapers.fillMode
                 property bool enableAnimation: true // Enable animated wallpapers (video/gif). When disabled, shows thumbnail instead (better performance)
                 property bool pauseAnimationOnBattery: true // Freeze video/gif wallpapers while on battery power (all surfaces, both families)
                 property string videoPause: "covered" // when a live wallpaper stops decoding: "never", "fullscreen" or "covered" (tiled windows span the output)

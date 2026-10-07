@@ -856,7 +856,8 @@ QtObject {
         { section: "desktop", group: "Behind windows", label: "Blur live wallpapers too", description: "Video and GIF wallpapers cost more to blur.", path: "background.effects.enableAnimatedBlur", visibleWhen: "background.effects.enableBlur", kind: "switch", fallback: false },
         { section: "desktop", group: "Behind windows", label: "Dim with windows open", path: "background.effects.dynamicDim", kind: "range", fallback: 0, min: 0, max: 60, step: 5, unit: " %", zeroLabel: "Off" },
         { section: "desktop", group: "Behind windows", label: "Always dim", path: "background.effects.dim", kind: "range", fallback: 0, min: 0, max: 60, step: 5, unit: " %", zeroLabel: "Off" },
-        { section: "desktop", group: "Parallax", label: "Parallax", description: "The wallpaper drifts a little as you move between workspaces and columns.", path: "background.parallax.enable", kind: "switch", fallback: false, keywords: ["parallax", "depth", "3d", "wallpaper"] },
+        { section: "desktop", group: "Scaling", label: "Scaling", description: "Fill crops, Fit shows bars, Span lays one picture across every screen.", path: "background.fillMode", kind: "choice", fallback: "fill", choices: [{label:"Fill",value:"fill",glyph:"crop"},{label:"Fit",value:"fit",glyph:"fit_screen"},{label:"Stretch",value:"stretch",glyph:"open_in_full"},{label:"Tile",value:"tile",glyph:"grid_view"},{label:"Center",value:"center",glyph:"center_focus_strong"},{label:"Span",value:"span",glyph:"panorama_wide_angle"}], keywords: ["fill", "fit", "stretch", "tile", "center", "span", "scale", "scaling", "zoom", "crop", "monitors", "screens", "ajustar", "estirar", "mosaico", "centrar", "extender"] },
+        { section: "desktop", group: "Parallax", label: "Parallax", description: "The wallpaper drifts a little as you move between workspaces and columns.", path: "background.parallax.enable", visibleWhen: "background.fillMode=fill", kind: "switch", fallback: false, keywords: ["parallax", "depth", "3d", "wallpaper"] },
         { section: "desktop", group: "Parallax", label: "Direction", visibleWhen: "background.parallax.enable", kind: "choice",
             bundle: ["background.parallax.axis", "background.parallax.vertical", "background.parallax.autoVertical"],
             choices: [{ label: "Horizontal", value: "horizontal", values: ["horizontal", false, false] }, { label: "Vertical", value: "vertical", values: ["vertical", true, false] }, { label: "Auto", value: "auto", values: ["auto", false, true] }] },
@@ -1101,7 +1102,7 @@ QtObject {
     readonly property var groupGlyphs: ({
         "Shell family": "swap_horiz", "Notch": "vertical_align_top",
         "Wallpaper shuffle": "shuffle",
-        "Behind windows": "blur_on", "Japanese lookup": "translate", "Parallax": "3d_rotation", "Recording": "screen_record", "Snip": "screenshot_region",
+        "Behind windows": "blur_on", "Japanese lookup": "translate", "Parallax": "3d_rotation", "Scaling": "aspect_ratio", "Recording": "screen_record", "Snip": "screenshot_region",
         "Accent": "palette", "Visualizer": "graphic_eq", "Customize": "brush", "Themes": "style", "Settings window": "settings_applications", "Activity": "timer", "Adaptive": "auto_awesome", "App colours": "format_paint", "Airing": "live_tv", "Alert sounds": "music_note",
         "At a glance": "visibility", "At rest": "schedule", "Badges": "notifications_unread", "Banners": "notifications",
         "Bar": "width_full", "Behaviour": "touch_app", "Bubble": "bubble_chart", "Calendar": "calendar_month",
@@ -1312,7 +1313,7 @@ QtObject {
         bar: ["Notch", "Layout", "Shape", "At rest", "Resting Island", "Bar", "Pages", "Desktop page", "Player page", "Interaction", "Visibility", "Connections"],
         bubbles: ["Size", "Behaviour", "On the contour", "Floating", "Opening bodies", "Cards", "Card contents", "Joining", "Tray"],
         dock: ["Notch", "Look", "Icons", "Visibility"],
-        desktop: ["Widgets", "Wallpaper shuffle", "Live wallpapers", "Behind windows", "Parallax", "Overview backdrop", "Wallpaper gallery", "Desktop menu"],
+        desktop: ["Widgets", "Wallpaper shuffle", "Scaling", "Live wallpapers", "Behind windows", "Parallax", "Overview backdrop", "Wallpaper gallery", "Desktop menu"],
         lock: ["When idle", "Security", "Scene", "Clock", "At a glance", "Now playing", "Activity", "Status", "Sign in", "Type"]
     })
     // How a section's page reads: named blocks of groups, by what someone came to change.
@@ -1336,7 +1337,7 @@ QtObject {
         ],
         desktop: [
             { caption: "Desktop", groups: ["Widgets", "Desktop menu"] },
-            { caption: "Wallpaper", groups: ["Wallpaper shuffle", "Live wallpapers", "Wallpaper gallery", "Behind windows", "Parallax", "Overview backdrop"] }
+            { caption: "Wallpaper", groups: ["Wallpaper shuffle", "Scaling", "Live wallpapers", "Wallpaper gallery", "Behind windows", "Parallax", "Overview backdrop"] }
         ],
         lock: [
             { caption: "Locking", groups: ["When idle", "Security"] },

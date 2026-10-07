@@ -1537,7 +1537,7 @@ ContentPage {
 
         SettingsGroup {
             ContentSubsection {
-                title: Translation.tr("Fill crops, Fit shows bars")
+                title: Translation.tr("Fill crops, Fit shows bars, Span lays one picture across every screen")
                 ConfigSelectionArray {
                     currentValue: Config.options?.background?.fillMode ?? "fill"
                     onSelected: newValue => {
@@ -1546,7 +1546,10 @@ ContentPage {
                     options: [
                         { displayName: Translation.tr("Fill"), icon: "crop", value: "fill" },
                         { displayName: Translation.tr("Fit"), icon: "fit_screen", value: "fit" },
-                        { displayName: Translation.tr("Center"), icon: "center_focus_strong", value: "center" }
+                        { displayName: Translation.tr("Stretch"), icon: "open_in_full", value: "stretch" },
+                        { displayName: Translation.tr("Tile"), icon: "grid_view", value: "tile" },
+                        { displayName: Translation.tr("Center"), icon: "center_focus_strong", value: "center" },
+                        { displayName: Translation.tr("Span"), icon: "panorama_wide_angle", value: "span" }
                     ]
                 }
             }

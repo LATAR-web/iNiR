@@ -8991,5 +8991,11 @@
   "Kuro": "Kuro",
   "Usuzumi": "Usuzumi",
   "Night is your style's own. Kuro, Sumi and Usuzumi are ink at night: washi paper, gentle on the eyes.": "Nacht ist die deines Stils. Kuro, Sumi und Usuzumi sind Tusche bei Nacht: Washi-Papier, sanft zu den Augen.",
-  "How much washi fibre the night paper carries.": "Wie viel Washi-Faser das Nachtpapier trägt."
+  "How much washi fibre the night paper carries.": "Wie viel Washi-Faser das Nachtpapier trägt.",
+  "Scaling": "Skalierung",
+  "Stretch": "Strecken",
+  "Tile": "Kacheln",
+  "Span": "Spannen",
+  "Fill crops, Fit shows bars, Span lays one picture across every screen.": "Füllen schneidet zu, Einpassen zeigt Balken, Spannen legt ein Bild über alle Bildschirme.",
+  "Fill crops, Fit shows bars, Span lays one picture across every screen": "Füllen schneidet zu, Einpassen zeigt Balken, Spannen legt ein Bild über alle Bildschirme"
 }

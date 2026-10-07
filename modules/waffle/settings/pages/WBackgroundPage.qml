@@ -140,6 +140,22 @@ WSettingsPage {
         }
 
         WSettingsDropdown {
+            label: Translation.tr("Scaling")
+            icon: "image"
+            description: Translation.tr("Fill crops, Fit shows bars, Span lays one picture across every screen.")
+            currentValue: Config.options?.background?.fillMode ?? "fill"
+            options: [
+                { value: "fill", displayName: Translation.tr("Fill") },
+                { value: "fit", displayName: Translation.tr("Fit") },
+                { value: "stretch", displayName: Translation.tr("Stretch") },
+                { value: "tile", displayName: Translation.tr("Tile") },
+                { value: "center", displayName: Translation.tr("Center") },
+                { value: "span", displayName: Translation.tr("Span") }
+            ]
+            onSelected: value => root.setNestedValueWhenReady("background.fillMode", value)
+        }
+
+        WSettingsDropdown {
             label: Translation.tr("Wallpaper selector")
             icon: "image"
             description: Translation.tr("Choose how the wallpaper library opens")

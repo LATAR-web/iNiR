@@ -840,12 +840,15 @@ Scope {
             const sensitiveNetwork = (CF.StringUtils.stringListContainsSubstring(Network.networkName.toLowerCase(), networkKeywords));
             return enabled && sensitiveWallpaper && sensitiveNetwork;
         }
-        readonly property string fillMode: bgRoot.backgroundOptions.fillMode ?? "fill"
+        // Wallpapers.fillMode: one answer for every desktop and awww (span on one screen is fill).
+        readonly property string fillMode: Wallpapers.fillMode
+        // Span: this output shows its own slice of one picture laid across the box around every screen.
+        readonly property bool spanning: bgRoot.fillMode === "span"
         readonly property var panOptions: bgRoot.backgroundOptions.pan ?? {}
         readonly property real panX: bgRoot.panOptions.x ?? 0.0
         readonly property real panY: bgRoot.panOptions.y ?? 0.0
         readonly property real panZoom: Math.max(1.0, Math.min(3.0, bgRoot.panOptions.zoom ?? 1.0))
-        readonly property bool hasPan: bgRoot.panX !== 0.0 || bgRoot.panY !== 0.0 || bgRoot.panZoom !== 1.0
+        readonly property bool hasPan: bgRoot.fillMode === "fill" && (bgRoot.panX !== 0.0 || bgRoot.panY !== 0.0 || bgRoot.panZoom !== 1.0)
         property string _panReadyWallpaperPath: bgRoot.wallpaperPath
         readonly property bool parallaxEnabled: bgRoot.parallaxOptions.enable
             ?? ((bgRoot.parallaxOptions.enableWorkspace ?? false) || (bgRoot.parallaxOptions.enableSidebar ?? false))
@@ -1489,18 +1492,22 @@ Scope {
                         || bgRoot.internalShaderTransitionRequested)
                 readonly property real panOffsetX: bgRoot.effectiveHasPan ? (bgRoot.panX * (bgRoot.parallaxTotalX / 2)) : 0
                 readonly property real panOffsetY: bgRoot.effectiveHasPan ? (bgRoot.panY * (bgRoot.parallaxTotalY / 2)) : 0
-                readonly property real targetX: useParallax
+                readonly property real targetX: bgRoot.spanning ? Wallpapers.spanArea.x - bgRoot.screen.x
+                    : useParallax
                     ? (bgRoot.parallaxTotalX > 0
                         ? (ParallaxMath.parallaxPosition(bgRoot.parallaxTotalX, activeValueX) + panOffsetX)
                         : ParallaxMath.centerOffset(bgRoot.scaledWallpaperWidth, bgRoot.screen.width))
                     : panOffsetX
-                readonly property real targetY: useParallax
+                readonly property real targetY: bgRoot.spanning ? Wallpapers.spanArea.y - bgRoot.screen.y
+                    : useParallax
                     ? (bgRoot.parallaxTotalY > 0
                         ? (ParallaxMath.parallaxPosition(bgRoot.parallaxTotalY, activeValueY) + panOffsetY)
                         : ParallaxMath.centerOffset(bgRoot.scaledWallpaperHeight, bgRoot.screen.height))
                     : panOffsetY
-                readonly property real targetWidth: (useParallax || bgRoot.effectiveHasPan) ? bgRoot.scaledWallpaperWidth : bgRoot.screen.width
-                readonly property real targetHeight: (useParallax || bgRoot.effectiveHasPan) ? bgRoot.scaledWallpaperHeight : bgRoot.screen.height
+                readonly property real targetWidth: bgRoot.spanning ? Wallpapers.spanArea.width
+                    : (useParallax || bgRoot.effectiveHasPan) ? bgRoot.scaledWallpaperWidth : bgRoot.screen.width
+                readonly property real targetHeight: bgRoot.spanning ? Wallpapers.spanArea.height
+                    : (useParallax || bgRoot.effectiveHasPan) ? bgRoot.scaledWallpaperHeight : bgRoot.screen.height
                 x: targetX
                 y: targetY
                 Behavior on x {
@@ -1570,6 +1577,16 @@ Scope {
                     ? bgRoot.parallaxFreezeValueY
                     : (bgRoot.parallaxFreezeValueY + ((effectiveValueY - bgRoot.parallaxFreezeValueY) * bgRoot.parallaxResumeProgress))
 
+                // Fit and center leave bars around the picture: they are black, as awww draws them, never the wallpaper
+                // awww still holds underneath (the applied one while a preview is shown, or the last still under a video).
+                Rectangle {
+                    anchors.fill: parent
+                    color: "black"
+                    visible: (bgRoot.fillMode === "fit" || bgRoot.fillMode === "center") && !bgRoot.webWallpaperActive
+                        && !bgRoot.backdropActive
+                        && (wallpaperContainer.showInternalStaticWallpaper || bgRoot.wallpaperIsGif || bgRoot.wallpaperIsVideo)
+                }
+
                 // Static wallpaper — when awww manages the visible wallpaper
                 // (externalMainWallpaperActive), this is just a hidden texture for blur.
                 // Otherwise (parallax, unsupported fill mode, etc.), this is the visible
@@ -1605,10 +1622,7 @@ Scope {
                     transitionType: Config.options?.background?.transition?.type ?? "crossfade"
                     transitionDirection: Config.options?.background?.transition?.direction ?? "right"
                     transitionBaseDuration: bgRoot.wallpaperTransitionMs
-                    fillMode: bgRoot.fillMode === "fit" ? Image.PreserveAspectFit
-                            : bgRoot.fillMode === "tile" ? Image.Tile
-                            : bgRoot.fillMode === "center" ? Image.Pad
-                            : Image.PreserveAspectCrop
+                    fillMode: Wallpapers.imageFillFor(bgRoot.fillMode)
                     // Decoded at the size it is drawn, not the file's: a 6000 px wallpaper was held twice at full size
                     // (~70 MB each) for a 1080p output. Crop and fit are then decoded at their optimal size (Qt's
                     // Image.sourceSize); tile and center draw the image at its own size, so they keep it. The target
@@ -1645,7 +1659,7 @@ Scope {
                         && Wallpapers.videoMotionAllowedOn(bgRoot.screenName)
                     asynchronous: true
                     source: (bgRoot.webWallpaperActive || bgRoot.wallpaperSafetyTriggered || !bgRoot.wallpaperIsGif || bgRoot.backdropActive) ? "" : bgRoot.wallpaperPathRaw
-                    fillMode: Image.PreserveAspectCrop
+                    fillMode: Wallpapers.imageFillFor(bgRoot.fillMode)
                     // No sourceSize for GIFs - let Qt handle native size for performance
 
                     layer.enabled: visible && Appearance.effectsEnabled
@@ -1687,7 +1701,7 @@ Scope {
                         if (!bgRoot._familyOwnsScreen) return "";
                         return bgRoot.wallpaperIsVideo ? bgRoot.wallpaperPathRaw : bgRoot._outgoingVideo;
                     }
-                    fillMode: VideoOutput.PreserveAspectCrop
+                    fillMode: Wallpapers.videoFillFor(bgRoot.fillMode)
                     enableTransitions: Config.options?.background?.transition?.enable ?? true
                     transitionBaseDuration: Config.options?.background?.transition?.duration ?? 800
                     shouldPlay: bgRoot.enableAnimation && !GlobalStates.screenLocked

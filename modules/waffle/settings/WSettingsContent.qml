@@ -146,7 +146,7 @@ Item {
         { pageIndex: 3, pageName: "Background", section: "Wallpaper", label: "Waffle wallpaper", targetLabel: "Waffle wallpaper", keywords: ["wallpaper", "background", "waffle", "change", "image"] },
         { pageIndex: 3, pageName: "Background", section: "Wallpaper", label: "Per-monitor wallpapers", targetLabel: "Per-monitor wallpapers", keywords: ["wallpaper", "background", "monitor", "display", "multi-monitor", "per-monitor"] },
         { pageIndex: 3, pageName: "Background", section: "Wallpaper", label: "Hide main wallpaper in fullscreen", targetLabel: "Hide main wallpaper in fullscreen", keywords: ["wallpaper", "background", "fullscreen", "hide", "gaming", "performance", "backdrop", "task view"] },
-        { pageIndex: 3, pageName: "Background", section: "Wallpaper", label: "Wallpaper scaling", targetLabel: "Wallpaper scaling", keywords: ["wallpaper", "background", "scaling", "fill", "fit", "center"] },
+        { pageIndex: 3, pageName: "Background", section: "Wallpaper", label: "Scaling", targetLabel: "Scaling", keywords: ["wallpaper", "background", "scaling", "fill", "fit", "stretch", "tile", "center", "span", "monitors"] },
         { pageIndex: 3, pageName: "Background", section: "Wallpaper Effects", label: "Enable blur", targetLabel: "Enable blur", keywords: ["blur", "wallpaper", "background", "effect"] },
         { pageIndex: 3, pageName: "Background", section: "Wallpaper Effects", label: "Blur radius", targetLabel: "Blur radius", keywords: ["blur", "radius", "intensity"] },
         { pageIndex: 3, pageName: "Background", section: "Wallpaper Effects", label: "Dim overlay", targetLabel: "Dim overlay", keywords: ["dim", "dark", "darken", "overlay", "wallpaper"] },
