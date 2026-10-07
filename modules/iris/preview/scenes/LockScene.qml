@@ -40,7 +40,7 @@ PreviewScene {
         blurEnabled: lockPreview.blur > 0
         blur: lockPreview.blur
         blurMax: IrisStyle.glassBlurMax
-        saturation: Number(lockPreview.opt("iris.lock.scene.saturation", 100)) / 100 - 1
+        saturation: Number(lockPreview.opt("iris.lock.scene.saturation", 15)) / 100 - 1
         autoPaddingEnabled: false
     }
     Rectangle { anchors.fill: parent; color: IrisStyle.surface; opacity: lockPreview.dim }

@@ -140,8 +140,8 @@ Item {
         blurEnabled: true
         blur: 1
         blurMax: Math.round(48 * root.blurAmount * (1 - root.release))
-        // The lock's own mapping (IrisLockSurface): what the person sees there is what they get here.
-        saturation: root.colourLeft
+        // The lock's own mapping (IrisLockSurface): 0 leaves the colour, -1 is grey; it returns as the blur releases.
+        saturation: (root.colourLeft - 1) * (1 - root.release)
     }
     Item {
         anchors.fill: parent

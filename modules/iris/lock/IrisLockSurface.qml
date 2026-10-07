@@ -62,6 +62,7 @@ Item {
         && IrisStyle.motionEnabled
     readonly property real blur: Math.max(0, Math.min(1, Number(root.scene?.blur ?? 100) / 100))
     readonly property real dim: Math.max(0, Math.min(1, Number(root.scene?.dim ?? 0) / 100))
+    readonly property real colourLeft: Math.max(0, Math.min(1, Number(root.scene?.saturation ?? 15) / 100))
     readonly property real scrimStrength: Math.max(0, Math.min(2, Number(root.scene?.scrimStrength ?? 100) / 100))
     readonly property string scrimStyle: String(root.scene?.scrim ?? "gradient")
     readonly property bool painted: root.source !== "colour"
@@ -235,7 +236,8 @@ Item {
         blurEnabled: true
         blur: root.presence
         blurMax: Math.round(48 * root.blur)
-        saturation: 1 - (1 - Math.max(0, Math.min(1, Number(root.scene?.saturation ?? 15) / 100))) * root.presence
+        // MultiEffect's 0 leaves the colour as it is and -1 is grey: "colour left" 0 % is graphite, 100 % the picture.
+        saturation: (root.colourLeft - 1) * root.presence
     }
     Item {
         anchors.fill: parent
@@ -310,7 +312,8 @@ Item {
             blurEnabled: true
             blur: 1
             blurMax: 64
-            saturation: 0.35
+            // The plates keep the scene's colour left, a little more vivid, never a coloured window into a grey scene.
+            saturation: (root.colourLeft - 1) * root.presence + 0.35 * root.colourLeft
         }
     }
 
