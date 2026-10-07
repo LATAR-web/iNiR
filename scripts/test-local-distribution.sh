@@ -2069,6 +2069,9 @@ if command -v python3 &>/dev/null && [[ -f "$runtime_root/scripts/lib/generate-i
     step "Auto light/dark reads the wallpaper's brightness"
     python3 "$runtime_root/scripts/test-wallpaper-mode.py"
 
+    step "App theming runs on a machine without Steam or Spotify"
+    python3 "$runtime_root/scripts/test-applycolor-fingerprint.py"
+
     step "Terminal prose reads and nothing outshines it"
     python3 "$runtime_root/scripts/test-terminal-palette.py"
 

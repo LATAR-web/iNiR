@@ -8,20 +8,22 @@ source "$SCRIPT_DIR/lib/module-runtime.sh"
 # every app reload what it already wears: Spotify reloaded (and raised itself), Steam and the
 # terminals refreshed on each shell restart. App installs are part of it, so a Spotify update
 # that drops its patch still gets themed again.
+# Runs under `set -e -o pipefail`: a missing path is skipped with `if`, never `[[ -e ]] && …`, whose
+# failure as a loop's last command ends the script before any app is themed (test-applycolor-fingerprint.py).
 inputs_fingerprint() {
   local generated="$STATE_DIR/user/generated" name path
   {
     for name in colors.json palette.json app-palette.json terminal.json theme-meta.json material_colors.scss color.txt iris-surface.json; do
-      [[ -f "$generated/$name" ]] && sha1sum "$generated/$name"
+      if [[ -f "$generated/$name" ]]; then sha1sum "$generated/$name"; fi
     done
-    [[ -f "$CONFIG_FILE" ]] && sha1sum "$CONFIG_FILE"
+    if [[ -f "$CONFIG_FILE" ]]; then sha1sum "$CONFIG_FILE"; fi
     find "$SCRIPT_DIR" -type f -printf '%P %s %T@\n' 2>/dev/null | sort
     for path in /opt/spotify/Apps/xpui/index.html /usr/share/spotify/Apps/xpui/index.html \
       "$HOME/.local/share/spotify-launcher/install/usr/share/spotify/Apps/xpui/index.html" \
       "$HOME/.local/share/flatpak/app/com.spotify.Client/current/active/files/extra/share/spotify/Apps/xpui/index.html" \
       /var/lib/flatpak/app/com.spotify.Client/current/active/files/extra/share/spotify/Apps/xpui/index.html \
       "$HOME/.local/share/Steam/steamui/skins" "$HOME/.steam/steam/steamui/skins"; do
-      [[ -e "$path" ]] && stat -c '%n %s %Y' "$path"
+      if [[ -e "$path" ]]; then stat -c '%n %s %Y' "$path"; fi
     done
   } 2>/dev/null | sha1sum | cut -d' ' -f1
 }
