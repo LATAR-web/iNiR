@@ -1074,15 +1074,15 @@ Singleton {
                     property bool enableVSCode: true
                     property bool enableChrome: true
                     property bool enableFirefox: true
-                    property bool enableSpicetify: false
+                    property bool enableSpicetify: true
                     property string spicetifyTheme: "Inir"
-                    property bool enableSteam: false
+                    property bool enableSteam: true
                     property bool enablePearDesktop: true
                     property bool enableLimusic: false
                     property bool enableClaudeCode: false
                     property bool enableOpenCode: false
                     property bool enableNeovim: false
-                    property bool enableCava: false
+                    property bool enableCava: true
                     property real colorStrength: 1.0
                     property JsonObject vscodeEditors: JsonObject {
                         property bool code: true           // Official VSCode

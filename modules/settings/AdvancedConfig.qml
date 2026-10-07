@@ -124,7 +124,7 @@ ContentPage {
             SettingsSwitch {
                 buttonIcon: "music_note"
                 text: Translation.tr("Spotify (Spicetify)")
-                checked: Config.options?.appearance?.wallpaperTheming?.enableSpicetify ?? false
+                checked: Config.options?.appearance?.wallpaperTheming?.enableSpicetify ?? true
                 onCheckedChanged: {
                     Config.setNestedValue("appearance.wallpaperTheming.enableSpicetify", checked);
                     colorRegenTimer.restart();
@@ -135,7 +135,7 @@ ContentPage {
             }
 
             ContentSubsection {
-                visible: Config.options?.appearance?.wallpaperTheming?.enableSpicetify ?? false
+                visible: Config.options?.appearance?.wallpaperTheming?.enableSpicetify ?? true
                 title: Translation.tr("Spotify theme")
                 tooltip: Translation.tr("Choose the Spicetify layout while keeping iNiR wallpaper colors")
 
@@ -154,7 +154,7 @@ ContentPage {
             SettingsSwitch {
                 buttonIcon: "sports_esports"
                 text: Translation.tr("Steam (Millennium)")
-                checked: Config.options?.appearance?.wallpaperTheming?.enableSteam ?? false
+                checked: Config.options?.appearance?.wallpaperTheming?.enableSteam ?? true
                 onCheckedChanged: {
                     Config.setNestedValue("appearance.wallpaperTheming.enableSteam", checked);
                     colorRegenTimer.restart();
@@ -275,7 +275,7 @@ ContentPage {
                 id: cavaSwitch
                 buttonIcon: "equalizer"
                 text: Translation.tr("Theme standalone Cava")
-                checked: Config.options?.appearance?.wallpaperTheming?.enableCava ?? false
+                checked: Config.options?.appearance?.wallpaperTheming?.enableCava ?? true
                 onCheckedChanged: root.setCavaValue(
                     "appearance.wallpaperTheming.enableCava", checked, true)
                 StyledToolTip {

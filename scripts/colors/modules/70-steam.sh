@@ -392,7 +392,7 @@ deploy_millennium_material() {
 
 main() {
   local enabled
-  enabled=$(config_bool '.appearance.wallpaperTheming.enableSteam' false)
+  enabled=$(config_bool '.appearance.wallpaperTheming.enableSteam' true)
 
   [[ "$enabled" == 'true' || "${INIR_STEAM_THEME_FORCE:-0}" == "1" ]] || exit 0
 

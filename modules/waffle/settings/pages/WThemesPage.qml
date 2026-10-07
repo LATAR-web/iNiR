@@ -788,7 +788,7 @@ WSettingsPage {
             label: Translation.tr("Spotify theming")
             icon: "music-note-2"
             description: Translation.tr("Generate and apply Spicetify theme from wallpaper colors")
-            checked: Config.options?.appearance?.wallpaperTheming?.enableSpicetify ?? false
+            checked: Config.options?.appearance?.wallpaperTheming?.enableSpicetify ?? true
             onCheckedChanged: {
                 Config.setNestedValue("appearance.wallpaperTheming.enableSpicetify", checked)
                 Quickshell.execDetached([Directories.wallpaperSwitchScriptPath, "--noswitch"])
@@ -796,7 +796,7 @@ WSettingsPage {
         }
 
         WSettingsDropdown {
-            visible: Config.options?.appearance?.wallpaperTheming?.enableSpicetify ?? false
+            visible: Config.options?.appearance?.wallpaperTheming?.enableSpicetify ?? true
             label: Translation.tr("Spotify theme")
             icon: "terminal"
             description: Translation.tr("Choose the Spicetify layout while keeping iNiR wallpaper colors")
@@ -815,7 +815,7 @@ WSettingsPage {
             label: Translation.tr("Steam theming")
             icon: "gamepad"
             description: Translation.tr("Apply Material You colors to Steam via Millennium Material-Theme")
-            checked: Config.options?.appearance?.wallpaperTheming?.enableSteam ?? false
+            checked: Config.options?.appearance?.wallpaperTheming?.enableSteam ?? true
             onCheckedChanged: Config.setNestedValue("appearance.wallpaperTheming.enableSteam", checked)
         }
 
@@ -896,7 +896,7 @@ WSettingsPage {
             label: Translation.tr("Theme standalone Cava")
             icon: "music-note-2"
             description: Translation.tr("Manage ~/.config/cava/config; internal visualizers always use the options below")
-            checked: Config.options?.appearance?.wallpaperTheming?.enableCava ?? false
+            checked: Config.options?.appearance?.wallpaperTheming?.enableCava ?? true
             onCheckedChanged: root.setCavaValue(
                 "appearance.wallpaperTheming.enableCava", checked, true)
         }
