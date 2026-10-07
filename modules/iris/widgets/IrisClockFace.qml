@@ -4,6 +4,7 @@ import QtQuick
 import QtQuick.Layouts
 import Quickshell
 import qs.modules.common
+import qs.services
 import qs.modules.iris.style
 import qs.modules.iris.components
 
@@ -19,12 +20,12 @@ IrisWidgetFace {
         if (format === "12h") return "h:mm AP"
         return String(Config.options?.time?.format ?? "hh:mm").replace(/:ss/, "")
     }
-    readonly property string timeText: Qt.locale().toString(root.now, root.timePattern)
+    readonly property string timeText: Translation.locale.toString(root.now, root.timePattern)
     readonly property string weekday: {
-        const name = Qt.locale().toString(root.now, "dddd")
+        const name = Translation.locale.toString(root.now, "dddd")
         return name.charAt(0).toUpperCase() + name.slice(1)
     }
-    readonly property string longDate: Qt.locale().toString(root.now, "d MMMM")
+    readonly property string longDate: Translation.locale.toString(root.now, "d MMMM")
 
     padding: root.analog && root.small ? root.dp(8) : root.dp(16)
 
@@ -43,7 +44,7 @@ IrisWidgetFace {
         height: width
         time: root.now
         seconds: root.seconds
-        caption: root.small ? Qt.locale().toString(root.now, "ddd d").replace(/\./g, "") : ""
+        caption: root.small ? Translation.locale.toString(root.now, "ddd d").replace(/\./g, "") : ""
     }
 
     ColumnLayout {

@@ -1243,9 +1243,9 @@ ClippingRectangle {
                     anchors.bottomMargin: widgetsRoot.instrument ? Math.round(44 * root.d) : Math.round(18 * root.d)
                     anchors.leftMargin: widgetsRoot.instrument ? Math.round(60 * root.d) : Math.round(18 * root.d)
                     spacing: 0
-                    IrisText { text: Qt.locale().toString(DateTime.clock.date, "dddd"); color: widgetsRoot.ink; font.weight: widgetsRoot.weight; font.pixelSize: IrisStyle.typeHeadline }
+                    IrisText { text: Translation.locale.toString(DateTime.clock.date, "dddd"); color: widgetsRoot.ink; font.weight: widgetsRoot.weight; font.pixelSize: IrisStyle.typeHeadline }
                     IrisText {
-                        text: Qt.locale().toString(DateTime.clock.date, "hh:mm")
+                        text: Translation.locale.toString(DateTime.clock.date, "hh:mm")
                         font.family: IrisStyle.fontNumbers
                         font.weight: widgetsRoot.weight
                         font.pixelSize: (widgetsRoot.instrument ? 36 : 52) * IrisStyle.typeScale
@@ -1988,11 +1988,11 @@ ClippingRectangle {
                     spacing: Math.round(10 * root.d)
                     RowLayout {
                         spacing: Math.round(10 * root.d)
-                        IrisText { text: Qt.locale().toString(DateTime.clock.date, "d"); color: IrisStyle.identity.red; font.family: IrisStyle.fontNumbers; font.weight: IrisStyle.weight(Font.Bold); font.pixelSize: 30 * IrisStyle.typeScale }
+                        IrisText { text: Translation.locale.toString(DateTime.clock.date, "d"); color: IrisStyle.identity.red; font.family: IrisStyle.fontNumbers; font.weight: IrisStyle.weight(Font.Bold); font.pixelSize: 30 * IrisStyle.typeScale }
                         ColumnLayout {
                             spacing: 0
                             IrisText { text: Translation.tr("Today"); font.family: IrisStyle.fontTitle; font.weight: IrisStyle.weight(Font.Bold); font.pixelSize: IrisStyle.typeTitle }
-                            IrisText { text: Qt.locale().toString(DateTime.clock.date, "dddd, MMMM"); color: IrisStyle.subtext; font.pixelSize: IrisStyle.typeMeta }
+                            IrisText { text: Translation.locale.toString(DateTime.clock.date, "dddd, MMMM"); color: IrisStyle.subtext; font.pixelSize: IrisStyle.typeMeta }
                         }
                         Item { Layout.fillWidth: true }
                         IrisControlPlate {
@@ -2537,8 +2537,8 @@ ClippingRectangle {
                                     IrisText {
                                         textFormat: Text.StyledText
                                         text: "<font color='" + (pageRoot.banner ? IrisStyle.textStrong : IrisStyle.secondaryAccent) + "'><b>"
-                                            + Qt.locale().toString(DateTime.clock.date, "dddd") + "</b></font> "
-                                            + Qt.locale().toString(DateTime.clock.date, "d MMMM")
+                                            + Translation.locale.toString(DateTime.clock.date, "dddd") + "</b></font> "
+                                            + Translation.locale.toString(DateTime.clock.date, "d MMMM")
                                         color: pageRoot.banner ? IrisStyle.textStrong : IrisStyle.textSecondary
                                         font.pixelSize: IrisStyle.typeLabel
                                         font.weight: IrisStyle.weight(Font.Medium)
@@ -3017,8 +3017,8 @@ ClippingRectangle {
                     visible: actRoot.expanded
                     opacity: actRoot.expanded ? 1 : 0
                     Behavior on opacity { NumberAnimation { duration: IrisStyle.duration(200); easing.type: IrisStyle.feedbackEasing } }
-                    IrisText { text: Qt.locale().toString(DateTime.clock.date, "dddd d MMMM"); color: IrisStyle.secondaryAccent; font.weight: IrisStyle.weight(Font.DemiBold) }
-                    IrisText { text: Qt.locale().toString(DateTime.clock.date, "hh:mm"); font.family: IrisStyle.fontNumbers; font.weight: IrisStyle.figureWeight; font.pixelSize: 40 * IrisStyle.typeScale }
+                    IrisText { text: Translation.locale.toString(DateTime.clock.date, "dddd d MMMM"); color: IrisStyle.secondaryAccent; font.weight: IrisStyle.weight(Font.DemiBold) }
+                    IrisText { text: Translation.locale.toString(DateTime.clock.date, "hh:mm"); font.family: IrisStyle.fontNumbers; font.weight: IrisStyle.figureWeight; font.pixelSize: 40 * IrisStyle.typeScale }
                     Item { Layout.fillHeight: true }
                     Level { value: 0.6 }
                 }
@@ -3210,7 +3210,7 @@ ClippingRectangle {
                 IrisText {
                     visible: root.opt("iris.lock.blocks.clock.enable", true)
                     Layout.alignment: Qt.AlignHCenter
-                    text: Qt.locale().toString(DateTime.clock.date, lockPreview.format + (root.opt("iris.lock.type.seconds", false) ? ":ss" : ""))
+                    text: Translation.locale.toString(DateTime.clock.date, lockPreview.format + (root.opt("iris.lock.type.seconds", false) ? ":ss" : ""))
                     font.family: IrisLockOptions.clockFamily
                     font.pixelSize: Number(root.opt("iris.lock.type.clockSize", 112)) * 0.6 * IrisLockOptions.typeScale
                     font.weight: Number(root.opt("iris.lock.type.clockWeight", 700))
@@ -3220,7 +3220,7 @@ ClippingRectangle {
                 IrisText {
                     visible: root.opt("iris.lock.blocks.clock.enable", true) && String(root.opt("iris.lock.type.dateFormat", "long")) !== "none"
                     Layout.alignment: Qt.AlignHCenter
-                    text: Qt.locale().toString(DateTime.clock.date, String(root.opt("iris.lock.type.dateFormat", "long")) === "short" ? "ddd d MMM" : "dddd d MMMM")
+                    text: Translation.locale.toString(DateTime.clock.date, String(root.opt("iris.lock.type.dateFormat", "long")) === "short" ? "ddd d MMM" : "dddd d MMMM")
                     color: IrisStyle.onMediaSecondary
                 }
                 RowLayout {

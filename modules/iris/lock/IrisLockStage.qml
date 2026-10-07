@@ -466,10 +466,10 @@ Item {
             readonly property string dateText: {
                 const style = String(IrisLockOptions.typeOptions?.dateFormat ?? "long")
                 const date = DateTime.clock.date
-                if (style === "weekday") return Qt.locale().toString(date, "dddd")
-                if (style === "short") return Qt.locale().toString(date, "ddd d MMM")
+                if (style === "weekday") return Translation.locale.toString(date, "dddd")
+                if (style === "short") return Translation.locale.toString(date, "ddd d MMM")
                 if (style === "numeric") return Qt.locale().toString(date, Locale.ShortFormat)
-                return Qt.locale().toString(date, "dddd, d MMMM")
+                return Translation.locale.toString(date, "dddd, d MMMM")
             }
             readonly property string timeText: {
                 const wanted = String(IrisLockOptions.typeOptions?.clockFormat ?? "auto")

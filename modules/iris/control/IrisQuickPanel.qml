@@ -91,7 +91,7 @@ ColumnLayout {
                     spacing: Math.round(6 * root.d)
                     IrisText {
                         text: {
-                            const day = Qt.locale().toString(DateTime.clock.date, "dddd")
+                            const day = Translation.locale.toString(DateTime.clock.date, "dddd")
                             return day.charAt(0).toUpperCase() + day.slice(1)
                         }
                         role: IrisText.Title
@@ -114,7 +114,7 @@ ColumnLayout {
                 implicitHeight: lineA.implicitHeight
                 readonly property string line: root.shownHint.length > 0 ? root.shownHint
                     : root.editing ? Translation.tr("Drag to reorder, drag a corner to resize, − takes it out")
-                    : Qt.locale().toString(DateTime.clock.date, "MMMM yyyy")
+                    : Translation.locale.toString(DateTime.clock.date, "MMMM yyyy")
                 property bool frontA: true
                 Component.onCompleted: lineA.text = subtitle.line
                 onLineChanged: {

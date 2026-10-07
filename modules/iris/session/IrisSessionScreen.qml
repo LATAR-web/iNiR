@@ -188,7 +188,7 @@ Variants {
                     }
                     IrisText {
                         Layout.alignment: Qt.AlignHCenter
-                        text: Qt.locale().toString(DateTime.clock.date, "dddd, d MMMM")
+                        text: Translation.locale.toString(DateTime.clock.date, "dddd, d MMMM")
                         color: IrisStyle.textSecondary
                         font.pixelSize: IrisStyle.typeHeadline
                     }

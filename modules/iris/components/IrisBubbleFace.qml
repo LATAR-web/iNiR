@@ -361,7 +361,7 @@ Item {
             spacing: -Math.round(3 * root.d)
             FaceText {
                 anchors.horizontalCenter: parent.horizontalCenter
-                text: Qt.locale().toString(DateTime.clock.date, "ddd")
+                text: Translation.locale.toString(DateTime.clock.date, "ddd")
                 color: IrisStyle.identity.red
                 font.pixelSize: 8.5 * IrisStyle.typeScale
                 font.weight: IrisStyle.weight(Font.Bold)
@@ -804,7 +804,7 @@ Item {
             FaceText {
                 visible: root.kind === "calendar"
                 anchors.verticalCenter: parent.verticalCenter
-                text: Qt.locale().toString(DateTime.clock.date, "ddd").replace(/\.$/, "")
+                text: Translation.locale.toString(DateTime.clock.date, "ddd").replace(/\.$/, "")
                 color: root.inkMuted
                 font.pixelSize: IrisStyle.typeLabel
                 font.weight: IrisStyle.weight(Font.Medium)

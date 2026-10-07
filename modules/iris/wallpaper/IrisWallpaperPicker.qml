@@ -407,7 +407,7 @@ Item {
             eyebrow: "",
             facts: [video ? { glyph: "motion_photos_on", label: Translation.tr("Live") } : { glyph: "image", label: Translation.tr("Picture") },
                 { label: extension, figure: true }].concat(file.time > 0
-                ? [{ glyph: "calendar_today", label: Qt.locale().toString(new Date(file.time), "d MMM yyyy") }] : []),
+                ? [{ glyph: "calendar_today", label: Translation.locale.toString(new Date(file.time), "d MMM yyyy") }] : []),
             current: Wallpapers.isCurrentWallpaperPath(file.path, root.selectionTarget, root.targetMonitor)
         }
     }

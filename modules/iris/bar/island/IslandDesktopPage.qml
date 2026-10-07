@@ -390,8 +390,8 @@ ColumnLayout {
                 IrisText {
                     textFormat: Text.StyledText
                     text: "<font color='" + (page.showBanner ? IrisStyle.textStrong : IrisStyle.secondaryAccent) + "'><b>"
-                        + Qt.locale().toString(DateTime.clock.date, "dddd") + "</b></font> "
-                        + Qt.locale().toString(DateTime.clock.date, "d MMMM")
+                        + Translation.locale.toString(DateTime.clock.date, "dddd") + "</b></font> "
+                        + Translation.locale.toString(DateTime.clock.date, "d MMMM")
                     color: (page.showBanner ? IrisStyle.textStrong : IrisStyle.textSecondary)
                     font.pixelSize: IrisStyle.typeLabel
                     font.weight: IrisStyle.weight(Font.Medium)
@@ -739,7 +739,7 @@ ColumnLayout {
                 const days = Math.round((day.getTime() - today.getTime()) / 86400000)
                 if (days === 0) return Translation.tr("Today · %1").arg(time)
                 if (days === 1) return Translation.tr("Tomorrow · %1").arg(time)
-                return Qt.locale().toString(agenda.when, "dddd") + " · " + time
+                return Translation.locale.toString(agenda.when, "dddd") + " · " + time
             }
 
             Rectangle {
@@ -752,7 +752,7 @@ ColumnLayout {
                     spacing: -Math.round(3 * IrisStyle.density)
                     IrisText {
                         Layout.alignment: Qt.AlignHCenter
-                        text: Qt.locale().toString(agenda.when, "ddd").toUpperCase()
+                        text: Translation.locale.toString(agenda.when, "ddd").toUpperCase()
                         color: IrisStyle.danger
                         font.pixelSize: 8.5 * IrisStyle.typeScale
                         font.weight: IrisStyle.weight(Font.Bold)

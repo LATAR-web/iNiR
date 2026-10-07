@@ -623,7 +623,7 @@ Loader {
             }
             onOpenChanged: if (!open) calendar.composing = false
 
-            title: Qt.locale().toString(calendar.open ? calendar.month : DateTime.clock.date, "MMMM yyyy")
+            title: Translation.locale.toString(calendar.open ? calendar.month : DateTime.clock.date, "MMMM yyyy")
             glyph: "calendar_month"
             tint: IrisStyle.identity.red
             detail: !calendar.open && calendar.todayEntries.length > 0 ? String(calendar.todayEntries.length) : ""
@@ -653,7 +653,7 @@ Loader {
                             spacing: 3 * root.d
                             IrisText {
                                 anchors.horizontalCenter: parent.horizontalCenter
-                                text: Qt.locale().dayName(stripDay.date.getDay(), Locale.ShortFormat).slice(0, 2)
+                                text: Translation.locale.dayName(stripDay.date.getDay(), Locale.ShortFormat).slice(0, 2)
                                 color: stripDay.today ? IrisStyle.identity.red : IrisStyle.muted
                                 font.pixelSize: IrisStyle.typeFootnote
                                 font.weight: stripDay.today ? Font.DemiBold : Font.Normal
@@ -710,7 +710,7 @@ Loader {
                         IrisText {
                             id: weekdayLabel
                             anchors.horizontalCenter: parent.horizontalCenter
-                            text: Qt.locale().dayName((calendar.weekStart + weekday.index) % 7, Locale.ShortFormat).slice(0, 2)
+                            text: Translation.locale.dayName((calendar.weekStart + weekday.index) % 7, Locale.ShortFormat).slice(0, 2)
                             color: IrisStyle.muted
                             font.pixelSize: IrisStyle.typeFootnote
                         }
@@ -772,7 +772,7 @@ Loader {
                 Layout.fillWidth: true
                 IrisText {
                     Layout.fillWidth: true
-                    text: Qt.locale().toString(calendar.selectedDate, "dddd d MMMM")
+                    text: Translation.locale.toString(calendar.selectedDate, "dddd d MMMM")
                     font.weight: IrisStyle.weight(Font.DemiBold)
                     font.pixelSize: IrisStyle.typeLabel
                     elide: Text.ElideRight
