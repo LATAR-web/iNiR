@@ -32,7 +32,7 @@ STRING = re.compile(r'"(?:[^"\\]|\\.)*"|\'(?:[^\'\\]|\\.)*\'|`[^`]*`')
 
 
 def main() -> int:
-    listed = subprocess.run(["git", "ls-files", "*.qml", "*.js"], cwd=ROOT, capture_output=True, text=True)
+    listed = subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard", "*.qml", "*.js"], cwd=ROOT, capture_output=True, text=True)
     files = listed.stdout.split() if listed.returncode == 0 and listed.stdout.strip() \
         else [str(path.relative_to(ROOT)) for pattern in ("*.qml", "*.js") for path in ROOT.rglob(pattern) if ".git" not in path.parts]
     failures = []

@@ -12,9 +12,11 @@ declaration per line, as this codebase is formatted:
 - A property of a visual object named like a FINAL member of `Item` (`top`, `left`, `width`, `visible`…:
   "Cannot override FINAL property"). The list is QQuickItem's `isFinal` set in Qt's qmltypes.
 
-And two that load but misbehave: `Connections { target: Hyprland }` is evaluated even when the
+And three that load but misbehave: `Connections { target: Hyprland }` is evaluated even when the
 Connections is disabled, so it connects to the Hyprland socket on Niri; `Notifications.notify(…)` emits the
-arrived-notification signal and shows nothing (post with `Notifications.send`).
+arrived-notification signal and shows nothing (post with `Notifications.send`); a child of a `ClippingRectangle`
+sits in its content item, a plain Item, so `parent.radius`, `parent.color` or `parent.border` there read undefined
+(name the rectangle by its id).
 """
 
 import re
@@ -39,6 +41,8 @@ COMPONENT = re.compile(r"^\s*component\s+(\w+)\s*:")
 ESCAPE_METHOD = re.compile(r"\bfunction\s+escape\s*\(")
 HYPRLAND_TARGET = re.compile(r"^\s*target\s*:\s*Hyprland\w*\s*$")
 NOTIFY_CALL = re.compile(r"\bNotifications\.notify\s*\(")
+CLIP_PARENT = re.compile(r"(?<!\.)\bparent\.(radius|color|border)\b")
+ONE_LINE_OBJECT = re.compile(r"^\s*[A-Z][\w.]*\s*\{.*\}\s*$")
 
 
 def blank(text: str) -> str:
@@ -82,12 +86,17 @@ def scan(rel: str, text: str) -> list:
         if NOTIFY_CALL.search(line):
             out.append(f"{rel}:{number}: `Notifications.notify(…)` only emits a signal and shows nothing; "
                        "use `Notifications.send(summary, body, urgency, timeoutMs)`")
+        if obj is not None and CLIP_PARENT.search(line):
+            one_line = bool(ONE_LINE_OBJECT.match(line))
+            if (one_line and obj["kind"] == "ClippingRectangle") or (not one_line and obj["parent"] == "ClippingRectangle"):
+                out.append(f"{rel}:{number}: `parent.{CLIP_PARENT.search(line).group(1)}` in a child of a ClippingRectangle "
+                           "reads its content item (undefined): name the rectangle by its id")
         opens, closes = line.count("{"), line.count("}")
         opened = OBJECT_OPEN.search(line) if opens == 1 and closes == 0 else None
         if opened:
             kind = opened.group(1).split(".")[-1]
             stack.append({"handlers": {}, "readonly": set(), "component": bool(component),
-                          "item": not NOT_ITEM.match(kind)})
+                          "item": not NOT_ITEM.match(kind), "kind": kind, "parent": obj["kind"] if obj else ""})
         else:
             stack.extend([None] * max(0, opens - closes))
             del stack[len(stack) - min(len(stack), max(0, closes - opens)):]
@@ -95,7 +104,7 @@ def scan(rel: str, text: str) -> list:
 
 
 def main() -> int:
-    listed = subprocess.run(["git", "ls-files", "*.qml"], cwd=ROOT, capture_output=True, text=True)
+    listed = subprocess.run(["git", "ls-files", "--cached", "--others", "--exclude-standard", "*.qml"], cwd=ROOT, capture_output=True, text=True)
     files = listed.stdout.split() if listed.returncode == 0 and listed.stdout.strip() \
         else [str(p.relative_to(ROOT)) for p in ROOT.rglob("*.qml") if ".git" not in p.parts]
     failures = []
