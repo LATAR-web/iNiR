@@ -8948,6 +8948,7 @@
   "How surfaces are drawn. Afterglow is a lit console menu: chrome, bloom and scanlines.": "Як малюються поверхні. Afterglow — освітлене меню консолі: хром, bloom і рядки.",
   "The light Afterglow is lit with. Wallpaper builds one from your wallpaper.": "Світло, яким освітлено Afterglow. Wallpaper будує його з ваших шпалер.",
   "How strongly the grade tints the blacks and the light.": "Наскільки сильно грейд тонує чорне і світло.",
+  "The wallpaper gets the same light, live ones and the lock included, so the whole screen matches.": "Шпалери отримують те саме світло, разом із живими та екраном блокування, і весь екран виглядає єдиним.",
   "Glass blurs the wallpaper. Blur has Niri blur the windows behind (Niri 26.04).": "Скло розмиває шпалери. Blur просить Niri розмити вікна позаду (Niri 26.04).",
   "How much material covers the glass. It rises on bright wallpapers to keep text readable.": "Скільки матеріалу лежить на склі. На світлих шпалерах зростає, щоб текст читався.",
   "Line is an even hairline. Lit catches the light at the top, like glass.": "Лінія — рівна тонка риса. Освітлена ловить світло згори, як скло.",

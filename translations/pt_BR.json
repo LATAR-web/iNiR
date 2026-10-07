@@ -8948,6 +8948,7 @@
   "How surfaces are drawn. Afterglow is a lit console menu: chrome, bloom and scanlines.": "Como as superfícies são desenhadas. Afterglow é um menu de console iluminado: cromo, bloom e linhas.",
   "The light Afterglow is lit with. Wallpaper builds one from your wallpaper.": "A luz que ilumina o Afterglow. Wallpaper cria uma a partir do seu papel de parede.",
   "How strongly the grade tints the blacks and the light.": "O quanto a gradação tinge os pretos e a luz.",
+  "The wallpaper gets the same light, live ones and the lock included, so the whole screen matches.": "O papel de parede recebe a mesma luz, incluindo os animados e a tela de bloqueio, e a tela inteira combina.",
   "Glass blurs the wallpaper. Blur has Niri blur the windows behind (Niri 26.04).": "Vidro desfoca o papel de parede. Blur faz o Niri desfocar as janelas atrás (Niri 26.04).",
   "How much material covers the glass. It rises on bright wallpapers to keep text readable.": "Quanto material cobre o vidro. Aumenta em papéis de parede claros para o texto ser legível.",
   "Line is an even hairline. Lit catches the light at the top, like glass.": "Linha é um traço fino uniforme. Iluminado pega luz no topo, como vidro.",

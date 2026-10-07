@@ -8948,6 +8948,7 @@
   "How surfaces are drawn. Afterglow is a lit console menu: chrome, bloom and scanlines.": "सतहें कैसे बनती हैं। Afterglow एक चमकता कंसोल मेनू है: क्रोम, ब्लूम और स्कैनलाइन।",
   "The light Afterglow is lit with. Wallpaper builds one from your wallpaper.": "Afterglow की रोशनी। Wallpaper इसे आपके वॉलपेपर से बनाता है।",
   "How strongly the grade tints the blacks and the light.": "ग्रेड काले और रोशनी को कितना रंगता है।",
+  "The wallpaper gets the same light, live ones and the lock included, so the whole screen matches.": "वॉलपेपर को भी वही रोशनी मिलती है, लाइव वॉलपेपर और लॉक स्क्रीन समेत, ताकि पूरी स्क्रीन मेल खाए।",
   "Glass blurs the wallpaper. Blur has Niri blur the windows behind (Niri 26.04).": "कांच वॉलपेपर धुंधला करता है। Blur से Niri पीछे की विंडो धुंधली करता है (Niri 26.04)।",
   "How much material covers the glass. It rises on bright wallpapers to keep text readable.": "कांच पर कितनी सामग्री है। चमकीले वॉलपेपर पर यह बढ़ती है ताकि टेक्स्ट पढ़ा जा सके।",
   "Line is an even hairline. Lit catches the light at the top, like glass.": "रेखा एक समान पतली रेखा है। रोशन ऊपर से रोशनी पकड़ती है, कांच की तरह।",

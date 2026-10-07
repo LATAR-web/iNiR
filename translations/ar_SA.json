@@ -8948,6 +8948,7 @@
   "How surfaces are drawn. Afterglow is a lit console menu: chrome, bloom and scanlines.": "طريقة رسم الأسطح. Afterglow قائمة جهاز ألعاب مضيئة: كروم وتوهج وخطوط مسح.",
   "The light Afterglow is lit with. Wallpaper builds one from your wallpaper.": "الضوء الذي يُضاء به Afterglow. Wallpaper ينشئه من خلفيتك.",
   "How strongly the grade tints the blacks and the light.": "مدى تلوين التدرج للأسود والضوء.",
+  "The wallpaper gets the same light, live ones and the lock included, so the whole screen matches.": "تحصل الخلفية على الضوء نفسه، بما فيها المتحركة وشاشة القفل، فتتناسق الشاشة كلها.",
   "Glass blurs the wallpaper. Blur has Niri blur the windows behind (Niri 26.04).": "الزجاج يموّه الخلفية. Blur يجعل Niri يموّه النوافذ خلفه (Niri 26.04).",
   "How much material covers the glass. It rises on bright wallpapers to keep text readable.": "كمية المادة فوق الزجاج. تزداد مع الخلفيات الفاتحة ليبقى النص مقروءًا.",
   "Line is an even hairline. Lit catches the light at the top, like glass.": "الخط حد رفيع متساوٍ. المضيء يلتقط الضوء في الأعلى مثل الزجاج.",

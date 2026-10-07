@@ -493,7 +493,8 @@ Scope {
         id: bgRoot
 
         required property var modelData
-        readonly property Item wallpaperLayer: wallpaperContainer
+        // Afterglow draws the container graded (and hides it): glass copies what is seen.
+        readonly property Item wallpaperLayer: afterglowLoader.item ?? wallpaperContainer
         // Bumped whenever what the wallpaper layer shows can change (picture, parallax, Afterglow arriving): iRiS glass
         // copies the layer only after a bump instead of every frame the desktop redraws.
         property int wallpaperLayerRevision: 0
@@ -845,11 +846,12 @@ Scope {
             && !bgRoot.effectiveHasPan
             && !bgRoot.internalShaderTransitionRequested
             && !afterglowHandoff.running
-        // iRiS Afterglow grades the still wallpaper itself; leaving it, the picture stays drawn here until awww shows it.
+        // iRiS Afterglow grades whatever is drawn here (still, transition, preview, video, GIF), so the picture is drawn
+        // here, not by awww; leaving it, the picture stays drawn here until awww shows it.
         readonly property bool afterglowWallpaperActive: (Config.options?.panelFamily ?? "ii") === "iris"
             && String(Config.options?.iris?.appearance?.texture ?? "solid") === "afterglow"
             && (Config.options?.iris?.appearance?.afterglow?.wallpaper ?? true)
-            && bgRoot.wallpaperPathRaw.length > 0 && !bgRoot.wallpaperIsVideo && !bgRoot.wallpaperIsGif
+            && bgRoot.wallpaperPathRaw.length > 0
             && !bgRoot.webWallpaperActive && !bgRoot.wallpaperSafetyTriggered && !bgRoot.backdropActive
         Timer {
             id: afterglowHandoff
@@ -1565,7 +1567,8 @@ Scope {
                     // NEVER use crossfader transitions when awww is active — awww handles all transitions.
                     // When parallax is on, the crossfader fades out to reveal awww's native transition.
                     enableTransitions: (!AwwwBackend.active
-                            || bgRoot.internalShaderTransitionRequested)
+                            || bgRoot.internalShaderTransitionRequested
+                            || bgRoot.afterglowWallpaperActive)
                         && (Config.options?.background?.transition?.enable ?? true)
                     transitionType: Config.options?.background?.transition?.type ?? "crossfade"
                     transitionDirection: Config.options?.background?.transition?.direction ?? "right"
@@ -1616,6 +1619,7 @@ Scope {
                     layer.enabled: visible && Appearance.effectsEnabled
                         && (bgRoot.effectsOptions.enableAnimatedBlur ?? false)
                         && (bgRoot.effectsOptions.blurRadius ?? 0) > 0
+                        && (bgRoot.effectsOptions.thumbnailBlurStrength ?? 50) > 0
                     layer.effect: GaussianBlur {
                         radius: Math.round((bgRoot.effectsOptions.blurRadius ?? 32) * Math.max(0, Math.min(1, (bgRoot.effectsOptions.thumbnailBlurStrength ?? 50) / 100)))
                         // Cap samples — beyond ~33 the visual difference is imperceptible
@@ -1661,6 +1665,7 @@ Scope {
                     layer.enabled: visible && Appearance.effectsEnabled
                         && (bgRoot.effectsOptions.enableAnimatedBlur ?? false)
                         && (bgRoot.effectsOptions.blurRadius ?? 0) > 0
+                        && (bgRoot.effectsOptions.thumbnailBlurStrength ?? 50) > 0
                     layer.effect: GaussianBlur {
                         radius: Math.round((bgRoot.effectsOptions.blurRadius ?? 32) * Math.max(0, Math.min(1, (bgRoot.effectsOptions.thumbnailBlurStrength ?? 50) / 100)))
                         // See #159 — cap samples to bound fragment shader cost
@@ -1670,21 +1675,20 @@ Scope {
             }
 
             Loader {
+                id: afterglowLoader
                 z: 0.5
                 anchors.fill: wallpaperContainer
                 active: bgRoot.afterglowWallpaperActive && bgRoot._familyOwnsScreen
                 sourceComponent: IrisAfterglowWallpaper {
                     onShown: bgRoot.wallpaperLayerRevision++
-                    imagePath: bgRoot.wallpaperPathRaw
-                    devicePixelRatio: bgRoot.devicePixelRatio
-                    fillMode: bgRoot.fillMode === "fit" ? Image.PreserveAspectFit
-                        : bgRoot.fillMode === "tile" ? Image.Tile
-                        : bgRoot.fillMode === "center" ? Image.Pad
-                        : Image.PreserveAspectCrop
+                    source: wallpaperContainer
+                    live: bgRoot.wallpaperIsVideo || bgRoot.wallpaperIsGif
                 }
             }
 
-            // Always-on wallpaper blur — reads from crossfader texture (works with both QML and awww rendering; disabled for GIFs/videos)
+            // Blur behind windows. Reads what is actually drawn: the crossfader (QML or awww rendering), the
+            // Afterglow grade over it, or a video/GIF when "blur live wallpapers" is on. The resting layer blur on
+            // live wallpapers above is separate (thumbnailBlurStrength) and never stands in for this one.
             Loader {
                 id: blurAlwaysLoader
                 z: 1
@@ -1696,8 +1700,7 @@ Scope {
                         && (bgRoot.effectsOptions.blurRadius ?? 0) > 0
                         && !blurLoader.active
                         && !bgRoot.backdropActive
-                        && !bgRoot.wallpaperIsGif
-                        && !bgRoot.wallpaperIsVideo
+                        && (!(bgRoot.wallpaperIsGif || bgRoot.wallpaperIsVideo) || (bgRoot.effectsOptions.enableAnimatedBlur ?? false))
                 anchors.fill: wallpaperContainer
                 sourceComponent: Item {
                     anchors.fill: parent
@@ -1705,7 +1708,8 @@ Scope {
 
                     GaussianBlur {
                         anchors.fill: parent
-                        source: wallpaper
+                        source: afterglowLoader.item ?? (bgRoot.wallpaperIsVideo ? videoWallpaper
+                            : bgRoot.wallpaperIsGif ? gifWallpaper : wallpaper)
                         radius: bgRoot.effectsOptions.blurRadius ?? 32
                         // See #159 — cap samples to bound fragment shader cost
                         samples: Math.min(33, radius * 2 + 1)

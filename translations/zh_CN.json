@@ -8948,6 +8948,7 @@
   "How surfaces are drawn. Afterglow is a lit console menu: chrome, bloom and scanlines.": "表面的绘制方式。Afterglow 是发光的游戏机菜单：铬边、光晕和扫描线。",
   "The light Afterglow is lit with. Wallpaper builds one from your wallpaper.": "Afterglow 的光照。Wallpaper 根据你的壁纸生成。",
   "How strongly the grade tints the blacks and the light.": "调色对黑色和光的染色强度。",
+  "The wallpaper gets the same light, live ones and the lock included, so the whole screen matches.": "壁纸也获得同样的光，包括动态壁纸和锁屏，整个屏幕浑然一体。",
   "Glass blurs the wallpaper. Blur has Niri blur the windows behind (Niri 26.04).": "玻璃模糊壁纸。Blur 让 Niri 模糊后面的窗口 (Niri 26.04)。",
   "How much material covers the glass. It rises on bright wallpapers to keep text readable.": "玻璃上覆盖的材质量。壁纸较亮时会增加，保证文字可读。",
   "Line is an even hairline. Lit catches the light at the top, like glass.": "线条是均匀的细线。光照像玻璃一样在顶部受光。",

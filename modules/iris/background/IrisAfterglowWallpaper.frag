@@ -1,5 +1,5 @@
 #version 440
-// Rendered once per picture (IrisAfterglowWallpaper caches it): never bind it to anything that changes per frame.
+// Runs when the wallpaper under it changes (IrisAfterglowWallpaper caches it): never bind it to anything that changes per frame.
 layout(location = 0) in vec2 qt_TexCoord0;
 layout(location = 0) out vec4 fragColor;
 layout(std140, binding = 0) uniform buf {
@@ -12,11 +12,10 @@ layout(std140, binding = 0) uniform buf {
     // rgb: key light; a: atmosphere.
     vec4 glowLight;
     vec4 glowBloom;
-    // xy: the drawn size in pixels; z: the small copy's texel in uv.
+    // xy: the drawn size in pixels; z: a texel of the bloom's mip level in uv; w: that level.
     vec4 frame;
 } u;
 layout(binding = 1) uniform sampler2D source;
-layout(binding = 2) uniform sampler2D glow;
 
 float luma(vec3 c) { return dot(c, vec3(0.299, 0.587, 0.114)); }
 
@@ -43,11 +42,12 @@ void main() {
     }
 
     vec2 t = vec2(u.frame.z, u.frame.z * size.x / size.y);
-    vec3 soft = texture(glow, uv).rgb * 4.0
-        + (texture(glow, uv + vec2(t.x, 0.0)).rgb + texture(glow, uv - vec2(t.x, 0.0)).rgb
-         + texture(glow, uv + vec2(0.0, t.y)).rgb + texture(glow, uv - vec2(0.0, t.y)).rgb) * 2.0
-        + texture(glow, uv + t).rgb + texture(glow, uv - t).rgb
-        + texture(glow, uv + vec2(t.x, -t.y)).rgb + texture(glow, uv + vec2(-t.x, t.y)).rgb;
+    float lod = u.frame.w;
+    vec3 soft = textureLod(source, uv, lod).rgb * 4.0
+        + (textureLod(source, uv + vec2(t.x, 0.0), lod).rgb + textureLod(source, uv - vec2(t.x, 0.0), lod).rgb
+         + textureLod(source, uv + vec2(0.0, t.y), lod).rgb + textureLod(source, uv - vec2(0.0, t.y), lod).rgb) * 2.0
+        + textureLod(source, uv + t, lod).rgb + textureLod(source, uv - t, lod).rgb
+        + textureLod(source, uv + vec2(t.x, -t.y), lod).rgb + textureLod(source, uv + vec2(-t.x, t.y), lod).rgb;
     soft /= 16.0;
     float bright = smoothstep(0.42, 0.95, luma(soft));
     vec3 spill = mix(soft, soft * u.glowBloom.rgb * 1.6, 0.35);

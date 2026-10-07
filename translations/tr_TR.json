@@ -8948,6 +8948,7 @@
   "How surfaces are drawn. Afterglow is a lit console menu: chrome, bloom and scanlines.": "Yüzeylerin nasıl çizildiği. Afterglow aydınlık bir konsol menüsüdür: krom, bloom ve tarama çizgileri.",
   "The light Afterglow is lit with. Wallpaper builds one from your wallpaper.": "Afterglow'un aydınlatıldığı ışık. Wallpaper duvar kâğıdınızdan bir tane oluşturur.",
   "How strongly the grade tints the blacks and the light.": "Renk derecelendirmesinin siyahları ve ışığı ne kadar boyadığı.",
+  "The wallpaper gets the same light, live ones and the lock included, so the whole screen matches.": "Duvar kâğıdı da aynı ışığı alır, hareketliler ve kilit ekranı dahil; tüm ekran uyumlu olur.",
   "Glass blurs the wallpaper. Blur has Niri blur the windows behind (Niri 26.04).": "Cam duvar kâğıdını bulanıklaştırır. Blur arkadaki pencereleri Niri'ye bulanıklaştırtır (Niri 26.04).",
   "How much material covers the glass. It rises on bright wallpapers to keep text readable.": "Camın üstünde ne kadar malzeme olduğu. Açık duvar kâğıtlarında metin okunsun diye artar.",
   "Line is an even hairline. Lit catches the light at the top, like glass.": "Çizgi düzgün ince bir hattır. Aydınlık, cam gibi üstten ışık alır.",

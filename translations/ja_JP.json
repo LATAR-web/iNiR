@@ -8948,6 +8948,7 @@
   "How surfaces are drawn. Afterglow is a lit console menu: chrome, bloom and scanlines.": "面の描き方。Afterglow は光るゲーム機のメニュー:クロム、ブルーム、走査線。",
   "The light Afterglow is lit with. Wallpaper builds one from your wallpaper.": "Afterglow を照らす光。Wallpaper は壁紙から作ります。",
   "How strongly the grade tints the blacks and the light.": "グレードが黒と光をどれだけ染めるか。",
+  "The wallpaper gets the same light, live ones and the lock included, so the whole screen matches.": "壁紙にも同じ光が当たります。ライブ壁紙とロック画面も含め、画面全体がそろいます。",
   "Glass blurs the wallpaper. Blur has Niri blur the windows behind (Niri 26.04).": "ガラスは壁紙をぼかします。Blur は Niri に背後のウィンドウをぼかしてもらいます (Niri 26.04)。",
   "How much material covers the glass. It rises on bright wallpapers to keep text readable.": "ガラスにかかる素材の量。明るい壁紙では文字が読めるよう増えます。",
   "Line is an even hairline. Lit catches the light at the top, like glass.": "ラインは均一な細線。ライトはガラスのように上で光を受けます。",

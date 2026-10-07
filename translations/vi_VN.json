@@ -8948,6 +8948,7 @@
   "How surfaces are drawn. Afterglow is a lit console menu: chrome, bloom and scanlines.": "Cách vẽ bề mặt. Afterglow là menu máy chơi game phát sáng: crôm, bloom và đường quét.",
   "The light Afterglow is lit with. Wallpaper builds one from your wallpaper.": "Ánh sáng chiếu Afterglow. Wallpaper tạo ánh sáng từ hình nền của bạn.",
   "How strongly the grade tints the blacks and the light.": "Mức độ tông màu nhuộm phần đen và ánh sáng.",
+  "The wallpaper gets the same light, live ones and the lock included, so the whole screen matches.": "Hình nền nhận cùng ánh sáng, kể cả hình nền động và màn hình khóa, để cả màn hình hài hòa.",
   "Glass blurs the wallpaper. Blur has Niri blur the windows behind (Niri 26.04).": "Kính làm mờ hình nền. Blur để Niri làm mờ cửa sổ phía sau (Niri 26.04).",
   "How much material covers the glass. It rises on bright wallpapers to keep text readable.": "Lượng chất liệu phủ lên kính. Tăng trên hình nền sáng để chữ dễ đọc.",
   "Line is an even hairline. Lit catches the light at the top, like glass.": "Đường là nét mảnh đều. Phát sáng bắt sáng ở trên, như kính.",

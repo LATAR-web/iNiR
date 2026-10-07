@@ -8948,6 +8948,7 @@
   "How surfaces are drawn. Afterglow is a lit console menu: chrome, bloom and scanlines.": "Cara permukaan digambar. Afterglow adalah menu konsol yang menyala: krom, bloom, dan garis pindai.",
   "The light Afterglow is lit with. Wallpaper builds one from your wallpaper.": "Cahaya yang menerangi Afterglow. Wallpaper membuatnya dari wallpaper Anda.",
   "How strongly the grade tints the blacks and the light.": "Seberapa kuat gradasi mewarnai hitam dan cahaya.",
+  "The wallpaper gets the same light, live ones and the lock included, so the whole screen matches.": "Wallpaper mendapat cahaya yang sama, termasuk yang bergerak dan layar kunci, sehingga seluruh layar serasi.",
   "Glass blurs the wallpaper. Blur has Niri blur the windows behind (Niri 26.04).": "Kaca mengaburkan wallpaper. Blur membuat Niri mengaburkan jendela di belakang (Niri 26.04).",
   "How much material covers the glass. It rises on bright wallpapers to keep text readable.": "Seberapa banyak material menutupi kaca. Naik pada wallpaper terang agar teks terbaca.",
   "Line is an even hairline. Lit catches the light at the top, like glass.": "Garis adalah garis tipis merata. Menyala menangkap cahaya di atas, seperti kaca.",
