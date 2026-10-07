@@ -226,6 +226,11 @@ Scope {
             GlobalStates.wallpaperSelectorKind = name
             return name
         }
+        function move(step: int): string {
+            if (!GlobalStates.wallpaperSelectorOpen) return "The picker is closed"
+            GlobalStates.wallpaperSelectorMoveRequested(step)
+            return "moved " + step
+        }
         function status(): string {
             return JSON.stringify({
                 style: Config.options?.wallpaperSelector?.style ?? "grid",

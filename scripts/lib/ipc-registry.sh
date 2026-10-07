@@ -2,7 +2,7 @@
 # Auto-generated from QML IpcHandler declarations + docs/IPC.md metadata.
 # Do not edit manually.
 # Regenerate: python3 scripts/lib/generate-ipc-registry.py
-# IPC.md hash: a2e4ec7a832c3861
+# IPC.md hash: 40d137d582dd22b6
 # Targets: 70
 
 declare -gA IPC_TARGET_DESC=(
@@ -213,7 +213,7 @@ declare -gA IPC_TARGET_FUNCTIONS=(
   [wactionCenter]="toggle close open"
   [waffleAltSwitcher]="open close toggle next previous"
   [wallpaperLauncher]="next previous applyCurrent status"
-  [wallpaperSelector]="toggle open close openLauncher toggleOnMonitor random next shuffle set preview cancelPreview browse kind status"
+  [wallpaperSelector]="toggle open close openLauncher toggleOnMonitor random next shuffle set preview cancelPreview browse kind move status"
   [wbar]="toggle close open"
   [widgetStacks]="status create add remove dissolve page move rotate interval"
   [widgetpower]="status"
@@ -611,6 +611,7 @@ declare -gA IPC_FUNCTION_DESC=(
   ["wallpaperSelector:cancelPreview"]="Drop the preview and go back to the applied wallpaper"
   ["wallpaperSelector:browse"]="Open the picker on a source — \`library\`, \`wallhaven\` or \`live\` (anime live wallpapers) — with a search, a folder to open (\`~/Videos\`), or \`-\` for none. Sources are an iRiS feature; other families just open the picker"
   ["wallpaperSelector:kind"]="Show only one kind of wallpaper in the library: \`all\`, \`still\`, \`live\` (videos) or \`gif\`. iRiS only; the filter also sits beside the search field whenever the folder holds more than one kind"
+  ["wallpaperSelector:move"]="Move the gallery's selection by that many tiles, as the arrow keys do (negative goes back); the ring and the row glide and the desktop preview follows. iRiS only, while the picker is open"
   ["wallpaperSelector:status"]="Return picker style, open surface, target monitor and selection target as JSON"
   ["wbar:toggle"]="Show/hide taskbar"
   ["wbar:close"]="Hide taskbar"
@@ -784,6 +785,7 @@ declare -gA IPC_FUNCTION_ARGS=(
   ["wallpaperSelector:preview"]="<path>"
   ["wallpaperSelector:browse"]="<source> <query>"
   ["wallpaperSelector:kind"]="<name>"
+  ["wallpaperSelector:move"]="<step>"
   ["widgetStacks:create"]="<widgets>"
   ["widgetStacks:add"]="<stack> <widget>"
   ["widgetStacks:remove"]="<widget>"

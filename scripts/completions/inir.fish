@@ -637,6 +637,7 @@ complete -c inir -n '__inir_at_function wallpaperSelector wallpaper-selector' -a
 complete -c inir -n '__inir_at_value 2 browse wallpaperSelector wallpaper-selector' -a 'library wallhaven live'
 complete -c inir -n '__inir_at_function wallpaperSelector wallpaper-selector' -a kind -d 'Show only one kind of wallpaper in the library: all, still,…'
 complete -c inir -n '__inir_at_value 1 kind wallpaperSelector wallpaper-selector' -a 'all still live gif'
+complete -c inir -n '__inir_at_function wallpaperSelector wallpaper-selector' -a move -d 'Move the gallery\'s selection by that many tiles, as the arr…'
 complete -c inir -n '__inir_at_function wallpaperSelector wallpaper-selector' -a status -d 'Return picker style, open surface, target monitor and selec…'
 complete -c inir -n '__inir_at_target' -a wbar -d 'Waffle taskbar visibility'
 complete -c inir -n '__inir_at_function wbar' -a toggle -d 'Show/hide taskbar'

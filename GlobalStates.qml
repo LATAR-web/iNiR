@@ -227,6 +227,8 @@ Singleton {
     property string wallpaperSelectorSource: ""
     property string wallpaperSelectorQuery: ""
     property string wallpaperSelectorKind: ""
+    // `inir wallpaperSelector move <step>`: the gallery moves its selection as the arrow keys do.
+    signal wallpaperSelectorMoveRequested(int step)
     property var wallpaperSelectorSeries: null
     property string wallpaperSelectorKindActive: "all"
     property bool wallpaperLauncherOpen: false

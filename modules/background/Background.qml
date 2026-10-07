@@ -499,7 +499,39 @@ Scope {
         // copies the layer only after a bump instead of every frame the desktop redraws.
         property int wallpaperLayerRevision: 0
         readonly property bool wallpaperLayerAnimating: bgRoot.internalShaderTransitionRequested
-        onWallpaperPathRawChanged: bgRoot.wallpaperLayerRevision++
+        onWallpaperPathRawChanged: {
+            bgRoot.wallpaperLayerRevision++
+            const now = Date.now()
+            bgRoot.previewBrisk = Wallpapers.internalPreviewActive && now - bgRoot._lastWallpaperSwitch < 1200
+            bgRoot._lastWallpaperSwitch = now
+            const raw = bgRoot.wallpaperPathRaw
+            if (Wallpapers.isVideoFile(raw)) {
+                bgRoot._videoPath = raw
+                bgRoot._outgoingVideo = ""
+                videoHandoff.stop()
+            } else if (bgRoot._videoPath.length > 0) {
+                bgRoot._outgoingVideo = bgRoot._videoPath
+                bgRoot._videoPath = ""
+                videoHandoff.restart()
+            }
+        }
+        // Leaving a video for a picture: the crossfader starts from nothing (the video was never its texture), so the
+        // desktop went black until the picture arrived. The video holds its frame on top until the picture has made its
+        // transition underneath, then fades out.
+        property string _videoPath: Wallpapers.isVideoFile(bgRoot.wallpaperPathRaw) ? bgRoot.wallpaperPathRaw : ""
+        property string _outgoingVideo: ""
+        Timer {
+            id: videoHandoff
+            interval: bgRoot.wallpaperTransitionMs + 450
+        }
+        // Browsing previews quickly: a transition finishes before the next picture may start, so the configured length
+        // (800 ms) left the desktop a second behind the gallery. While the previews come fast they keep its pace.
+        property real _lastWallpaperSwitch: 0
+        property bool previewBrisk: false
+        readonly property int wallpaperTransitionMs: {
+            const base = Config.options?.background?.transition?.duration ?? 800
+            return bgRoot.previewBrisk && Wallpapers.internalPreviewActive ? Math.min(base, 340) : base
+        }
 
         // Hide when fullscreen
         property list<HyprlandWorkspace> workspacesForMonitor: CompositorService.isHyprland ? Hyprland.workspaces.values.filter(workspace => workspace.monitor && workspace.monitor.name == monitor.name) : []
@@ -1572,7 +1604,7 @@ Scope {
                         && (Config.options?.background?.transition?.enable ?? true)
                     transitionType: Config.options?.background?.transition?.type ?? "crossfade"
                     transitionDirection: Config.options?.background?.transition?.direction ?? "right"
-                    transitionBaseDuration: Config.options?.background?.transition?.duration ?? 800
+                    transitionBaseDuration: bgRoot.wallpaperTransitionMs
                     fillMode: bgRoot.fillMode === "fit" ? Image.PreserveAspectFit
                             : bgRoot.fillMode === "tile" ? Image.Tile
                             : bgRoot.fillMode === "center" ? Image.Pad
@@ -1636,8 +1668,10 @@ Scope {
                 VideoCrossfader {
                     id: videoWallpaper
                     anchors.fill: parent
-                    visible: opacity > 0 && !blurLoader.active && !bgRoot.backdropActive && bgRoot.wallpaperIsVideo
-                    opacity: bgRoot.wallpaperIsVideo ? 1 : 0
+                    visible: opacity > 0 && !blurLoader.active && !bgRoot.backdropActive
+                        && (bgRoot.wallpaperIsVideo || bgRoot._outgoingVideo.length > 0)
+                    opacity: bgRoot.wallpaperIsVideo || videoHandoff.running ? 1 : 0
+                    onOpacityChanged: if (opacity === 0 && !bgRoot.wallpaperIsVideo) bgRoot._outgoingVideo = ""
                     Behavior on opacity {
                         enabled: Appearance.animationsEnabled
                         animation: NumberAnimation { duration: Appearance.animation.elementMoveFast.duration; easing.type: Appearance.animation.elementMoveFast.type; easing.bezierCurve: Appearance.animation.elementMoveFast.bezierCurve }
@@ -1649,9 +1683,9 @@ Scope {
                     // the source releases the decoder outright instead of only
                     // pausing it; the transition overlay covers the swap.
                     source: {
-                        if (bgRoot.webWallpaperActive || bgRoot.wallpaperSafetyTriggered || !bgRoot.wallpaperIsVideo || bgRoot.backdropActive) return "";
+                        if (bgRoot.webWallpaperActive || bgRoot.wallpaperSafetyTriggered || bgRoot.backdropActive) return "";
                         if (!bgRoot._familyOwnsScreen) return "";
-                        return bgRoot.wallpaperPathRaw;
+                        return bgRoot.wallpaperIsVideo ? bgRoot.wallpaperPathRaw : bgRoot._outgoingVideo;
                     }
                     fillMode: VideoOutput.PreserveAspectCrop
                     enableTransitions: Config.options?.background?.transition?.enable ?? true
