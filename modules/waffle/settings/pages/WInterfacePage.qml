@@ -777,6 +777,20 @@ WSettingsPage {
             onMoved: Config.setNestedValue("lock.dim.opacity", value / 100)
             suffix: "%"
         }
+
+        WSettingsDropdown {
+            visible: MaterialThemeLoader.loginScreenInstalled
+            label: Translation.tr("Login screen")
+            icon: "key"
+            description: Translation.tr("Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.")
+            currentValue: Config.options?.lock?.loginScreen ?? "auto"
+            options: [
+                { value: "auto", displayName: Translation.tr("Automatic") },
+                { value: "classic", displayName: Translation.tr("Classic") },
+                { value: "iris", displayName: Translation.tr("iRiS") }
+            ]
+            onSelected: newValue => Config.setNestedValue("lock.loginScreen", newValue)
+        }
     }
 
     WSettingsSection {

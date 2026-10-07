@@ -2,8 +2,8 @@
 # Auto-generated from QML IpcHandler declarations + docs/IPC.md metadata.
 # Do not edit manually.
 # Regenerate: python3 scripts/lib/generate-ipc-registry.py
-# IPC.md hash: 40d137d582dd22b6
-# Targets: 70
+# IPC.md hash: 80ff4e79e2ef74e5
+# Targets: 71
 
 declare -gA IPC_TARGET_DESC=(
   [ai]="Shared multi-provider AI service. It supports Gemini, OpenAI-compatible chat and Responses APIs, Mistral and Anthropic; live provider catalogs are normalized into capability-aware model records. Catalog visibility is separate from execution readiness, so public model lists remain browseable without pretending an API key exists. OpenCode Zen and Go resolve their current model lists and per-model API routes dynamically. Normal shell tools use typed actions and approval cards, while arbitrary commands are isolated in Advanced mode."
@@ -32,6 +32,7 @@ declare -gA IPC_TARGET_DESC=(
   [iris]="iRiS bar and Island design. Available while the iRiS bar is enabled."
   [keyboard]="Keyboard layout switching (Niri only). Cycles through configured keyboard layouts and queries layout info."
   [lock]="Lock screen. For when you need to pretend you're working."
+  [loginScreen]="The login screen you see after starting the computer. It copies the lock screen and follows your colours."
   [mascot]="Playful mascot companion (needs \`mascot.enable\` and the companion switch in Settings › Mascot). She peeks from screen edges and reacts to events; every reaction and its pose is configurable in the dedicated Mascot settings page. Never appears over fullscreen apps, game mode, the lock screen or the session screen."
   [mascotMood]="Session-long mood state that flavors the mascot's idle lines (needs \`mascot.personality.enabled\`). The mood re-rolls on a jittered interval and starts from the time of day."
   [mediaControls]="Floating media controls panel."
@@ -105,6 +106,7 @@ declare -gA IPC_TARGET_FAMILY=(
   [iris]="shared"
   [keyboard]="shared"
   [lock]="shared"
+  [loginScreen]="shared"
   [mascot]="shared"
   [mascotMood]="shared"
   [mediaControls]="shared"
@@ -178,6 +180,7 @@ declare -gA IPC_TARGET_FUNCTIONS=(
   [iris]="open page close toggle card theme settings bubble dock dockApp dockMove appBubble focus today controlCenter pin layout strip edge dockEdge zone barPiece arrange edit studio notch surround accent spotlight gallerySource orbit orbitCorner orbitClose spotlightClose bubbleCard tap bubbleMenu morph activity activities set adaptive tokens palette preset icon control lock utility watch watchPick desktopAction desktopMenu menuClose watchSubs watchSeek watchSkip motion motioned status"
   [keyboard]="switchLayout switchLayoutPrevious getCurrentLayout getLayouts"
   [lock]="activate prepareSleep deactivate status focus"
+  [loginScreen]="set status sync"
   [mascot]="poke status setVoice romp chase hideSeek tidy appear appearContextual appearWithLine hide snooze"
   [mascotMood]="set current"
   [mediaControls]="toggle close open"
@@ -420,6 +423,9 @@ declare -gA IPC_FUNCTION_DESC=(
   ["lock:deactivate"]="Cancel lock and mark screen unlocked"
   ["lock:status"]="Return lock state (\`secure\`, \`locked\`, \`activating\`, or \`unlocked\`)"
   ["lock:focus"]="Refocus the lock screen input"
+  ["loginScreen:set"]="\`auto\` (the iRiS lock while you use iRiS, Classic otherwise), \`classic\` or \`iris\`"
+  ["loginScreen:status"]="Print the choice and the look it gives (e.g. \`auto (iris)\`), or \`not installed\`"
+  ["loginScreen:sync"]="Copy the current lock, colours and wallpaper to the login screen now"
   ["mascot:poke"]="Ask her to peek from a random edge with a random pose"
   ["mascot:status"]="Return JSON diagnostics for mood, configured/effective voice, companion state and non-sensitive Screen Time counters"
   ["mascot:setVoice"]="Set the idle voice register to \`adaptive\`, \`casual\`, \`dry\`, \`composed\` or \`chaotic\`"
@@ -739,6 +745,7 @@ declare -gA IPC_FUNCTION_ARGS=(
   ["iris:watchSeek"]="<seconds>"
   ["iris:watchSkip"]="<direction>"
   ["iris:motion"]="<target>"
+  ["loginScreen:set"]="<look>"
   ["mascot:setVoice"]="<mode>"
   ["mascot:appear"]="<pose> <edge>"
   ["mascot:appearContextual"]="<pose> <sourceWidget>"
@@ -847,6 +854,7 @@ declare -gA IPC_FUNCTION_VALUES=(
   ["iris:watchSubs"]="size+ size- delay+ delay- delay0 off track: file:"
   ["iris:watchSkip"]="next previous"
   ["iris:motion"]="spotlight orbit gallery settings focus today card motioned"
+  ["loginScreen:set"]="auto classic iris"
   ["mascot:setVoice"]="adaptive casual dry composed chaotic"
   ["mascot:appear"]="left right top bottom"
   ["mascot:appearContextual"]="battery media update network dnd mascot.companion.contextualPlacement"
@@ -912,8 +920,8 @@ Ctrl+Alt+A { spawn "inir" "wallpaperSelector" "openLauncher" "animated"; }'
   [ytmusic]='Mod+M+Space { spawn "inir" "ytmusic" "playPause"; }'
 )
 
-IPC_ALL_TARGETS=(ai altSwitcher appCatalog audio autostart background bar brightness cheatsheet clipboard cliphistService closeConfirm colorMode connections controlPanel coverflowSelector customWidgets dashboard dev equalizer gamemode globalActions globalStyle iris keyboard lock mascot mascotMood mediaControls memory minimize mpris network niriAnimations notifications orbit osd osdVolume osk overlay overview packageSearch panelFamily pill recordingOsd region search session settings settingsNav shellLayout shellUpdate sidebarLeft sidebarRight taskview tiling voiceSearch vpn wactionCenter waffleAltSwitcher wallpaperLauncher wallpaperSelector wbar widgetStacks widgetpower wnotificationCenter workspaceStrip wwidgets ytmusic zoom)
-IPC_SHARED_TARGETS=(ai altSwitcher appCatalog audio background bar brightness cheatsheet clipboard cliphistService closeConfirm colorMode connections controlPanel coverflowSelector dashboard dev gamemode globalActions globalStyle iris keyboard lock mascot mascotMood mediaControls memory minimize mpris network niriAnimations notifications orbit osd osdVolume osk overlay overview packageSearch panelFamily pill region session settings settingsNav shellLayout shellUpdate sidebarLeft sidebarRight taskview tiling voiceSearch vpn wallpaperLauncher wallpaperSelector workspaceStrip ytmusic zoom)
+IPC_ALL_TARGETS=(ai altSwitcher appCatalog audio autostart background bar brightness cheatsheet clipboard cliphistService closeConfirm colorMode connections controlPanel coverflowSelector customWidgets dashboard dev equalizer gamemode globalActions globalStyle iris keyboard lock loginScreen mascot mascotMood mediaControls memory minimize mpris network niriAnimations notifications orbit osd osdVolume osk overlay overview packageSearch panelFamily pill recordingOsd region search session settings settingsNav shellLayout shellUpdate sidebarLeft sidebarRight taskview tiling voiceSearch vpn wactionCenter waffleAltSwitcher wallpaperLauncher wallpaperSelector wbar widgetStacks widgetpower wnotificationCenter workspaceStrip wwidgets ytmusic zoom)
+IPC_SHARED_TARGETS=(ai altSwitcher appCatalog audio background bar brightness cheatsheet clipboard cliphistService closeConfirm colorMode connections controlPanel coverflowSelector dashboard dev gamemode globalActions globalStyle iris keyboard lock loginScreen mascot mascotMood mediaControls memory minimize mpris network niriAnimations notifications orbit osd osdVolume osk overlay overview packageSearch panelFamily pill region session settings settingsNav shellLayout shellUpdate sidebarLeft sidebarRight taskview tiling voiceSearch vpn wallpaperLauncher wallpaperSelector workspaceStrip ytmusic zoom)
 IPC_II_TARGETS=(equalizer)
 IPC_WAFFLE_TARGETS=(autostart customWidgets recordingOsd search wactionCenter waffleAltSwitcher wbar widgetStacks widgetpower wnotificationCenter wwidgets)
 
@@ -928,6 +936,7 @@ declare -gA IPC_KEBAB_ALIASES=(
   [custom-widgets]=customWidgets
   [global-actions]=globalActions
   [global-style]=globalStyle
+  [login-screen]=loginScreen
   [mascot-mood]=mascotMood
   [media-controls]=mediaControls
   [niri-animations]=niriAnimations

@@ -926,7 +926,8 @@ QtObject {
         { section: "lock", group: "When idle", label: "On battery, screen off after", path: "idle.onBattery.screenOffTimeout", visibleWhen: "idle.onBattery.enable", kind: "choice", fallback: 120, choices: root.idleChoices },
         { section: "lock", group: "When idle", label: "On battery, lock after", path: "idle.onBattery.lockTimeout", visibleWhen: "idle.onBattery.enable", kind: "choice", fallback: 300, choices: root.idleChoices },
         { section: "lock", group: "When idle", label: "On battery, suspend after", path: "idle.onBattery.suspendTimeout", visibleWhen: "idle.onBattery.enable", kind: "choice", fallback: 600, choices: root.idleChoices },
-        { section: "lock", group: "Security", label: "Unlock the keyring", description: "Your password also opens the login keyring, so apps stop asking for it.", path: "lock.security.unlockKeyring", kind: "switch", fallback: true }
+        { section: "lock", group: "Security", label: "Unlock the keyring", description: "Your password also opens the login keyring, so apps stop asking for it.", path: "lock.security.unlockKeyring", kind: "switch", fallback: true },
+        { section: "lock", group: "Login screen", label: "Login screen", description: "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.", path: "lock.loginScreen", showIf: () => MaterialThemeLoader.loginScreenInstalled, kind: "choice", fallback: "auto", choices: [{label:"Automatic",value:"auto"},{label:"iRiS",value:"iris"},{label:"Classic",value:"classic"}], keywords: ["login", "sddm", "greeter", "sign in", "boot", "startup", "password", "classic"] }
     ]
 
     readonly property var swatchChoices: [
@@ -1119,7 +1120,7 @@ QtObject {
         "Opening bodies": "open_in_full", "Overview backdrop": "grid_view", "Pages": "view_carousel", "Per surface": "tune",
         "Panel look": "dock_to_right", "Placement": "location_on", "Player": "music_note", "Player page": "album", "Previews": "preview",
         "Resting Island": "pill", "Scene": "landscape", "Security": "key", "Settings": "settings", "Shape": "rounded_corner",
-        "Sign in": "person", "Size": "straighten", "Sound": "volume_up", "Spotlight": "search",
+        "Sign in": "person", "Login screen": "login", "Size": "straighten", "Sound": "volume_up", "Spotlight": "search",
         "Orbit": "workspaces", "Shelf": "shelves", "Hot corner": "north_east",
         "Status": "signal_cellular_alt", "Style per surface": "motion_mode", "Suspend": "bedtime", "Text": "text_fields", "Timing": "timer", "Today · right": "dock_to_right",
         "Touch": "touch_app", "Tray": "inventory_2", "Type": "text_fields", "Updates": "system_update_alt", "Visibility": "visibility",
@@ -1187,6 +1188,7 @@ QtObject {
         get "Layout"() { return IrisStyle.identity.blue },
         get "Light"() { return IrisStyle.identity.yellow },
         get "Live wallpapers"() { return IrisStyle.identity.pink },
+        get "Login screen"() { return IrisStyle.identity.indigo },
         get "Look"() { return IrisStyle.identity.purple },
         get "Material"() { return IrisStyle.identity.indigo },
         get "Material per surface"() { return IrisStyle.identity.indigo },
@@ -1315,7 +1317,7 @@ QtObject {
         bubbles: ["Size", "Behaviour", "On the contour", "Floating", "Opening bodies", "Cards", "Card contents", "Joining", "Tray"],
         dock: ["Notch", "Look", "Icons", "Visibility"],
         desktop: ["Widgets", "Wallpaper shuffle", "Scaling", "Live wallpapers", "Behind windows", "Parallax", "Overview backdrop", "Wallpaper gallery", "Desktop menu"],
-        lock: ["When idle", "Security", "Scene", "Clock", "At a glance", "Now playing", "Activity", "Status", "Sign in", "Type"]
+        lock: ["When idle", "Security", "Scene", "Clock", "At a glance", "Now playing", "Activity", "Status", "Sign in", "Type", "Login screen"]
     })
     // How a section's page reads: named blocks of groups, by what someone came to change.
     readonly property var groupClusters: ({
@@ -1342,7 +1344,7 @@ QtObject {
         ],
         lock: [
             { caption: "Locking", groups: ["When idle", "Security"] },
-            { caption: "Look", groups: ["Scene", "Clock", "Type"] },
+            { caption: "Look", groups: ["Scene", "Clock", "Type", "Login screen"] },
             { caption: "What it shows", groups: ["At a glance", "Now playing", "Activity", "Status", "Sign in"] }
         ]
     })

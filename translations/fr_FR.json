@@ -9000,5 +9000,7 @@
   "Span": "Étendre",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "Remplir rogne, Ajuster laisse des bandes, Étendre étale une image sur tous les écrans.",
   "Fill crops, Fit shows bars, Span lays one picture across every screen": "Remplir rogne, Ajuster laisse des bandes, Étendre étale une image sur tous les écrans",
-  "Open %1": "Ouvrir %1"
+  "Open %1": "Ouvrir %1",
+  "Login screen": "Écran de connexion",
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "Là où vous vous connectez au démarrage de l'ordinateur. Automatique reprend le verrouillage iRiS tant que vous utilisez iRiS."
 }

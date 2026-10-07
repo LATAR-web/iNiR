@@ -9000,5 +9000,7 @@
   "Span": "امتداد",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "الملء يقص، والملاءمة تترك أشرطة، والامتداد يمد صورة واحدة على كل الشاشات.",
   "Fill crops, Fit shows bars, Span lays one picture across every screen": "الملء يقص، والملاءمة تترك أشرطة، والامتداد يمد صورة واحدة على كل الشاشات",
-  "Open %1": "افتح %1"
+  "Open %1": "افتح %1",
+  "Login screen": "شاشة تسجيل الدخول",
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "حيث تسجّل الدخول بعد تشغيل الحاسوب. «تلقائي» يُلبسها قفل iRiS ما دمت تستخدم iRiS."
 }

@@ -9000,5 +9000,7 @@
   "Span": "スパン",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "塗りつぶしは切り抜き、フィットは余白を残し、スパンは1枚の画像をすべての画面にまたがせます。",
   "Fill crops, Fit shows bars, Span lays one picture across every screen": "塗りつぶしは切り抜き、フィットは余白を残し、スパンは1枚の画像をすべての画面にまたがせます",
-  "Open %1": "%1を開く"
+  "Open %1": "%1を開く",
+  "Login screen": "ログイン画面",
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "コンピューターの起動後にサインインする画面です。「自動」では iRiS を使っている間、iRiS のロック画面の見た目になります。"
 }

@@ -9000,5 +9000,7 @@
   "Span": "फैलाएँ",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "फ़िल काटता है, फ़िट किनारे छोड़ता है, फैलाएँ एक तस्वीर को सभी स्क्रीन पर बिछाता है।",
   "Fill crops, Fit shows bars, Span lays one picture across every screen": "फ़िल काटता है, फ़िट किनारे छोड़ता है, फैलाएँ एक तस्वीर को सभी स्क्रीन पर बिछाता है",
-  "Open %1": "%1 खोलें"
+  "Open %1": "%1 खोलें",
+  "Login screen": "लॉगिन स्क्रीन",
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "कंप्यूटर चालू करने के बाद जहाँ आप साइन इन करते हैं। स्वचालित में, जब तक आप iRiS इस्तेमाल करते हैं, यह iRiS लॉक जैसा दिखता है।"
 }

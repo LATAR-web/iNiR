@@ -9000,5 +9000,7 @@
   "Span": "Spannen",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "Füllen schneidet zu, Einpassen zeigt Balken, Spannen legt ein Bild über alle Bildschirme.",
   "Fill crops, Fit shows bars, Span lays one picture across every screen": "Füllen schneidet zu, Einpassen zeigt Balken, Spannen legt ein Bild über alle Bildschirme",
-  "Open %1": "%1 öffnen"
+  "Open %1": "%1 öffnen",
+  "Login screen": "Anmeldebildschirm",
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "Hier meldest du dich nach dem Start des Computers an. Automatisch trägt die iRiS-Sperre, solange du iRiS nutzt."
 }

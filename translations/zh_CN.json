@@ -9000,5 +9000,7 @@
   "Span": "跨屏",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "填充会裁切，适应会留边，跨屏把一张图铺满所有屏幕。",
   "Fill crops, Fit shows bars, Span lays one picture across every screen": "填充会裁切，适应会留边，跨屏把一张图铺满所有屏幕",
-  "Open %1": "打开 %1"
+  "Open %1": "打开 %1",
+  "Login screen": "登录界面",
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "开机后登录的界面。选择“自动”时，只要你在使用 iRiS，它就会换上 iRiS 锁屏的样子。"
 }

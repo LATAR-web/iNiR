@@ -9000,5 +9000,7 @@
   "Span": "Растянуть на все",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "Заполнить обрезает, Вписать оставляет поля, Растянуть на все кладёт одну картинку на все экраны.",
   "Fill crops, Fit shows bars, Span lays one picture across every screen": "Заполнить обрезает, Вписать оставляет поля, Растянуть на все кладёт одну картинку на все экраны",
-  "Open %1": "Открыть %1"
+  "Open %1": "Открыть %1",
+  "Login screen": "Экран входа",
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "Здесь вы входите в систему после включения компьютера. «Автоматический» показывает блокировку iRiS, пока вы пользуетесь iRiS."
 }

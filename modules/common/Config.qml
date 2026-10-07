@@ -2969,6 +2969,7 @@ Singleton {
                     property bool requirePasswordToPower: false
                 }
                 property bool materialShapeChars: true
+                property string loginScreen: "auto" // SDDM look: "auto" (iris under the iRiS family, else classic), "classic" or "iris"
                 property bool enableAnimation: false // Play video/GIF wallpapers on lock screen (default: show first frame)
                 property JsonObject dim: JsonObject {
                     property bool enable: false

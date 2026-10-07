@@ -9000,5 +9000,7 @@
   "Span": "확장",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "채우기는 잘라내고, 맞춤은 여백을 두며, 확장은 한 장의 그림을 모든 화면에 걸칩니다.",
   "Fill crops, Fit shows bars, Span lays one picture across every screen": "채우기는 잘라내고, 맞춤은 여백을 두며, 확장은 한 장의 그림을 모든 화면에 걸칩니다",
-  "Open %1": "%1 열기"
+  "Open %1": "%1 열기",
+  "Login screen": "로그인 화면",
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "컴퓨터를 켠 뒤 로그인하는 화면입니다. 자동은 iRiS를 쓰는 동안 iRiS 잠금 화면의 모습을 입습니다."
 }

@@ -7347,5 +7347,7 @@
   "Tile": "Tile",
   "Span": "Span",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "Fill crops, Fit shows bars, Span lays one picture across every screen.",
-  "Fill crops, Fit shows bars, Span lays one picture across every screen": "Fill crops, Fit shows bars, Span lays one picture across every screen"
+  "Fill crops, Fit shows bars, Span lays one picture across every screen": "Fill crops, Fit shows bars, Span lays one picture across every screen",
+  "Login screen": "Login screen",
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "Qarasaasiaq aallartereerlugu login-imi iserfik. Nammineertoq iRiS atugaangakku iRiS-ip lock-ianik atisaqartarpoq."
 }

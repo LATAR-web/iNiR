@@ -9000,5 +9000,7 @@
   "Span": "Yay",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "Doldur kırpar, Sığdır kenar boşluğu bırakır, Yay tek resmi tüm ekranlara yayar.",
   "Fill crops, Fit shows bars, Span lays one picture across every screen": "Doldur kırpar, Sığdır kenar boşluğu bırakır, Yay tek resmi tüm ekranlara yayar",
-  "Open %1": "Aç: %1"
+  "Open %1": "Aç: %1",
+  "Login screen": "Giriş ekranı",
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "Bilgisayarı açtıktan sonra oturum açtığınız yer. Otomatik, iRiS kullandığınız sürece iRiS kilidinin görünümünü kullanır."
 }

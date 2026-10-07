@@ -295,6 +295,18 @@ Super+Alt+L allow-when-locked=true { spawn "inir" "lock" "activate"; }
 
 ---
 
+### loginScreen
+
+The login screen you see after starting the computer. It copies the lock screen and follows your colours.
+
+| Function | Description |
+|----------|-------------|
+| `set <look>` | `auto` (the iRiS lock while you use iRiS, Classic otherwise), `classic` or `iris` |
+| `status` | Print the choice and the look it gives (e.g. `auto (iris)`), or `not installed` |
+| `sync` | Copy the current lock, colours and wallpaper to the login screen now |
+
+---
+
 ### memory
 
 Memory pressure monitoring for JSGCHeap accumulation (Qt V4 memfd leak). Notifies user when memory is high, lets them decide when to restart.

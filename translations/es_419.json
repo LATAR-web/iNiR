@@ -9000,5 +9000,7 @@
   "Span": "Extender",
   "Fill crops, Fit shows bars, Span lays one picture across every screen.": "Rellenar recorta, Encajar deja barras, Extender pone una sola imagen sobre todas las pantallas.",
   "Fill crops, Fit shows bars, Span lays one picture across every screen": "Rellenar recorta, Encajar deja barras, Extender pone una sola imagen sobre todas las pantallas",
-  "Open %1": "Abrir %1"
+  "Open %1": "Abrir %1",
+  "Login screen": "Pantalla de inicio de sesión",
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "Donde inicias sesión al encender la computadora. Automático lleva el bloqueo de iRiS mientras usas iRiS."
 }

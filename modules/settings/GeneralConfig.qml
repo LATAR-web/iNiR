@@ -1123,6 +1123,22 @@ ContentPage {
                     }
                 }
             }
+
+            ContentSubsection {
+                visible: MaterialThemeLoader.loginScreenInstalled
+                title: Translation.tr("Login screen")
+                tooltip: Translation.tr("Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.")
+
+                ConfigSelectionArray {
+                    currentValue: Config.options?.lock?.loginScreen ?? "auto"
+                    options: [
+                        { displayName: Translation.tr("Automatic"), icon: "auto_awesome", value: "auto" },
+                        { displayName: Translation.tr("Classic"), icon: "lock", value: "classic" },
+                        { displayName: Translation.tr("iRiS"), icon: "blur_on", value: "iris" }
+                    ]
+                    onSelected: (newValue) => Config.setNestedValue("lock.loginScreen", newValue)
+                }
+            }
         }
     }
         }

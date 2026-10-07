@@ -396,14 +396,66 @@ Singleton {
     Connections {
         target: Config
         function onReadyChanged() {
-            if (Config.ready) root._appliedAppTargetsKey = root._appTargetsKey
+            if (!Config.ready) return
+            root._appliedAppTargetsKey = root._appTargetsKey
+            root._syncedLoginScreenKey = root._loginScreenKey
         }
     }
-    Component.onCompleted: if (Config.ready) root._appliedAppTargetsKey = root._appTargetsKey
+    Component.onCompleted: if (Config.ready) {
+        root._appliedAppTargetsKey = root._appTargetsKey
+        root._syncedLoginScreenKey = root._loginScreenKey
+    }
     on_AppTargetsKeyChanged: {
         if (!Config.ready || root._appliedAppTargetsKey === root._appTargetsKey) return
         root._appliedAppTargetsKey = root._appTargetsKey
         root.requestExternalApply()
+    }
+
+    // The login screen (SDDM) copies the lock and follows the family. A palette change reaches it with the other apps;
+    // its look, the lock it mirrors and the family re-sync it here. The sync writes only what differs.
+    readonly property bool loginScreenInstalled: loginThemeView.loaded
+    FileView {
+        id: loginThemeView
+        path: "/usr/share/sddm/themes/ii-pixel/theme.conf"
+        printErrors: false
+    }
+    readonly property string _loginScreenKey: {
+        const o = Config.options
+        if (!o) return ""
+        const lock = o.iris?.lock
+        const look = o.iris?.appearance
+        return JSON.stringify([o.lock?.loginScreen, o.panelFamily, o.lock?.materialShapeChars, lock?.scene, lock?.type,
+            lock?.blocks?.clock, lock?.blocks?.session, look?.fontFamily, look?.numbersFontFamily, look?.titleFontFamily,
+            look?.followTheme, look?.theme?.surface])
+    }
+    // What the config held once loaded, like _appliedAppTargetsKey below.
+    property string _syncedLoginScreenKey: ""
+    on_LoginScreenKeyChanged: {
+        if (!Config.ready || !root.loginScreenInstalled || !root.defaultApplyExternal) return
+        if (root._syncedLoginScreenKey !== root._loginScreenKey) loginScreenSync.restart()
+    }
+    Timer {
+        id: loginScreenSync
+        interval: 1500
+        onTriggered: {
+            root._syncedLoginScreenKey = root._loginScreenKey
+            Quickshell.execDetached(["/usr/bin/bash", Directories.scriptsPath + "/colors/apply-targets.sh", "sddm"])
+        }
+    }
+    IpcHandler {
+        target: "loginScreen"
+        function set(look: string): string {
+            if (["auto", "classic", "iris"].indexOf(look) < 0) return "unknown look: " + look + " (auto, classic or iris)"
+            Config.setNestedValue("lock.loginScreen", look)
+            return look
+        }
+        function status(): string {
+            if (!root.loginScreenInstalled) return "not installed"
+            const look = String(Config.options?.lock?.loginScreen ?? "auto")
+            if (look !== "auto") return look
+            return "auto (" + ((Config.options?.panelFamily ?? "ii") === "iris" ? "iris" : "classic") + ")"
+        }
+        function sync(): void { loginScreenSync.restart() }
     }
 
     // Apps are not restyled under a game: Spotify, Steam and the terminals reload their theme on every

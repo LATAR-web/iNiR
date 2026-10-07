@@ -1498,6 +1498,7 @@
         },
         "launchOnStartup": false,
         "materialShapeChars": true,
+        "loginScreen": "auto",
         "enableAnimation": false,
         "notifications": {
             "enable": false,
