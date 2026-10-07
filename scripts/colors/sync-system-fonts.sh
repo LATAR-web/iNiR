@@ -90,8 +90,8 @@ replace_line(
 PY
 
 if command -v kwriteconfig6 >/dev/null 2>&1; then
-    main_kde="${main_font},${font_size},-1,5,50,0,0,0,0,0,0,0,0,0,0,1"
-    mono_kde="${mono_font},${font_size},-1,5,50,0,0,0,0,0,0,0,0,0,0,1"
+    main_kde="${main_font},${font_size},-1,5,50,0,0,0,0,0"
+    mono_kde="${mono_font},${font_size},-1,5,50,0,0,0,0,0"
     for key in font menuFont toolBarFont; do
         kwriteconfig6 --file kdeglobals --group General --key "$key" "$main_kde" || status=1
     done

@@ -3,11 +3,11 @@ ColorScheme=Darkly
 XftHintStyle=hintslight
 TerminalApplication=kitty -1
 XftSubPixel=none
-fixed=JetBrainsMono Nerd Font,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
-font=Roboto Flex,11,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
-menuFont=Roboto Flex,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
-smallestReadableFont=Roboto Flex,9,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
-toolBarFont=Roboto Flex,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+fixed=JetBrainsMono Nerd Font,11,-1,5,50,0,0,0,0,0
+font=Roboto Flex,11,-1,5,50,0,0,0,0,0
+menuFont=Roboto Flex,10,-1,5,50,0,0,0,0,0
+smallestReadableFont=Roboto Flex,9,-1,5,50,0,0,0,0,0
+toolBarFont=Roboto Flex,10,-1,5,50,0,0,0,0,0
 
 [Icons]
 Theme=WhiteSur-dark
@@ -39,4 +39,4 @@ View Style=Simple
 Theme=freedesktop
 
 [WM]
-activeFont=Roboto Flex,10,-1,5,400,0,0,0,0,0,0,0,0,0,0,1
+activeFont=Roboto Flex,10,-1,5,50,0,0,0,0,0
