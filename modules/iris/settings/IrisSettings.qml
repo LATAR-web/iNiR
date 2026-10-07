@@ -28,6 +28,8 @@ Item {
     readonly property alias frame: frame
     readonly property var screen: root.QsWindow.window?.screen ?? null
     property string section: "general"
+    // The main-list row that holds the selection, for the travelling wash in the sidebar.
+    property Item travelRow: null
     property int advancedPage: -1
     property string query: ""
     property string group: ""
@@ -524,6 +526,32 @@ Item {
                             maskSource: sidebarFade
                             maskThresholdMin: 0.5
                             maskSpreadAtMin: 1
+                        }
+
+                        // Where you are travels from row to row on the morph curve (the gallery's ring does the same) instead of
+                        // fading out on one row and in on the next. Under the rows; the footer keeps its own wash.
+                        Rectangle {
+                            id: travelWash
+                            readonly property Item row: root.travelRow
+                            readonly property bool shown: travelWash.row !== null && travelWash.row.selected
+                            property bool travels: false
+                            x: sidebarColumn.x
+                            width: sidebarColumn.width
+                            y: travelWash.row ? sidebarColumn.y + travelWash.row.y + travelWash.row.height - travelWash.row.rowHeight : 0
+                            height: travelWash.row ? travelWash.row.rowHeight : 0
+                            radius: travelWash.row ? travelWash.row.washRadius : 0
+                            color: IrisStyle.tintFillHover(travelWash.row?.compact ? travelWash.row.modelData.tint : IrisStyle.accent)
+                            opacity: travelWash.shown ? 1 : 0
+                            // It lands where it first appears and travels from then on. Moving the selection hides it for a
+                            // moment (the old row lets go before the new one takes it): only a hide that lasts stops the travel.
+                            onShownChanged: if (travelWash.shown) { washDisarm.stop(); if (!travelWash.travels) washArm.restart() }
+                                else washDisarm.restart()
+                            Timer { id: washArm; interval: 0; onTriggered: travelWash.travels = IrisStyle.motionEnabled }
+                            Timer { id: washDisarm; interval: 150; onTriggered: if (!travelWash.shown) travelWash.travels = false }
+                            Behavior on y { enabled: travelWash.travels; NumberAnimation { duration: IrisStyle.morphDuration; easing.type: Easing.BezierSpline; easing.bezierCurve: IrisStyle.morphCurve } }
+                            Behavior on height { enabled: travelWash.travels; NumberAnimation { duration: IrisStyle.morphDuration; easing.type: Easing.BezierSpline; easing.bezierCurve: IrisStyle.morphCurve } }
+                            Behavior on opacity { NumberAnimation { duration: IrisStyle.duration(110); easing.type: IrisStyle.feedbackEasing } }
+                            Behavior on color { ColorAnimation { duration: IrisStyle.duration(110); easing.type: IrisStyle.feedbackEasing } }
                         }
 
                         Column {
@@ -1033,6 +1061,12 @@ Item {
         readonly property bool clusterStart: sectionRow.gapAbove && (sectionRow.index === 0
             || sectionRow.list[sectionRow.index - 1]?.cluster !== sectionRow.modelData.cluster)
         readonly property bool selected: !root.searching && root.section === sectionRow.modelData.id
+        // Main-list rows hand their selection to the travelling wash (travelWash); footer rows paint their own.
+        readonly property bool travels: sectionRow.gapAbove
+        readonly property real washRadius: Math.min(sectionRow.rowHeight / 2, IrisStyle.iconRadius(sectionMark.width) + sectionMark.x)
+        onSelectedChanged: if (sectionRow.selected && sectionRow.travels) root.travelRow = sectionRow
+        Component.onCompleted: if (sectionRow.selected && sectionRow.travels) root.travelRow = sectionRow
+        Component.onDestruction: if (root.travelRow === sectionRow) root.travelRow = null
         readonly property bool dimmed: root.searching && !root.matchedSections.has(sectionRow.modelData.id)
         readonly property bool compact: root.railLayout
         readonly property real rowHeight: Math.round((sectionRow.compact ? 36 : 27) * root.d * Math.max(1, IrisStyle.typeScale))
@@ -1058,8 +1092,9 @@ Item {
             height: sectionRow.rowHeight
             // Concentric with the mark it holds; where you are is a wash of the accent, as light as a hover, never a
             // solid block heavier than the buttons around it.
-            radius: Math.min(height / 2, IrisStyle.iconRadius(sectionMark.width) + sectionMark.x)
-            color: sectionRow.selected ? IrisStyle.tintFillHover(sectionRow.compact ? sectionRow.modelData.tint : IrisStyle.accent)
+            radius: sectionRow.washRadius
+            color: sectionRow.selected && !sectionRow.travels ? IrisStyle.tintFillHover(sectionRow.compact ? sectionRow.modelData.tint : IrisStyle.accent)
+                : sectionRow.selected ? "transparent"
                 : sectionRow.containsMouse ? IrisStyle.fillHover : "transparent"
             Behavior on color { ColorAnimation { duration: IrisStyle.duration(110); easing.type: IrisStyle.feedbackEasing } }
             IrisSquircle {

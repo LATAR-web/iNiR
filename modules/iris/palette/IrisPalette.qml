@@ -733,9 +733,22 @@ Item {
                             if (!target) return
                             const top = resultColumn.y + target.y + (index === 0 ? 0 : target.rowY)
                             const bottom = resultColumn.y + target.y + target.rowY + target.rowHeight
-                            if (top < resultsFlick.contentY) resultsFlick.contentY = Math.max(0, top - 8 * stage.d)
+                            let to = resultsFlick.contentY
+                            if (top < resultsFlick.contentY) to = Math.max(0, top - 8 * stage.d)
                             else if (bottom > resultsFlick.contentY + resultsFlick.height)
-                                resultsFlick.contentY = Math.min(resultsFlick.contentHeight - resultsFlick.height, bottom - resultsFlick.height + 8 * stage.d)
+                                to = Math.min(resultsFlick.contentHeight - resultsFlick.height, bottom - resultsFlick.height + 8 * stage.d)
+                            if (Math.abs(to - resultsFlick.contentY) < 1) return
+                            // The list glides with the highlight instead of jumping under it (the gallery does the same).
+                            if (!IrisStyle.motionEnabled) { resultsFlick.contentY = to; return }
+                            revealGlide.to = to
+                            revealGlide.restart()
+                        }
+                        NumberAnimation {
+                            id: revealGlide
+                            target: resultsFlick
+                            property: "contentY"
+                            duration: IrisStyle.duration(180)
+                            easing.type: IrisStyle.feedbackEasing
                         }
                         Connections {
                             target: root
@@ -743,7 +756,7 @@ Item {
                         }
                         Connections {
                             target: LauncherSearch
-                            function onQueryChanged(): void { resultsFlick.contentY = 0 }
+                            function onQueryChanged(): void { revealGlide.stop(); resultsFlick.contentY = 0 }
                         }
 
                         Flickable {
