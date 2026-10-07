@@ -356,10 +356,13 @@ Loader {
                 onClicked: root.toggleRequested()
             }
             IrisIconButton {
+                id: compactToggle
                 visible: root.expanded
                 anchors.top: parent.top
                 anchors.right: parent.right
-                anchors.margins: 8 * root.d
+                // The glyph sits on the card's own 14·d padding, level with the artwork's top edge, not in a tighter
+                // corner of its own.
+                anchors.margins: Math.round(14 * root.d - (compactToggle.height - compactToggle.iconSize) / 2)
                 materialIcon: "unfold_less"
                 iconSize: Math.round(16 * root.d)
                 Accessible.name: root.expanded ? Translation.tr("Compact player") : Translation.tr("Full player")
@@ -1155,19 +1158,21 @@ Loader {
                     visible: mixer.streams.length > 0
                     spacing: 6 * root.d
                     Repeater {
-                        model: mixer.streams.slice(0, 8)
+                        // A stream coming or going keeps the other rows: a plain array rebuilt every delegate,
+                        // and the dying ones re-read their bindings with no node.
+                        model: ScriptModel { values: mixer.streams.slice(0, 8) }
                         IrisImage {
                             required property var modelData
                             width: Math.round(22 * root.d)
                             height: width
-                            source: Quickshell.iconPath(MprisController.streamIconName(modelData), "audio-x-generic")
+                            source: modelData ? Quickshell.iconPath(MprisController.streamIconName(modelData), "audio-x-generic") : ""
                         }
                     }
                 }
             ]
             EmptyLabel { visible: mixer.streams.length === 0; text: Translation.tr("No app is playing sound.") }
             Repeater {
-                model: mixer.streams
+                model: ScriptModel { values: mixer.streams }
                 RowLayout {
                     id: stream
                     required property var modelData
@@ -1177,7 +1182,7 @@ Loader {
                     IrisImage {
                         Layout.preferredWidth: Math.round(26 * root.d)
                         Layout.preferredHeight: Layout.preferredWidth
-                        source: Quickshell.iconPath(MprisController.streamIconName(stream.modelData), "audio-x-generic")
+                        source: stream.modelData ? Quickshell.iconPath(MprisController.streamIconName(stream.modelData), "audio-x-generic") : ""
                         opacity: stream.muted ? 0.45 : 1
                     }
                     ColumnLayout {
@@ -1185,15 +1190,15 @@ Loader {
                         spacing: 4 * root.d
                         IrisText {
                             Layout.fillWidth: true
-                            text: Audio.appNodeDisplayName(stream.modelData)
+                            text: stream.modelData ? Audio.appNodeDisplayName(stream.modelData) : ""
                             font.pixelSize: IrisStyle.typeMeta
                             font.weight: IrisStyle.weight(Font.Medium)
                             elide: Text.ElideRight
                         }
                         IrisScrubber {
                             Layout.fillWidth: true
-                            fillColor: stream.muted ? IrisStyle.muted : IrisStyle.text
-                            value: Math.min(1, stream.modelData?.audio?.volume ?? 0)
+                            fillColor: stream.muted ? IrisStyle.muted : IrisStyle.fillStrong
+                            value: Math.min(1, Number(stream.modelData?.audio?.volume ?? 0) || 0)
                             onMoved: next => { if (stream.modelData?.audio) stream.modelData.audio.volume = next }
                         }
                     }

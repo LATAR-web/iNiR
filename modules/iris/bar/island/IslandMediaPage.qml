@@ -326,7 +326,7 @@ GridLayout {
                 }
                 IrisScrubber {
                     Layout.fillWidth: true
-                    fillColor: appLevel.muted ? IrisStyle.muted : IrisStyle.text
+                    fillColor: appLevel.muted ? IrisStyle.muted : IrisStyle.fillStrong
                     Binding on value {
                         when: appLevel.live
                         restoreMode: Binding.RestoreNone

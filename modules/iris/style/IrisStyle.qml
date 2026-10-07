@@ -561,7 +561,8 @@ QtObject {
     readonly property color fillHover: ColorUtils.applyAlpha(root.fillInk, root.fillAlpha(0.18))
     readonly property color fillActive: ColorUtils.applyAlpha(root.fillInk, root.fillAlpha(0.26))
     // A strong fill (a slider's level, a scrubber) is ink, not a film: the body's hue at 60 % turned paper's levels brown.
-    readonly property color fillStrong: ColorUtils.applyAlpha(root.light ? root.text : root.fillInk, Math.min(0.9, 0.6 * root.preset.fill * root.tweak("fill", 0.3, 2)))
+    // On paper the strong fill is ink: at the night's 0.6 it read as a dark grey slab beside the controls; 0.46 is a pencil line.
+    readonly property color fillStrong: ColorUtils.applyAlpha(root.light ? root.text : root.fillInk, Math.min(0.9, (root.light ? 0.46 : 0.6) * root.preset.fill * root.tweak("fill", 0.3, 2)))
     // The palette solves the accent as text on this wash (washi.go): it stays within that, whatever Fills says.
     function tintFill(tint: color): color { return ColorUtils.applyAlpha(tint, Math.min(0.15, root.fillAlpha(0.13))) }
     function tintFillHover(tint: color): color { return ColorUtils.applyAlpha(tint, root.fillAlpha(0.2)) }
