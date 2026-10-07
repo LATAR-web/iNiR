@@ -261,7 +261,7 @@ case "${SKIP_NIRI}" in
       log_success "Niri config installed (dots)"
     fi
 
-    # Patch config.kdl: detect polkit agent
+    # Patch the Niri config: startup extras and the Qt platform theme
     NIRI_CFG="${XDG_CONFIG_HOME}/niri/config.kdl"
     NIRI_ENV_CFG="${XDG_CONFIG_HOME}/niri/config.d/40-environment.kdl"
     NIRI_STARTUP_CFG="${XDG_CONFIG_HOME}/niri/config.d/50-startup.kdl"
@@ -275,13 +275,7 @@ case "${SKIP_NIRI}" in
     [[ -f "$NIRI_BINDS_CFG" ]] && NIRI_BINDS_TARGET="$NIRI_BINDS_CFG"
 
     if [[ -f "$NIRI_CFG" ]]; then
-      POLKIT_AGENT="$(get-polkit-agent)"
-      if [[ -n "$POLKIT_AGENT" ]]; then
-        sed -i "s|spawn-at-startup \"/usr/lib/mate-polkit/polkit-mate-authentication-agent-1\"|spawn-at-startup \"${POLKIT_AGENT}\"|" "$NIRI_STARTUP_TARGET"
-        log_success "Polkit agent: $(basename "$(dirname "$POLKIT_AGENT")")/$(basename "$POLKIT_AGENT")"
-      else
-        log_warning "No polkit agent found — sudo dialogs may not work"
-      fi
+      # No polkit agent is spawned: the shell is the agent (migration 044 retires the line older setups wrote).
 
       if [[ "${INSTALL_FIRSTRUN}" == true && "${OS_SPECIFIC_ID:-}" == "cachyos" ]] \
           && command -v niri-focused-booster >/dev/null 2>&1 \

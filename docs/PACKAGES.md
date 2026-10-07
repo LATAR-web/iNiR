@@ -33,8 +33,7 @@ Essential packages for Niri + ii to function.
 | `xdg-desktop-portal` | XDG portal base |
 | `xdg-desktop-portal-gtk` | GTK portal |
 | `xdg-desktop-portal-gnome` | GNOME portal (screenshare) |
-| `polkit` | Privilege elevation |
-| `polkit-gnome` | Polkit auth-dialog agent (works universally) |
+| `polkit` | Privilege elevation (iNiR shows the password dialog itself) |
 | `networkmanager` | Network management |
 | `gnome-keyring` | Secrets storage |
 | `nautilus` | File manager |

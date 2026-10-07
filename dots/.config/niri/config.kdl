@@ -213,7 +213,7 @@ environment {
 spawn-at-startup "bash" "-c" "systemctl --user import-environment XDG_MENU_PREFIX && kbuildsycoca6"
 
 spawn-at-startup "bash" "-c" "wl-paste --watch cliphist store &"
-spawn-at-startup "/usr/lib/mate-polkit/polkit-mate-authentication-agent-1"
+// Polkit: the iNiR shell is the authentication agent; another one here would take its place.
 // iNiR is started by the user systemd service (inir.service), not spawn-at-startup.
 
 // ============================================================================

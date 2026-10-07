@@ -27,7 +27,7 @@ depends=(
   pipewire-alsa
   pipewire-pulse
   playerctl
-  polkit-gnome
+  polkit
   python
   qt6-5compat
   qt6-imageformats

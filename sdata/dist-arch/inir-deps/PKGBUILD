@@ -118,7 +118,6 @@ depends=(
 
   #--- Desktop integration ---
   polkit
-  polkit-gnome
   networkmanager
   gnome-keyring
   nautilus
