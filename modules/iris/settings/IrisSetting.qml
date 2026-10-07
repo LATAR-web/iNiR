@@ -32,12 +32,19 @@ Item {
         return IrisOptions.currentValue(root.spec)
     }
     function commit(next: var): void { IrisOptions.commit(root.spec, next) }
-    // A range shows the drag's own value while it moves (written at a pace, see rangeWrite).
+    // A range shows the drag's own value while it moves. Its consumers see it live (Config.previewNestedValue: no
+    // revision, no file write); the drag writes once, on release. A value the palette solver or Niri reads is not
+    // previewed at all: each step would solve and recolour the whole shell, or rewrite Niri's config.
     property real dragValue: NaN
     readonly property var shownValue: Number.isFinite(root.dragValue) ? root.dragValue : root.value
+    readonly property bool livePath: !root.spec.niri && !root.spec.bundle && String(root.spec.path ?? "").length > 0
+        && !/^iris\.appearance\.tune\.|^iris\.widgets\.vibrance$|^appearance\./.test(String(root.spec.path))
+    function previewDrag(): void {
+        if (Number.isFinite(root.dragValue) && root.livePath) Config.previewNestedValue(root.spec.path, root.dragValue)
+    }
     function flushDrag(): void {
         if (!Number.isFinite(root.dragValue)) return
-        if (root.dragValue !== Number(root.value)) { root.commit(root.dragValue); rangeWrite.restart() }
+        if (root.dragValue !== Number(root.value) || root.livePath) root.commit(root.dragValue)
     }
     function previewFace(choice: var): string {
         if (!root.spec.previewFont) return IrisStyle.fontMain
@@ -245,16 +252,17 @@ Item {
                 const held = rangeScrubber.dragging && Number.isFinite(home) && Math.abs(raw - home) < span * 0.02
                 const value = held ? home : Number((Math.round(raw / step) * step).toFixed(4))
                 if (!rangeScrubber.dragging) { if (value !== Number(root.value)) root.commit(value); return }
+                if (value === root.dragValue) return
                 root.dragValue = value
-                if (!rangeWrite.running) root.flushDrag()
+                if (!rangePreview.running) { root.previewDrag(); rangePreview.restart() }
             }
-            onDraggingChanged: if (!dragging) { rangeWrite.stop(); root.flushDrag(); root.dragValue = NaN }
+            onDraggingChanged: if (!dragging) { rangePreview.stop(); root.flushDrag(); root.dragValue = NaN }
         }
-        // Every write re-reads every row of Settings: a drag writes at most ten times a second, and its last value on release.
+        // The live preview moves at most at frame pace's half: a step can re-layout a whole surface.
         Timer {
-            id: rangeWrite
-            interval: 100
-            onTriggered: root.flushDrag()
+            id: rangePreview
+            interval: 32
+            onTriggered: root.previewDrag()
         }
 
         Loader {

@@ -18,7 +18,17 @@ ColumnLayout {
     readonly property real d: IrisStyle.density
     readonly property var monitor: Brightness.getMonitorForScreen(root.targetScreen)
     readonly property real brightness: Number(root.monitor?.brightness ?? Number.NaN)
-    readonly property int warmth: Number(Config.options?.light?.night?.colorTemperature ?? 5000)
+    readonly property int savedWarmth: Number(Config.options?.light?.night?.colorTemperature ?? 5000)
+    // A drag shows its warmth here and writes the config once, on release or when a scroll settles: every write
+    // restarts the night-light process and rewrites the whole config file.
+    property int pendingWarmth: -1
+    readonly property int warmth: root.pendingWarmth >= 0 ? root.pendingWarmth : root.savedWarmth
+    function commitWarmth(): void {
+        if (root.pendingWarmth < 0) return
+        if (root.pendingWarmth !== root.savedWarmth) Config.setNestedValue("light.night.colorTemperature", root.pendingWarmth)
+        root.pendingWarmth = -1
+    }
+    Timer { id: warmthSettle; interval: 400; onTriggered: if (!warmthSlider.pressed) root.commitWarmth() }
     spacing: 2 * root.d
 
     NightLightToggle { id: night }
@@ -32,6 +42,7 @@ ColumnLayout {
         property string figure: ""
         property real value: 0
         property bool ready: true
+        readonly property bool pressed: levelSlider.pressed
         signal moved(real value)
         Layout.fillWidth: true
         Layout.leftMargin: 10 * root.d
@@ -53,6 +64,7 @@ ColumnLayout {
             elide: Text.ElideRight
         }
         IrisSlider {
+            id: levelSlider
             Layout.fillWidth: true
             enabled: level.ready
             value: level.value
@@ -86,11 +98,16 @@ ColumnLayout {
         onToggled: night.mainAction()
     }
     LevelRow {
+        id: warmthSlider
         glyph: "thermostat"
         label: Translation.tr("Warmth")
         value: (6500 - root.warmth) / 4000
         figure: root.warmth + " K"
-        onMoved: next => Config.setNestedValue("light.night.colorTemperature", Math.round((6500 - next * 4000) / 100) * 100)
+        onMoved: next => {
+            root.pendingWarmth = Math.round((6500 - next * 4000) / 100) * 100
+            warmthSettle.restart()
+        }
+        onPressedChanged: if (!pressed) root.commitWarmth()
     }
     IrisControlRow {
         glyph: "schedule"

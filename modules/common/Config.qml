@@ -175,6 +175,12 @@ Singleton {
         root.configChanged();
     }
 
+    // A value shown while a control is being dragged: its consumers follow it, but nothing is written and the
+    // revision stays (every Settings row re-reads on a revision). The drag ends with setNestedValue.
+    function previewNestedValue(nestedKey, value) {
+        _applyNestedKey(nestedKey, value);
+    }
+
     // Batch multiple key-value pairs, emitting configChanged only once.
     // Usage: Config.setNestedValues({ "a.b.c": 1, "x.y": "hello" })
     function setNestedValues(updates) {
