@@ -137,6 +137,17 @@ list_theming_modules() {
   find "$MODULES_DIR" -maxdepth 1 -type f -name '*.sh' | sort
 }
 
+# Profile roots of the Firefox family (Firefox, LibreWolf, Floorp, Waterfox, Zen), native and Flatpak.
+firefox_profile_roots() {
+  printf '%s\n' \
+    "$XDG_CONFIG_HOME/mozilla/firefox" "$HOME/.mozilla/firefox" \
+    "$HOME/.var/app/org.mozilla.firefox/config/mozilla/firefox" "$HOME/.var/app/org.mozilla.firefox/.mozilla/firefox" \
+    "$HOME/.librewolf" "$XDG_CONFIG_HOME/librewolf/librewolf" "$HOME/.var/app/io.gitlab.librewolf-community/.librewolf" \
+    "$HOME/.floorp" "$HOME/.var/app/one.ablaze.floorp/.floorp" \
+    "$HOME/.waterfox" "$HOME/.var/app/net.waterfox.waterfox/.waterfox" \
+    "$HOME/.zen" "$XDG_CONFIG_HOME/zen" "$HOME/.var/app/app.zen_browser.zen/.zen"
+}
+
 list_theming_target_manifests() {
   if [[ -d "$TARGETS_DIR" ]]; then
     find "$TARGETS_DIR" -maxdepth 1 -type f -name '*.json' | sort

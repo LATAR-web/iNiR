@@ -868,6 +868,14 @@ WSettingsPage {
         }
 
         WSettingsSwitch {
+            label: Translation.tr("Firefox")
+            icon: "globe-shield"
+            description: Translation.tr("Follows the wallpaper from its next launch; LibreWolf, Floorp, Waterfox and Zen too.")
+            checked: Config.options?.appearance?.wallpaperTheming?.enableFirefox ?? true
+            onCheckedChanged: Config.setNestedValue("appearance.wallpaperTheming.enableFirefox", checked)
+        }
+
+        WSettingsSwitch {
             label: Translation.tr("OpenCode")
             icon: "terminal"
             description: Translation.tr("Apply wallpaper-derived theme to OpenCode AI editor")

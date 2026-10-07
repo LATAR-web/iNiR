@@ -173,7 +173,7 @@ Wayland → GPU
 - **9 أنماط عامة**: Material (مصمت)، Cards، Aurora (زجاج مموّه)، iNiR (مستوحى من TUI)، Angel (وحشية جديدة)، Regalia (هيكل أسود، حبر عاجي دافئ، تفاصيل شمبانيا هادئة)، ZZZ (ألواح ملصقات)، Cookie Shapes (أشكال متحركة)، Editorial (طباعة الورق والحبر)
 - **ألوان ديناميكية من الخلفية** عبر Material You في النظام كله
 - **10 أدوات طرفية وTUI بسمة تلقائية**: foot وkitty وalacritty وghostty وwezterm وstarship وfuzzel وbtop وlazygit وyazi
-- **سمات التطبيقات**: GTK3/4 وQt (عبر plasma-integration وdarkly) وFirefox (MaterialFox) وDiscord/Vesktop (System24) وZed وSpicetify وSteam وSDDM
+- **سمات التطبيقات**: GTK3/4 وQt (عبر plasma-integration وdarkly) وFirefox وDiscord/Vesktop (System24) وZed وSpicetify وSteam وSDDM
 - **سمات جاهزة**: Gruvbox وCatppuccin وRosé Pine وغيرها، أو اصنع سمتك
 - **خلفيات فيديو**: mp4/webm/gif مع تمويه اختياري، أو تجميد الإطار الأول من أجل الأداء
 - **أدوات سطح المكتب**: تصميم واحد لها كلها (iRiS أو Material أو iNstrument أو Readout)، ورزم تدور مثل رزم iOS، وحبر يتبع الخلفية التي تحتها

@@ -25,6 +25,10 @@ inputs_fingerprint() {
       "$HOME/.local/share/Steam/steamui/skins" "$HOME/.steam/steam/steamui/skins"; do
       if [[ -e "$path" ]]; then stat -c '%n %s %Y' "$path"; fi
     done
+    # A new browser profile gets its colours; size only, since Firefox rewrites profiles.ini as it starts.
+    while IFS= read -r path; do
+      if [[ -f "$path/profiles.ini" ]]; then stat -c '%n %s' "$path/profiles.ini"; fi
+    done < <(firefox_profile_roots)
   } 2>/dev/null | sha1sum | cut -d' ' -f1
 }
 

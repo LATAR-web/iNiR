@@ -1073,6 +1073,7 @@ Singleton {
                     property bool enableZed: true
                     property bool enableVSCode: true
                     property bool enableChrome: true
+                    property bool enableFirefox: true
                     property bool enableSpicetify: false
                     property string spicetifyTheme: "Inir"
                     property bool enableSteam: false

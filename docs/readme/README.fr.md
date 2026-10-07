@@ -167,7 +167,7 @@ Je voulais que mon bureau ait une certaine allure et fonctionne d'une certaine f
 - **9 styles globaux** : Material (plein), Cards, Aurora (glass flouté), iNiR (inspiré des TUI), Angel (néo-brutalisme), Regalia (châssis noir, encre ivoire chaude, finitions champagne discrètes), ZZZ (plaques d'affiche), Cookie Shapes (formes animées), Editorial (typographie papier et encre)
 - **Couleurs dynamiques du fond d'écran** via Material You, dans tout le système
 - **10 outils de terminal et TUI thématisés automatiquement** : foot, kitty, alacritty, ghostty, wezterm, starship, fuzzel, btop, lazygit, yazi
-- **Thème des apps** : GTK3/4, Qt (via plasma-integration et darkly), Firefox (MaterialFox), Discord/Vesktop (System24), Zed, Spicetify, Steam, SDDM
+- **Thème des apps** : GTK3/4, Qt (via plasma-integration et darkly), Firefox, Discord/Vesktop (System24), Zed, Spicetify, Steam, SDDM
 - **Préréglages de thème** : Gruvbox, Catppuccin, Rosé Pine et d'autres, ou crée le tien
 - **Fonds d'écran vidéo** : mp4/webm/gif avec flou optionnel, ou première image figée pour les performances
 - **Widgets de bureau** : un seul design pour tous (iRiS, Material, iNstrument ou Readout), des piles qui tournent comme sur iOS et une encre qui suit le fond d'écran en dessous

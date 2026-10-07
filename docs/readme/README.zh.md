@@ -167,7 +167,7 @@ Wayland → GPU
 - **9 种全局风格**：Material（实色）、Cards、Aurora（玻璃模糊）、iNiR（TUI 风格）、Angel（新粗野主义）、Regalia（黑色机身、温暖的象牙色墨水、克制的香槟色细节）、ZZZ（海报板块）、Cookie Shapes（形状变换动画）、Editorial（纸墨排版）
 - **来自壁纸的动态颜色**，通过 Material You 应用到整个系统
 - **10 个终端和 TUI 工具自动主题化**：foot、kitty、alacritty、ghostty、wezterm、starship、fuzzel、btop、lazygit、yazi
-- **应用主题**：GTK3/4、Qt（通过 plasma-integration 和 darkly）、Firefox（MaterialFox）、Discord/Vesktop（System24）、Zed、Spicetify、Steam、SDDM
+- **应用主题**：GTK3/4、Qt（通过 plasma-integration 和 darkly）、Firefox、Discord/Vesktop（System24）、Zed、Spicetify、Steam、SDDM
 - **主题预设**：Gruvbox、Catppuccin、Rosé Pine 等，或者自己做一个
 - **视频壁纸**：mp4/webm/gif，可选模糊，也可以冻结第一帧以节省性能
 - **桌面小组件**：所有小组件共用一种设计（iRiS、Material、iNstrument 或 Readout），像 iOS 那样轮换的堆叠，以及随下方壁纸变化的墨色

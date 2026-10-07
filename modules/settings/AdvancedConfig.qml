@@ -236,6 +236,18 @@ ContentPage {
                 }
             }
             SettingsSwitch {
+                buttonIcon: "public"
+                text: Translation.tr("Firefox")
+                checked: Config.options?.appearance?.wallpaperTheming?.enableFirefox ?? true
+                onCheckedChanged: {
+                    Config.setNestedValue("appearance.wallpaperTheming.enableFirefox", checked);
+                    colorRegenTimer.restart();
+                }
+                StyledToolTip {
+                    text: Translation.tr("Follows the wallpaper from its next launch; LibreWolf, Floorp, Waterfox and Zen too.")
+                }
+            }
+            SettingsSwitch {
                 buttonIcon: "code"
                 text: Translation.tr("OpenCode")
                 checked: Config.options?.appearance?.wallpaperTheming?.enableOpenCode ?? false

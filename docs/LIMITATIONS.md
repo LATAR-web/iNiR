@@ -116,9 +116,13 @@ ii is built for **Niri**. Some features were inherited from the original Hyprlan
 
 - Theme presets (Gruvbox, Catppuccin, etc.) override wallpaper-generated colors. You can't have both "wallpaper-based colors" and "Catppuccin" at the same time.
 
+### Browsers
+
+- **Firefox and its forks** (LibreWolf, Floorp, Waterfox, Zen) take new colors when they start, not while they're open. They wear them with the default "System theme"; another theme you picked in Firefox keeps its own look.
+
 ### Terminal Theming
 
-- **Supported tools**: Auto-theming covers foot, kitty, alacritty, starship, fuzzel, pywalfox, btop, lazygit, and yazi. Each can be toggled individually in Settings → Terminal Colors.
+- **Supported tools**: Auto-theming covers foot, kitty, alacritty, starship, fuzzel, btop, lazygit, and yazi. Each can be toggled individually in Settings → Terminal Colors.
 - **Other terminals**: Not supported. You'll need to manually set colors or use pywal/similar.
 
 ---

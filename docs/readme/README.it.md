@@ -167,7 +167,7 @@ Volevo che il mio desktop avesse un certo aspetto e funzionasse in un certo modo
 - **9 stili globali**: Material (pieno), Cards, Aurora (glass con blur), iNiR (ispirato alle TUI), Angel (neo-brutalismo), Regalia (telaio nero, inchiostro avorio caldo, finiture champagne sobrie), ZZZ (lastre da poster), Cookie Shapes (forme animate), Editorial (tipografia carta e inchiostro)
 - **Colori dinamici dallo sfondo** con Material You, in tutto il sistema
 - **10 strumenti da terminale e TUI con tema automatico**: foot, kitty, alacritty, ghostty, wezterm, starship, fuzzel, btop, lazygit, yazi
-- **Tema delle app**: GTK3/4, Qt (con plasma-integration e darkly), Firefox (MaterialFox), Discord/Vesktop (System24), Zed, Spicetify, Steam, SDDM
+- **Tema delle app**: GTK3/4, Qt (con plasma-integration e darkly), Firefox, Discord/Vesktop (System24), Zed, Spicetify, Steam, SDDM
 - **Preset di tema**: Gruvbox, Catppuccin, Rosé Pine e altri, oppure crea il tuo
 - **Sfondi video**: mp4/webm/gif con blur opzionale, o il primo fotogramma fermo per le prestazioni
 - **Widget del desktop**: un solo design per tutti (iRiS, Material, iNstrument o Readout), pile che girano come su iOS e inchiostro che segue lo sfondo sotto di loro

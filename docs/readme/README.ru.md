@@ -167,7 +167,7 @@ Wayland → GPU
 - **9 глобальных стилей**: Material (сплошной), Cards, Aurora (стекло с размытием), iNiR (в духе TUI), Angel (необрутализм), Regalia (чёрное шасси, тёплые цвета слоновой кости, сдержанная фурнитура цвета шампанского), ZZZ (плакатные плашки), Cookie Shapes (анимированные формы), Editorial (типографика бумаги и чернил)
 - **Динамические цвета из обоев** через Material You, по всей системе
 - **10 терминальных и TUI-инструментов с автотемой**: foot, kitty, alacritty, ghostty, wezterm, starship, fuzzel, btop, lazygit, yazi
-- **Темы для приложений**: GTK3/4, Qt (через plasma-integration и darkly), Firefox (MaterialFox), Discord/Vesktop (System24), Zed, Spicetify, Steam, SDDM
+- **Темы для приложений**: GTK3/4, Qt (через plasma-integration и darkly), Firefox, Discord/Vesktop (System24), Zed, Spicetify, Steam, SDDM
 - **Пресеты тем**: Gruvbox, Catppuccin, Rosé Pine и другие, или создайте свой
 - **Видеообои**: mp4/webm/gif с размытием по желанию или замороженный первый кадр для экономии
 - **Виджеты рабочего стола**: один дизайн для всех (iRiS, Material, iNstrument или Readout), стопки, которые листаются как в iOS, и чернила, которые подстраиваются под обои под ними

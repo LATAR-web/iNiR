@@ -45,6 +45,7 @@ Singleton {
         enableTerminal: wallpaperThemingCfg?.enableTerminal ?? true,
         enableVesktop: wallpaperThemingCfg?.enableVesktop ?? true,
         enableChrome: wallpaperThemingCfg?.enableChrome ?? true,
+        enableFirefox: wallpaperThemingCfg?.enableFirefox ?? true,
         enableZed: wallpaperThemingCfg?.enableZed ?? true,
         enableVSCode: wallpaperThemingCfg?.enableVSCode ?? true,
         enableNeovim: wallpaperThemingCfg?.enableNeovim ?? false,

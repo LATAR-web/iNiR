@@ -25,7 +25,7 @@ applycolor.sh (runs per-app theming modules in parallel)
   - Terminal configs (foot, kitty, alacritty)
   - Starship prompt
   - Fuzzel launcher
-  - Firefox (pywalfox)
+  - Firefox, LibreWolf, Floorp, Waterfox and Zen (from their next launch)
   - VS Code, Cursor, OpenCode (Go generators)
   - btop, lazygit, yazi
   - SDDM login theme

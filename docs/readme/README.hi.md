@@ -167,7 +167,7 @@ Wayland → GPU
 - **9 ग्लोबल स्टाइल**: Material (ठोस), Cards, Aurora (ग्लास ब्लर), iNiR (TUI से प्रेरित), Angel (नियो-ब्रूटलिज़्म), Regalia (काला ढाँचा, गर्म हाथीदाँत रंग की स्याही, संयमित शैंपेन रंग के हिस्से), ZZZ (पोस्टर प्लेट), Cookie Shapes (एनिमेटेड आकार), Editorial (काग़ज़ और स्याही वाली टाइपोग्राफ़ी)
 - **वॉलपेपर से डायनेमिक रंग**, Material You के ज़रिए पूरे सिस्टम में
 - **10 टर्मिनल और TUI टूल की ऑटो-थीम**: foot, kitty, alacritty, ghostty, wezterm, starship, fuzzel, btop, lazygit, yazi
-- **ऐप थीम**: GTK3/4, Qt (plasma-integration और darkly से), Firefox (MaterialFox), Discord/Vesktop (System24), Zed, Spicetify, Steam, SDDM
+- **ऐप थीम**: GTK3/4, Qt (plasma-integration और darkly से), Firefox, Discord/Vesktop (System24), Zed, Spicetify, Steam, SDDM
 - **थीम प्रीसेट**: Gruvbox, Catppuccin, Rosé Pine और भी, या अपना बनाएँ
 - **वीडियो वॉलपेपर**: mp4/webm/gif, ब्लर वैकल्पिक, या परफ़ॉर्मेंस के लिए पहला फ़्रेम रुका हुआ
 - **डेस्कटॉप विजेट**: सबके लिए एक डिज़ाइन (iRiS, Material, iNstrument या Readout), iOS जैसे घूमने वाले स्टैक, और नीचे के वॉलपेपर के साथ बदलने वाली स्याही

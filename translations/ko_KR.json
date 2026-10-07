@@ -8151,6 +8151,8 @@
   "Apps use this material": "앱에도 이 머티리얼 사용",
   "Your terminals and apps sit on the same surfaces as the shell. Accents still come from the wallpaper.": "터미널과 앱이 셸과 같은 표면 위에 놓입니다. 강조색은 계속 배경화면에서 가져옵니다.",
   "Chrome and Chromium": "Chrome 및 Chromium",
+  "Firefox": "Firefox",
+  "Follows the wallpaper from its next launch; LibreWolf, Floorp, Waterfox and Zen too.": "다음 실행부터 배경화면을 따릅니다. LibreWolf, Floorp, Waterfox, Zen도 마찬가지입니다.",
   "About iNiR": "iNiR 정보",
   "Keyboard shortcuts": "키보드 단축키",
   "Niri": "Niri",

@@ -167,7 +167,7 @@ Quería que mi escritorio se viera y funcionara de cierta forma y nada lo hacía
 - **9 estilos globales**: Material (sólido), Cards, Aurora (glass con blur), iNiR (inspirado en TUI), Angel (neobrutalismo), Regalia (chasis negro, tinta marfil cálida, herrajes champán sobrios), ZZZ (placas de póster), Cookie Shapes (formas animadas), Editorial (tipografía de papel y tinta)
 - **Colores dinámicos del wallpaper** con Material You, en todo el sistema
 - **10 herramientas de terminal y TUI con tema automático**: foot, kitty, alacritty, ghostty, wezterm, starship, fuzzel, btop, lazygit, yazi
-- **Tema en las apps**: GTK3/4, Qt (con plasma-integration y darkly), Firefox (MaterialFox), Discord/Vesktop (System24), Zed, Spicetify, Steam, SDDM
+- **Tema en las apps**: GTK3/4, Qt (con plasma-integration y darkly), Firefox, Discord/Vesktop (System24), Zed, Spicetify, Steam, SDDM
 - **Presets de tema**: Gruvbox, Catppuccin, Rosé Pine y más, o crea el tuyo
 - **Wallpapers de video**: mp4/webm/gif con blur opcional, o el primer cuadro congelado para ahorrar recursos
 - **Widgets de escritorio**: un solo diseño para todos (iRiS, Material, iNstrument o Readout), pilas que giran como las de iOS y tinta que sigue al wallpaper que tienen debajo

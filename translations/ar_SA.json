@@ -8151,6 +8151,8 @@
   "Apps use this material": "التطبيقات تستخدم هذه المادة",
   "Your terminals and apps sit on the same surfaces as the shell. Accents still come from the wallpaper.": "تقف الطرفيات والتطبيقات على الأسطح نفسها التي تقف عليها الواجهة. وتبقى ألوان التمييز من الخلفية.",
   "Chrome and Chromium": "Chrome وChromium",
+  "Firefox": "Firefox",
+  "Follows the wallpaper from its next launch; LibreWolf, Floorp, Waterfox and Zen too.": "يتبع الخلفية بدءًا من التشغيل التالي؛ وكذلك LibreWolf وFloorp وWaterfox وZen.",
   "About iNiR": "حول iNiR",
   "Keyboard shortcuts": "اختصارات لوحة المفاتيح",
   "Niri": "Niri",

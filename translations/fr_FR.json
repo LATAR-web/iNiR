@@ -8151,6 +8151,8 @@
   "Apps use this material": "Les apps utilisent ce matériau",
   "Your terminals and apps sit on the same surfaces as the shell. Accents still come from the wallpaper.": "Vos terminaux et vos apps reposent sur les mêmes surfaces que le shell. Les accents viennent toujours du fond d'écran.",
   "Chrome and Chromium": "Chrome et Chromium",
+  "Firefox": "Firefox",
+  "Follows the wallpaper from its next launch; LibreWolf, Floorp, Waterfox and Zen too.": "Suit le fond d'écran dès son prochain lancement ; LibreWolf, Floorp, Waterfox et Zen aussi.",
   "About iNiR": "À propos d'iNiR",
   "Keyboard shortcuts": "Raccourcis clavier",
   "Niri": "Niri",

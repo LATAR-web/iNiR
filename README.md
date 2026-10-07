@@ -163,7 +163,7 @@ I wanted my desktop to look and work a certain way and nothing else did exactly 
 - **9 global styles**: Material (solid), Cards, Aurora (glass blur), iNiR (TUI-inspired), Angel (neo-brutalism), Regalia (black engineered chassis, warm ivory ink, restrained champagne hardware), ZZZ (poster plates), Cookie Shapes (animated shape morphing), Editorial (paper-and-ink typography)
 - **Dynamic wallpaper colors** via Material You, propagated system-wide
 - **10 terminal and TUI tools auto-themed**: foot, kitty, alacritty, ghostty, wezterm, starship, fuzzel, btop, lazygit, yazi
-- **App theming**: GTK3/4, Qt (via plasma-integration and darkly), Firefox (MaterialFox), Discord/Vesktop (System24), Zed, Spicetify, Steam, SDDM
+- **App theming**: GTK3/4, Qt (via plasma-integration and darkly), Firefox, Discord/Vesktop (System24), Zed, Spicetify, Steam, SDDM
 - **Theme presets**: Gruvbox, Catppuccin, Rosé Pine, and more, or create your own
 - **Video wallpapers**: mp4/webm/gif with optional blur, or frozen first frame for performance
 - **Desktop widgets**: one design for all of them (iRiS, Material, iNstrument or Readout), stacks that turn like iOS ones, and ink that follows the wallpaper under them

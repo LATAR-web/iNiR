@@ -387,7 +387,7 @@ Singleton {
     readonly property string _appTargetsKey: {
         const t = Config.options?.appearance?.wallpaperTheming
         if (!t) return ""
-        return [t.enableTerminal, t.enableVesktop, t.enableZed, t.enableVSCode, t.enableChrome, t.enableSpicetify,
+        return [t.enableTerminal, t.enableVesktop, t.enableZed, t.enableVSCode, t.enableChrome, t.enableFirefox, t.enableSpicetify,
                 t.spicetifyTheme, t.enableSteam, t.enablePearDesktop, t.enableLimusic, t.enableOpenCode,
                 t.enableNeovim, t.enableCava, t.enableClaudeCode].join("|")
     }

@@ -4,7 +4,7 @@
 applycolor.sh runs under `set -euo pipefail` and fingerprints its inputs before applying anything. A
 `[[ -e path ]] && stat …` as the last command of that block made the whole block fail whenever the path was
 missing: on a machine without Steam the script exited there, silently, and no app was ever themed. This runs
-the function the script really contains in an empty HOME.
+the function the script really contains in an empty HOME, and again with a browser profile in it.
 """
 
 import os
@@ -47,7 +47,14 @@ def main() -> int:
         if empty.returncode != 0 or not re.fullmatch(r"[0-9a-f]{40}\n", empty.stdout):
             print(f"applycolor fingerprint: fails in an empty HOME (exit {empty.returncode}): {empty.stderr.strip()}")
             return 1
-    print("applycolor fingerprint: runs on a bare machine")
+        profiles = home / ".config/mozilla/firefox"
+        profiles.mkdir(parents=True)
+        (profiles / "profiles.ini").write_text("[Profile0]\nPath=p\n", encoding="utf-8")
+        with_profile = fingerprint(home)
+        if with_profile.returncode != 0 or with_profile.stdout == empty.stdout:
+            print("applycolor fingerprint: a new Firefox profile does not change the fingerprint")
+            return 1
+    print("applycolor fingerprint: runs on a bare machine and sees new browser profiles")
     return 0
 
 

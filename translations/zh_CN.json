@@ -8151,6 +8151,8 @@
   "Apps use this material": "应用也使用此材质",
   "Your terminals and apps sit on the same surfaces as the shell. Accents still come from the wallpaper.": "你的终端和应用与 Shell 使用相同的表面。强调色仍来自壁纸。",
   "Chrome and Chromium": "Chrome 和 Chromium",
+  "Firefox": "Firefox",
+  "Follows the wallpaper from its next launch; LibreWolf, Floorp, Waterfox and Zen too.": "从下次启动起跟随壁纸；LibreWolf、Floorp、Waterfox 和 Zen 也一样。",
   "About iNiR": "关于 iNiR",
   "Keyboard shortcuts": "键盘快捷键",
   "Niri": "Niri",

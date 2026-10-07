@@ -8151,6 +8151,8 @@
   "Apps use this material": "アプリでもこのマテリアルを使う",
   "Your terminals and apps sit on the same surfaces as the shell. Accents still come from the wallpaper.": "ターミナルやアプリは、シェルと同じサーフェスの上に載ります。アクセントは引き続き壁紙から取ります。",
   "Chrome and Chromium": "Chrome と Chromium",
+  "Firefox": "Firefox",
+  "Follows the wallpaper from its next launch; LibreWolf, Floorp, Waterfox and Zen too.": "次回の起動から壁紙に合わせます。LibreWolf、Floorp、Waterfox、Zen も同様です。",
   "About iNiR": "iNiR について",
   "Keyboard shortcuts": "キーボードショートカット",
   "Niri": "Niri",

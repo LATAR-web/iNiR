@@ -249,6 +249,7 @@
             "enableZed": true,
             "enableVSCode": true,
             "enableChrome": true,
+            "enableFirefox": true,
             "enableSpicetify": false,
             "spicetifyTheme": "Inir",
             "enableSteam": false,
