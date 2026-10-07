@@ -27,7 +27,6 @@ pkgbase = inir-meta
 	depends = kdialog
 	depends = kitty
 	depends = kvantum
-	depends = libdbusmenu-gtk3
 	depends = libqalculate
 	depends = mpv
 	depends = mpv-mpris

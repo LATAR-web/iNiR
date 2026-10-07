@@ -30,7 +30,6 @@ pkgbase = inir-shell-git
 	depends = qt6-imageformats
 	depends = qt6-multimedia
 	depends = qt6-multimedia-ffmpeg
-	depends = qt6-quicktimeline
 	depends = quickshell
 	depends = rsync
 	depends = slurp

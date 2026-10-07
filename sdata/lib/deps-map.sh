@@ -59,18 +59,15 @@ DEPS_QT6_WAYLAND="arch:qt6-wayland fedora:qt6-qtwayland debian:qt6-wayland-dev u
 DEPS_QT6_5COMPAT="arch:qt6-5compat fedora:qt6-qt5compat debian:qt6-5compat-dev ubuntu:qt6-5compat-dev opensuse:qt6-5compat-devel void:qt6-5compat"
 DEPS_QT6_MULTIMEDIA="arch:qt6-multimedia fedora:qt6-qtmultimedia debian:qt6-multimedia-dev ubuntu:qt6-multimedia-dev opensuse:qt6-multimedia-devel void:qt6-multimedia"
 DEPS_QT6_IMAGEFORMATS="arch:qt6-imageformats fedora:qt6-qtimageformats debian:qt6-image-formats-plugins ubuntu:qt6-image-formats-plugins opensuse:qt6-imageformats void:qt6-imageformats"
-DEPS_QT6_VIRTUALKEYBOARD="arch:qt6-virtualkeyboard fedora:qt6-qtvirtualkeyboard debian:qt6-virtualkeyboard-dev ubuntu:qt6-virtualkeyboard-dev opensuse:qt6-virtualkeyboard-devel void:qt6-virtualkeyboard"
 
 ###############################################################################
 # Core system utilities
 ###############################################################################
 DEPS_CORE_JQ="arch:jq fedora:jq debian:jq ubuntu:jq opensuse:jq void:jq"
 DEPS_CORE_CURL="arch:curl fedora:curl debian:curl ubuntu:curl opensuse:curl void:curl"
-DEPS_CORE_WGET="arch:wget fedora:wget debian:wget ubuntu:wget opensuse:wget void:wget"
 DEPS_CORE_GIT="arch:git fedora:git debian:git ubuntu:git opensuse:git void:git"
 DEPS_CORE_RIPGREP="arch:ripgrep fedora:ripgrep debian:ripgrep ubuntu:ripgrep opensuse:ripgrep void:ripgrep"
 DEPS_CORE_RSYNC="arch:rsync fedora:rsync debian:rsync ubuntu:rsync opensuse:rsync void:rsync"
-DEPS_CORE_BC="arch:bc fedora:bc debian:bc ubuntu:bc opensuse:bc void:bc"
 
 ###############################################################################
 # Wayland utilities
@@ -151,7 +148,6 @@ DEPS_BUILD_CARGO="arch:rust fedora:cargo debian:cargo ubuntu:cargo opensuse:carg
 DEPS_MISC_FISH="arch:fish fedora:fish debian:fish ubuntu:fish opensuse:fish void:fish"
 DEPS_MISC_GUM="arch:gum fedora:gum debian:GITHUB:charmbracelet/gum ubuntu:GITHUB:charmbracelet/gum opensuse:gum void:gum"
 DEPS_MISC_STARSHIP="arch:starship fedora:GITHUB:starship/starship debian:starship ubuntu:GITHUB:starship/starship opensuse:starship void:starship"
-DEPS_MISC_DUNST="arch:dunst fedora:dunst debian:dunst ubuntu:dunst opensuse:dunst void:dunst"
 DEPS_MISC_LIBNOTIFY="arch:libnotify fedora:libnotify debian:libnotify-bin ubuntu:libnotify-bin opensuse:libnotify-tools void:libnotify"
 DEPS_MISC_IMAGEMAGICK="arch:imagemagick fedora:ImageMagick debian:imagemagick ubuntu:imagemagick opensuse:ImageMagick void:ImageMagick"
 DEPS_MISC_FFMPEG="arch:ffmpeg fedora:ffmpeg debian:ffmpeg ubuntu:ffmpeg opensuse:ffmpeg void:ffmpeg"

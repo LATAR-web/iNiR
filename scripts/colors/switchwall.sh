@@ -319,8 +319,8 @@ switch() {
             cursorposx=$(printf '%s' "$cursor_json" | jq -r '.x // empty' 2>/dev/null)
             cursorposy=$(printf '%s' "$cursor_json" | jq -r '.y // empty' 2>/dev/null)
             if [[ -n "$cursorposx" && -n "$cursorposy" ]]; then
-                cursorposx=$(bc <<< "scale=0; ($cursorposx - $screenx) * $scale / 1")
-                cursorposy=$(bc <<< "scale=0; ($cursorposy - $screeny) * $scale / 1")
+                cursorposx=$(awk -v c="$cursorposx" -v o="$screenx" -v s="$scale" 'BEGIN { printf "%d", (c - o) * s }')
+                cursorposy=$(awk -v c="$cursorposy" -v o="$screeny" -v s="$scale" 'BEGIN { printf "%d", (c - o) * s }')
             else
                 cursorposx=960
                 cursorposy=540

@@ -350,12 +350,6 @@ if command -v sddm &>/dev/null; then
   fi
 fi
 
-# Fuzzel (launcher)
-if [[ -d "dots/.config/fuzzel" ]]; then
-  install_dir__sync "dots/.config/fuzzel" "${XDG_CONFIG_HOME}/fuzzel"
-  log_success "Fuzzel config installed"
-fi
-
 # Starship (prompt)
 if [[ -f "defaults/starship/starship.toml" ]]; then
   install_file__auto_backup "defaults/starship/starship.toml" "${XDG_CONFIG_HOME}/starship.toml"
@@ -984,7 +978,6 @@ if [[ "${INSTALL_FIRSTRUN}" == true && -n "${DEFAULT_WALLPAPER}" && -f "${DEFAUL
   mkdir -p "${XDG_STATE_HOME}/quickshell/user/generated/wallpaper"
   mkdir -p "${XDG_CONFIG_HOME}/gtk-3.0"
   mkdir -p "${XDG_CONFIG_HOME}/gtk-4.0"
-  mkdir -p "${XDG_CONFIG_HOME}/fuzzel"
 
   # Update config.json with default wallpaper path
   shell_config_json="${DOTS_CORE_CONFDIR}/config.json"
@@ -1133,7 +1126,6 @@ if ! ${quiet:-false}; then
     in "${XDG_CONFIG_HOME}/niri/config.kdl:Niri config" \
        "${DOTS_CORE_CONFDIR}/config.json:iNiR config" \
        "${XDG_CONFIG_HOME}/matugen:Theming templates" \
-       "${XDG_CONFIG_HOME}/fuzzel:Fuzzel config" \
        "${XDG_STATE_HOME}/quickshell/user/generated/colors.json:Theme colors"; do
     _cfg_file="${_cfg_path%%:*}"
     _cfg_label="${_cfg_path##*:}"

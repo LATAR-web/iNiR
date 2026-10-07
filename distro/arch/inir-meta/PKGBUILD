@@ -32,7 +32,6 @@ depends=(
   kdialog
   kitty
   kvantum
-  libdbusmenu-gtk3
   libqalculate
   mpv
   mpv-mpris

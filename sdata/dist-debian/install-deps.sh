@@ -56,7 +56,7 @@ if [[ -n "${ONLY_MISSING_DEPS:-}" ]]; then
     [qs]="quickshell" [niri]="niri" [nmcli]="network-manager" [wpctl]="wireplumber"
     [jq]="jq" [rsync]="rsync" [curl]="curl" [git]="git" [python3]="python3"
     [fish]="fish" [magick]="imagemagick" [grim]="grim" [cliphist]="cliphist"
-    [wl-copy]="wl-clipboard" [wl-paste]="wl-clipboard" [fuzzel]="fuzzel"
+    [wl-copy]="wl-clipboard" [wl-paste]="wl-clipboard"
     [hyprpicker]="hyprpicker" [playerctl]="playerctl" [notify-send]="libnotify-bin"
     [flock]="util-linux" [wlsunset]="wlsunset" [easyeffects]="easyeffects"
     [uv]="uv" [cava]="cava" [qalc]="qalc" [yt-dlp]="yt-dlp" [socat]="socat"
@@ -498,10 +498,8 @@ tui_info "Installing packages from official repositories..."
 # Core system packages
 DEBIAN_CORE_PKGS=(
   # Basic utilities
-  bc
   coreutils
   curl
-  wget
   ripgrep
   jq
   xdg-user-dirs
@@ -510,7 +508,6 @@ DEBIAN_CORE_PKGS=(
   wl-clipboard
   libnotify-bin
   wlsunset
-  dunst
   unzip
   
   # XDG Portals
@@ -617,7 +614,6 @@ DEBIAN_AUDIO_PKGS=(
   wireplumber
   playerctl
   plasma-browser-integration
-  libdbusmenu-gtk3-4
   pavucontrol
   easyeffects
   lsp-plugins-lv2
@@ -695,7 +691,6 @@ DEBIAN_FONT_PKGS=(
   fonts-jetbrains-mono
   
   # Launcher
-  fuzzel
   
   # Qt theming
   kvantum

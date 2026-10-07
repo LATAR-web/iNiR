@@ -27,12 +27,8 @@ depends=(
   qt6-imageformats
   qt6-multimedia
   qt6-multimedia-ffmpeg
-  qt6-positioning
-  qt6-quicktimeline
-  qt6-sensors
   qt6-tools
   qt6-translations
-  qt6-virtualkeyboard
 
   #--- System libs for Quickshell ---
   jemalloc
@@ -60,11 +56,9 @@ depends=(
   niri
 
   #--- Core utilities ---
-  bc
   coreutils
   cliphist
   curl
-  wget
   ripgrep
   jq
   go
@@ -101,7 +95,6 @@ depends=(
   pipewire-alsa
   wireplumber
   playerctl
-  libdbusmenu-gtk3
   pavucontrol
   cava
   easyeffects
@@ -121,7 +114,6 @@ depends=(
   ttf-dejavu
   ttf-liberation
   ttf-roboto
-  ttf-roboto-mono
   papirus-icon-theme
 
   #--- Desktop integration ---
@@ -131,7 +123,6 @@ depends=(
   gnome-keyring
   nautilus
   kitty
-  fuzzel
   glib2
   starship
   eza

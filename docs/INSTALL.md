@@ -106,7 +106,6 @@ This gives you:
 - Niri config wired to the `inir` launcher
 - Theming templates for Material You colors
 - GTK settings
-- Fuzzel config
 
 ### 4. Enable the iNiR user service
 

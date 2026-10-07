@@ -12,11 +12,9 @@ depends=(
   awww
   
   # Basic utilities
-  bc
   coreutils
   cliphist
   curl
-  wget
   ripgrep
   jq
   python

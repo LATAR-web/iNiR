@@ -10,12 +10,10 @@ depends=(
   ttf-dejavu
   ttf-liberation
   ttf-roboto
-  ttf-roboto-mono
   songrec
   translate-shell
   
-  # Launcher
-  fuzzel
+  # gsettings
   glib2
   
   # Qt theming

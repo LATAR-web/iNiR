@@ -200,7 +200,7 @@ if [[ -n "${ONLY_MISSING_DEPS:-}" ]]; then
     [qs]="quickshell" [niri]="niri" [nmcli]="NetworkManager" [wpctl]="wireplumber"
     [jq]="jq" [rsync]="rsync" [curl]="curl" [git]="git" [python3]="python3"
     [fish]="fish" [magick]="ImageMagick" [grim]="grim" [cliphist]="cliphist"
-    [wl-copy]="wl-clipboard" [wl-paste]="wl-clipboard" [fuzzel]="fuzzel"
+    [wl-copy]="wl-clipboard" [wl-paste]="wl-clipboard"
     [hyprpicker]="hyprpicker" [playerctl]="playerctl" [notify-send]="libnotify"
     [flock]="util-linux" [wlsunset]="wlsunset" [easyeffects]="easyeffects"
     [uv]="uv" [cava]="cava" [qalc]="qalculate" [yt-dlp]="yt-dlp"
@@ -375,10 +375,8 @@ FEDORA_CORE_PKGS=(
   glib2-devel
   
   # Basic utilities
-  bc
   coreutils
   curl
-  wget
   ripgrep
   jq
   xdg-user-dirs
@@ -388,7 +386,6 @@ FEDORA_CORE_PKGS=(
   wl-clipboard
   libnotify
   wlsunset
-  dunst
   gum
   cliphist
   uv
@@ -436,9 +433,6 @@ FEDORA_QT6_PKGS=(
   qt6-qt5compat
   qt6-qtmultimedia
   qt6-qtimageformats
-  qt6-qtvirtualkeyboard
-  qt6-qtpositioning
-  qt6-qtsensors
   qt6-qttools
   
   # System libs
@@ -466,7 +460,6 @@ FEDORA_AUDIO_PKGS=(
   wireplumber
   playerctl
   plasma-browser-integration
-  libdbusmenu-gtk3
   pavucontrol
   cava
   easyeffects
@@ -538,7 +531,6 @@ FEDORA_FONT_PKGS=(
   jetbrains-mono-fonts-all
   
   # Launcher
-  fuzzel
   glib2
   
   # Qt theming

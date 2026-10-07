@@ -33,7 +33,6 @@ depends=(
   qt6-imageformats
   qt6-multimedia
   qt6-multimedia-ffmpeg
-  qt6-quicktimeline
   quickshell
   rsync
   slurp

@@ -314,7 +314,6 @@ These checks cover:
 | Qt themes       | `~/.config/kdeglobals`, `~/.config/Kvantum/`                                       |
 | Color schemes   | `~/.local/share/color-schemes/`                                                    |
 | Color templates | `~/.config/matugen/` _(legacy directory name, matugen binary no longer required)_ |
-| Fuzzel config   | `~/.config/fuzzel/`                                                                |
 | Vesktop themes  | `~/.config/vesktop/themes/`                                                        |
 
 ### Behavior

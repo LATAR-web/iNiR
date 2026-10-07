@@ -16,11 +16,9 @@ Essential packages for Niri + ii to function.
 |---------|---------|
 | `niri` | Compositor |
 | `awww` | Wallpaper daemon |
-| `bc` | Math in scripts |
 | `coreutils` | Basic utils |
 | `cliphist` | Clipboard history |
 | `curl` | HTTP requests |
-| `wget` | Downloads |
 | `ripgrep` | Fast search |
 | `jq` | JSON parsing |
 | `python` | Python interpreter (scripts) |
@@ -62,12 +60,8 @@ Qt6 stack and Quickshell runtime.
 | `qt6-5compat` | Qt5 compatibility |
 | `qt6-imageformats` | Image formats |
 | `qt6-multimedia` | Media playback |
-| `qt6-positioning` | Geolocation |
-| `qt6-quicktimeline` | Timeline animations |
-| `qt6-sensors` | Sensor APIs |
 | `qt6-tools` | Qt tools |
 | `qt6-translations` | Translations |
-| `qt6-virtualkeyboard` | Virtual keyboard |
 | `jemalloc` | Memory allocator |
 | `libpipewire` | PipeWire integration |
 | `libxcb` | X11 bridge |
@@ -101,7 +95,6 @@ Audio stack and media controls.
 | `wireplumber` | Session manager |
 | `playerctl` | Media player control |
 | `plasma-browser-integration` | Browser media sessions for MPRIS controls/artwork |
-| `libdbusmenu-gtk3` | Tray menus |
 | `pavucontrol` | Volume control GUI |
 | `mpv` | Media playback backend |
 | `mpv-mpris` | MPRIS bridge for mpv |
@@ -173,7 +166,6 @@ Fonts, theming, and utilities.
 | `fontconfig` | Font configuration |
 | `ttf-dejavu` | DejaVu fonts |
 | `ttf-liberation` | Liberation fonts |
-| `fuzzel` | Application launcher |
 | `glib2` | GLib utilities |
 | `translate-shell` | Translation CLI |
 | `kvantum` | Qt theming |

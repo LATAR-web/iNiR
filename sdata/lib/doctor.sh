@@ -71,7 +71,6 @@ check_dependencies() {
         "cliphist:cliphist"
         "wl-copy:wl-clipboard"
         "wl-paste:wl-clipboard"
-        "fuzzel:fuzzel"
         "awww:awww"
         "awww-daemon:awww"
         "hyprpicker:hyprpicker"
