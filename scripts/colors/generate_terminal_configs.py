@@ -1304,45 +1304,6 @@ selection-match={hex_alpha(primary)}
     print(f"\u2713 Generated Fuzzel theme")
 
 
-def generate_pywalfox_config(colors, output_path):
-    """Generate Pywalfox-compatible JSON from material colors"""
-    import json
-
-    bg = colors.get("background", colors.get("term0", "#282828"))
-    fg = colors.get("onBackground", colors.get("term15", "#EBDBB2"))
-    primary = colors.get("primary", "#458588")
-
-    # Build 16-color palette from term colors
-    palette = {}
-    for i in range(16):
-        palette[f"color{i}"] = colors.get(f"term{i}", "#000000")
-
-    # Read wallpaper path if available
-    wallpaper = ""
-    wp_path = os.path.expanduser(
-        "~/.local/state/quickshell/user/generated/wallpaper/path.txt"
-    )
-    if os.path.exists(wp_path):
-        with open(wp_path) as f:
-            wallpaper = f.read().strip()
-
-    pywalfox_data = {
-        "wallpaper": wallpaper,
-        "alpha": "100",
-        "colors": palette,
-        "special": {
-            "background": bg,
-            "foreground": fg,
-            "cursor": primary,
-        },
-    }
-
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    with open(output_path, "w") as f:
-        json.dump(pywalfox_data, f, indent=2)
-    print(f"\u2713 Generated Pywalfox colors")
-
-
 def main():
     parser = argparse.ArgumentParser(
         description="Generate terminal color configs from material_colors.scss"
