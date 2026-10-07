@@ -103,6 +103,12 @@ layout(std140, binding = 0) uniform buf {
     vec4 glowBloom;
     // x: bevel width, y: scanline pitch, z: convergence, all in pixels.
     vec4 glowShape;
+    // The shadow the bodies cast (IrisStyle.shadow): one shadow of the joined silhouette, so a weld or a notch's
+    // shoulders cast with the body and two bodies that meet never darken twice. Bodies that paint themselves bring
+    // their own. Premultiplied, as Qt hands a QML color to a shader.
+    vec4 shade;
+    // x: how far down it falls, y: its blur, in pixels; z: 1 while it is drawn.
+    vec4 shadeShape;
 } u;
 layout(binding = 1) uniform sampler2D backdrop;
 
@@ -154,6 +160,21 @@ float blockValue(int block, int slot, vec4 a, vec4 b, vec4 c, vec4 d, vec4 e) {
     return slot == 0 ? v.x : slot == 1 ? v.y : slot == 2 ? v.z : v.w;
 }
 
+// How much of a Gaussian-blurred edge reaches a point `x` sigmas outside it: 0.5 erfc(x / sqrt 2), with erf from an
+// exp-only tanh (GLSL ES 1.00 has no tanh).
+float blurredEdge(float x) {
+    float y = x * 0.70710678;
+    float t = 2.0 * y * (1.12838 + 0.10091 * y * y);
+    float erfApprox = 1.0 - 2.0 / (exp(clamp(t, -30.0, 30.0)) + 1.0);
+    return 0.5 - 0.5 * erfApprox;
+}
+
+// Interleaved gradient noise (Jimenez 2014): a dither under a level of 8 bits breaks the bands a blurred wallpaper and
+// a long shadow ramp leave, without a texture.
+float ign(vec2 p) {
+    return fract(52.9829189 * fract(dot(p, vec2(0.06711056, 0.00583715))));
+}
+
 void main() {
     vec2 p = u.viewport.xy + qt_TexCoord0 * max(u.viewport.zw, vec2(1.0));
     if (p.x > u.quiet.x && p.y > u.quiet.y && p.x < u.quiet.z && p.y < u.quiet.w) {
@@ -189,7 +210,9 @@ void main() {
     // Material is blended by a soft minimum of distances, so where a solid body
     // melts into glass the fillet shades from one to the other instead of cutting.
     vec3 weights = vec3(0.0);
-    if (u.field.y > 0.5) {
+    // Every material solid (the default) skips twenty exponentials a pixel: the branch is uniform.
+    bool anyGlass = u.glass.y > 0.5 || dot(u.glassA + u.glassB + u.glassC + u.glassD + u.glassE, vec4(1.0)) > 0.5;
+    if (anyGlass && u.field.y > 0.5) {
         float w = exp(-clamp(frameDistance, -40.0, 40.0) / 2.0);
         weights += w * vec3(u.glass.y < 0.5 ? 1.0 : 0.0, u.glass.y > 0.5 && u.glass.y < 1.5 ? 1.0 : 0.0, u.glass.y > 1.5 ? 1.0 : 0.0);
     }
@@ -210,8 +233,10 @@ void main() {
         float m = blockValue(block, slot, u.glassA, u.glassB, u.glassC, u.glassD, u.glassE);
         if (m > 1.5)
             held = min(held, bodies[i]);
-        float w = exp(-clamp(bodies[i], -40.0, 40.0) / 2.0);
-        weights += w * vec3(m < 0.5 ? 1.0 : 0.0, m > 0.5 && m < 1.5 ? 1.0 : 0.0, m > 1.5 ? 1.0 : 0.0);
+        if (anyGlass) {
+            float w = exp(-clamp(bodies[i], -40.0, 40.0) / 2.0);
+            weights += w * vec3(m < 0.5 ? 1.0 : 0.0, m > 0.5 && m < 1.5 ? 1.0 : 0.0, m > 1.5 ? 1.0 : 0.0);
+        }
     }
     // The joins, each only between a body and the one it belongs to. A smooth
     // union is never above the plain one, so taking the minimum adds the fillet
@@ -255,6 +280,10 @@ void main() {
         fragColor = vec4(0.0);
         return;
     }
+    // Derivatives at the top level: inside a branch that differs between neighbours they are undefined.
+    // The gradient in the item's own space (y down on every backend): screen derivatives run y up on OpenGL.
+    vec2 dp = vec2(dFdx(p.x), dFdy(p.y));
+    vec2 unitedSlope = vec2(dFdx(united), dFdy(united)) / vec2(abs(dp.x) > 1e-6 ? dp.x : 1.0, abs(dp.y) > 1e-6 ? dp.y : 1.0);
     // One pixel of coverage, so the contour stays crisp at any scale.
     float coverage = 1.0 - smoothstep(-0.7, 0.7, united);
     if (u.options.x > 0.5 && u.field.y > 0.5)
@@ -262,7 +291,7 @@ void main() {
     float fillAlpha = coverage * u.tint.a * u.qt_Opacity;
     vec3 colour = u.tint.rgb * fillAlpha;
     float alpha = fillAlpha;
-    vec3 share = weights / max(1e-4, weights.x + weights.y + weights.z);
+    vec3 share = anyGlass ? weights / max(1e-4, weights.x + weights.y + weights.z) : vec3(1.0, 0.0, 0.0);
     // With the frame in another material (the music frame's wallpaper glass, whose band moves every frame) the
     // region carries no band and no join to it, so compositor glass there was a thin tint over the unblurred scene:
     // the fillets under a body and the band beside it showed sharp through. There the band's own material holds.
@@ -423,10 +452,7 @@ void main() {
     float glassShare = max(share.y + share.z, u.edgeGlass.w);
     if (glassShare > 0.0) {
         float depth = -united;
-        // The gradient in the item's own space (y down on every backend): screen derivatives run y up on OpenGL,
-        // which lit the bottom edges instead of the top.
-        vec2 dp = vec2(dFdx(p.x), dFdy(p.y));
-        vec2 g = vec2(dFdx(united), dFdy(united)) / vec2(abs(dp.x) > 1e-6 ? dp.x : 1.0, abs(dp.y) > 1e-6 ? dp.y : 1.0);
+        vec2 g = unitedSlope;
         float facing = clamp(-g.y / max(length(g), 1e-4), 0.0, 1.0);
         float lip = coverage * (1.0 - smoothstep(u.edgeGlass.z - 0.5, u.edgeGlass.z + 0.5, depth));
         float seal = lip * mix(u.edgeGlass.y, u.edgeGlass.x, facing * facing) * glassShare * u.sheen.a * u.qt_Opacity;
@@ -454,5 +480,61 @@ void main() {
         colour = u.frameInk.rgb * lightAlpha + colour * (1.0 - lightAlpha);
         alpha = lightAlpha + alpha * (1.0 - lightAlpha);
     }
+    float shadowAlpha = 0.0;
+    if (u.shadeShape.z > 0.5 && u.shade.a > 0.0) {
+        // The casters' silhouette one offset lower: bodies that do not paint themselves, the joins between them, and
+        // for a body grown out of the frame its fillet with the band less the band's own share, so the shoulders cast
+        // and the band does not.
+        vec2 ps = p - vec2(0.0, u.shadeShape.x);
+        float frameShade = FAR * 10.0;
+        if (u.field.y > 0.5)
+            frameShade = -roundedBox(ps + u.scene.xy, frameCentre, frameHalf, u.field.w);
+        float alone = FAR * 10.0;
+        float withFrame = FAR * 10.0;
+        float casters[20];
+        for (int i = 0; i < 20; ++i) {
+            casters[i] = FAR * 10.0;
+            if (bodies[i] > FAR)
+                continue;
+            int block = i / 4;
+            int slot = i - block * 4;
+            if (blockValue(block, slot, u.paintsA, u.paintsB, u.paintsC, u.paintsD, u.paintsE) > 0.5)
+                continue;
+            vec4 s = shapeAt(i);
+            casters[i] = roundedBox(ps, s.xy, s.zw, blockValue(block, slot, u.radiiA, u.radiiB, u.radiiC, u.radiiD, u.radiiE));
+            alone = min(alone, casters[i]);
+        }
+        for (int i = 0; i < 20; ++i) {
+            if (casters[i] > FAR)
+                continue;
+            int block = i / 4;
+            int slot = i - block * 4;
+            float k = max(0.0, blockValue(block, slot, u.fuseA, u.fuseB, u.fuseC, u.fuseD, u.fuseE));
+            float join = blockValue(block, slot, u.joinA, u.joinB, u.joinC, u.joinD, u.joinE);
+            float also = blockValue(block, slot, u.alsoA, u.alsoB, u.alsoC, u.alsoD, u.alsoE);
+            if (join < -0.5 && frameShade < FAR)
+                withFrame = min(withFrame, smoothUnion(frameShade, casters[i], k));
+            else if (join > 0.5 && casters[int(join + 0.5) - 1] < FAR)
+                alone = min(alone, smoothUnion(casters[int(join + 0.5) - 1], casters[i], k));
+            if (also < -0.5 && frameShade < FAR)
+                withFrame = min(withFrame, smoothUnion(frameShade, casters[i], k));
+            else if (also > 0.5 && casters[int(also + 0.5) - 1] < FAR)
+                alone = min(alone, smoothUnion(casters[int(also + 0.5) - 1], casters[i], k));
+        }
+        float sigma = max(1.0, u.shadeShape.y * 0.5);
+        float thrown = alone < FAR ? blurredEdge(alone / sigma) : 0.0;
+        if (withFrame < FAR)
+            thrown = max(thrown, max(0.0, blurredEdge(withFrame / sigma) - blurredEdge(frameShade / sigma)));
+        // Under glass the body shows what is behind it: the shadow stays outside, never a grey film inside.
+        float reachHere = thrown * u.qt_Opacity * (1.0 - coverage * (share.y + share.z)) * (1.0 - alpha);
+        shadowAlpha = u.shade.a * reachHere;
+        colour += u.shade.rgb * reachHere;
+        alpha += shadowAlpha;
+    }
+    // Wallpaper glass is a half-resolution blur stretched over the body: eight bits of it band. A dither under one level
+    // breaks the bands (a shadow's ramp is short enough not to need it).
+    float ramp = share.y * coverage;
+    if (ramp > 0.0)
+        colour = max(colour + (ign(floor(frameP)) - 0.5) * (1.0 / 255.0) * ramp, vec3(0.0));
     fragColor = vec4(colour, alpha);
 }

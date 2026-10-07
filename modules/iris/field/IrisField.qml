@@ -1,7 +1,6 @@
 pragma ComponentBehavior: Bound
 
 import QtQuick
-import QtQuick.Effects
 import Quickshell
 import qs.services
 import qs.modules.common
@@ -21,8 +20,12 @@ Item {
     property real band: IrisFrame.band
     property real cornerRadius: IrisFrame.cornerRadius
     readonly property int capacity: 20
-    readonly property int shadowSlots: root.capacity
+    // The bodies' shadow is drawn by the pass itself, from the joined silhouette (IrisField.frag `shade`).
+    readonly property real shadowFall: Math.round(3 * IrisStyle.density)
+    readonly property real shadowBlur: Math.round(16 * IrisStyle.density)
+    readonly property bool casts: IrisStyle.shadow.a > 0.004
     readonly property real reach: root.smoothing + 2 + IrisStyle.afterglowReach
+        + (root.casts ? root.shadowFall + 1.5 * root.shadowBlur : 0)
     property bool compositorAllowed: false
     // A field that does not cover its output: its window's position on the output and the output's size.
     property point sceneOrigin: Qt.point(0, 0)
@@ -123,29 +126,6 @@ Item {
         const y = Math.max(0, Math.floor(top))
         return Qt.rect(x, y, Math.ceil(Math.min(root.width, right)) - x,
             Math.ceil(Math.min(root.height, bottom)) - y)
-    }
-
-    // Fixed pool: a model Repeater rebuilds every delegate whenever a body moves.
-    component Shade: RectangularShadow {
-        id: shade
-        required property int index
-        readonly property var shape: root.shapes[shade.index] ?? null
-        visible: shade.shape !== null && !shade.shape.paints
-        x: shade.shape ? shade.shape.x : 0
-        y: shade.shape ? shade.shape.y : 0
-        width: shade.shape ? shade.shape.width : 0
-        height: shade.shape ? shade.shape.height : 0
-        radius: shade.shape ? (shade.shape.radius ?? 0) : 0
-        offset.y: 3 * IrisStyle.density
-        blur: 16 * IrisStyle.density
-        color: IrisStyle.shadow
-    }
-    Repeater {
-        model: root.shadowSlots
-        delegate: Shade {
-            required property int modelData
-            index: modelData
-        }
     }
 
     ShaderEffect {
@@ -287,6 +267,8 @@ Item {
         readonly property vector4d frameLight: Qt.vector4d(root.frameMusicAppearance, root.frameMusicLevel,
             root.frameMusicLight, root.frameMusicLightWidth)
         readonly property color frameInk: root.frameMusicInk
+        readonly property color shade: IrisStyle.shadow
+        readonly property vector4d shadeShape: Qt.vector4d(root.shadowFall, root.shadowBlur, root.casts ? 1 : 0, 0)
         readonly property Item backdrop: pass.backdropReady ? root.backdropSource.texture : noBackdrop
     }
 }
