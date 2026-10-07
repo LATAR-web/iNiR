@@ -110,6 +110,7 @@ ClippingRectangle {
             anchors.fill: parent
             anchors.margins: -Math.round(48 * card.d)
             source: backdropSource
+            autoPaddingEnabled: false
             blurEnabled: true
             blur: 1
             blurMax: 48

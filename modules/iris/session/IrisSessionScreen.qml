@@ -146,6 +146,8 @@ Variants {
                     // Hidden by opacity: a hidden subtree never renders a live wallpaper's frames into the texture.
                     opacity: 0
                     screen: window.modelData
+                    // The window maps at height 0: decoding before it has its size read the picture at 1×1 and 480×1 first.
+                    active: stage.width > 0 && stage.height > 0
                     live: window.presentationShown
                     provideTexture: true
                     decodeSize: Qt.size(Math.max(1, Math.round(stage.width / 4)), Math.max(1, Math.round(stage.height / 4)))
@@ -160,6 +162,9 @@ Variants {
                         anchors.margins: -Math.round(64 * stage.d)
                         visible: backdropImage.ready
                         source: backdropImage.textureItem
+                        // Auto padding crops the source by its size at this item's last resize; it grew first and kept the
+                        // top rows stretched over the screen. The -64 margins are the padding.
+                        autoPaddingEnabled: false
                         blurEnabled: true
                         blur: 1
                         blurMax: 48
