@@ -152,6 +152,19 @@ else
     log_ok "Theme files already up to date — skipping copy"
 fi
 
+# The iRiS appearance's faces, one static file per weight: the sddm user cannot read the shell's copy.
+FONTS_SRC="${THEME_SRC%/dots/sddm/pixel}/assets/fonts"
+for font in "$FONTS_SRC"/rubik/Rubik-*.ttf "$FONTS_SRC"/inter/Inter-{Regular,Medium,SemiBold,Bold}.ttf; do
+    [[ -f "$font" ]] || continue
+    target="${THEME_DIR}/fonts/$(basename "$font")"
+    cmp -s "$font" "$target" && continue
+    if [[ -O "${THEME_DIR}" ]]; then
+        install -Dm644 "$font" "$target"
+    else
+        elevate install -Dm644 "$font" "$target"
+    fi
+done
+
 # Create a placeholder background (symlinked to wallpaper later by sync script)
 if [[ ! -f "${THEME_DIR}/assets/background.png" ]]; then
     log_info "No background.png yet — creating placeholder..."
@@ -261,12 +274,9 @@ else
     log_warn "Color sync skipped (run after first wallpaper generation)"
 fi
 
-# Install sync script to ~/.local/bin for wallpaper change hook
-SYNC_DST="${HOME}/.local/bin/sync-pixel-sddm.py"
-mkdir -p "$(dirname "$SYNC_DST")"
-cp "$SYNC_SCRIPT" "$SYNC_DST"
-chmod +x "$SYNC_DST"
-log_ok "Sync script installed to ${SYNC_DST}"
+# The colour pipeline runs the sync from the iNiR tree (scripts/colors/modules/60-sddm.sh); the copy older
+# installs left here went stale and raced it.
+rm -f "${HOME}/.local/bin/sync-pixel-sddm.py"
 
 # NOTE: We no longer mutate the user theming config here.
 # Color sync runs from the unified Python theming pipeline. Keep installer idempotent.
@@ -308,4 +318,3 @@ fi
 log_ok "${THEME_NAME} installed and configured"
 log_info "Test with: sddm-greeter-qt6 --test-mode --theme ${THEME_DIR}"
 log_info "Colors auto-sync on wallpaper change via the iNiR theming pipeline"
-log_info "Manual re-sync: python3 ~/.local/bin/sync-pixel-sddm.py"

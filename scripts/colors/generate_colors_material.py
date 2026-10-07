@@ -1511,15 +1511,3 @@ if args.render_templates:
         print(
             f"[render-templates] Rendered {rendered_count} template(s)", file=sys.stderr
         )
-
-    # SDDM sync post-hook: run only if script and theme exist
-    sddm_sync = os.path.expanduser("~/.local/bin/sync-pixel-sddm.py")
-    sddm_theme = "/usr/share/sddm/themes/ii-pixel"
-    if os.path.isfile(sddm_sync) and os.path.isdir(sddm_theme):
-        import subprocess
-
-        subprocess.Popen(
-            ["python3", sddm_sync],
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
-        )
