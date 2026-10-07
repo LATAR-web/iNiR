@@ -2,8 +2,8 @@ name: "Sync Upstream (Snowarch)"
 
 on:
   schedule:
-    # Se ejecuta todos los lunes a las 04:00 UTC
-    - cron: "0 4 * * 1"
+    # Se ejecuta automáticamente 4 veces al día (cada 6 horas)
+    - cron: "0 */6 * * *"
   workflow_dispatch: # Permite ejecutar la sincronización manualmente con un clic en GitHub
 
 permissions:
