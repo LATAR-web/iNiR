@@ -44,6 +44,8 @@ in
   serviceEnvironment = cfg: {
     INIR_SYSTEM_RUNTIME_DIR = "${cfg.package}/share/quickshell/inir";
     INIR_FALLBACK_SYSTEM_RUNTIME_DIR = "${cfg.package}/share/quickshell/inir";
+    INIR_VENV = "%h/.local/state/quickshell/.venv";
+    ILLOGICAL_IMPULSE_VIRTUAL_ENV = "%h/.local/state/quickshell/.venv";
     QS_DISABLE_CRASH_HANDLER = "1";
     QT_LOGGING_RULES = "quickshell.dbus.properties=false;qt.qml.settings.warning=false;qt.core.qsettings.warning=false;kf.xmlgui=false;kf.coreaddons=false;kf.config.core=false;kf.iconthemes=false";
     QT_SCALE_FACTOR = "1";

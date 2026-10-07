@@ -19,10 +19,23 @@ let
   # InnerTube and browser-cookie extraction must share one closed Python
   # environment; putting the yt-dlp executable in PATH does not expose its
   # module or SecretStorage backend to this interpreter on Nix.
-  pythonRuntime = pkgs.python3.withPackages (ps: [
-    ps.ytmusicapi
-    ps.yt-dlp
-    ps.secretstorage
+  pythonRuntime = pkgs.python3.withPackages (ps: with ps; [
+    materialyoucolor
+    material-color-utilities
+    opencv4
+    pillow
+    numpy
+    psutil
+    tqdm
+    loguru
+    click
+    pygobject3
+    pycairo
+    kde-material-you-colors
+    websockets
+    ytmusicapi
+    yt-dlp
+    secretstorage
   ]);
 
   runtimeDeps =
@@ -59,6 +72,12 @@ let
       pulseaudio
       wireplumber
       yt-dlp
+      matugen
+      gowall
+      awww
+      inotify-tools
+      imagemagick
+      ffmpeg
     ]
     ++ optionalTop "brightnessctl"
     ++ optionalTop "cava"
@@ -169,7 +188,7 @@ pkgs.stdenvNoCC.mkDerivation {
     # The source tree intentionally targets Arch, where helpers live under
     # /usr/bin. NixOS does not provide that layout. Patch only the packaged
     # copy and keep shebang lines intact.
-    find "$runtime/modules" "$runtime/services" "$runtime/defaults" "$runtime/scripts" \
+    find "$runtime" \
       -type f \( -name '*.qml' -o -name '*.js' -o -name '*.sh' -o -name '*.py' \) \
       -exec sed -i '1!s#/usr/bin/##g' {} +
 
@@ -179,12 +198,15 @@ pkgs.stdenvNoCC.mkDerivation {
       --prefix QT_PLUGIN_PATH : "${lib.makeSearchPath "lib/qt-6/plugins" qmlDeps}" \
       ${materialSymbolsWrapperArg}
       --set-default INIR_SYSTEM_RUNTIME_DIR "$runtime" \
-      --set-default INIR_FALLBACK_SYSTEM_RUNTIME_DIR "$runtime"
+      --set-default INIR_FALLBACK_SYSTEM_RUNTIME_DIR "$runtime" \
+      --set-default INIR_VENV "${pythonRuntime}" \
+      --set-default ILLOGICAL_IMPULSE_VIRTUAL_ENV "${pythonRuntime}"
 
     runHook postInstall
   '';
 
   passthru.runtimeDependencies = runtimeDeps;
+  passthru.pythonRuntime = pythonRuntime;
 
   meta = {
     description = "Complete desktop shell for Niri, built on Quickshell";

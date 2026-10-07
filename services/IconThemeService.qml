@@ -73,13 +73,27 @@ Singleton {
         
         return [
             `file://${home}/.local/share/icons/${theme}/apps/scalable/${iconName}.svg`,
+            `file://${home}/.icons/${theme}/apps/scalable/${iconName}.svg`,
+            `file:///run/current-system/sw/share/icons/${theme}/apps/scalable/${iconName}.svg`,
             `file:///usr/share/icons/${theme}/apps/scalable/${iconName}.svg`,
             `file://${home}/.local/share/icons/${theme}/scalable/apps/${iconName}.svg`,
+            `file://${home}/.icons/${theme}/scalable/apps/${iconName}.svg`,
+            `file:///run/current-system/sw/share/icons/${theme}/scalable/apps/${iconName}.svg`,
             `file:///usr/share/icons/${theme}/scalable/apps/${iconName}.svg`,
             `file://${home}/.local/share/icons/${theme}/apps/256x256/${iconName}.png`,
+            `file://${home}/.icons/${theme}/apps/256x256/${iconName}.png`,
+            `file:///run/current-system/sw/share/icons/${theme}/apps/256x256/${iconName}.png`,
             `file:///usr/share/icons/${theme}/apps/256x256/${iconName}.png`,
             `file://${home}/.local/share/icons/${theme}/256x256/apps/${iconName}.png`,
+            `file://${home}/.icons/${theme}/256x256/apps/${iconName}.png`,
+            `file:///run/current-system/sw/share/icons/${theme}/256x256/apps/${iconName}.png`,
             `file:///usr/share/icons/${theme}/256x256/apps/${iconName}.png`,
+            `file://${home}/.local/share/icons/${theme}/48x48/apps/${iconName}.svg`,
+            `file://${home}/.icons/${theme}/48x48/apps/${iconName}.svg`,
+            `file:///run/current-system/sw/share/icons/${theme}/48x48/apps/${iconName}.svg`,
+            `file://${home}/.local/share/icons/${theme}/48x48/apps/${iconName}.png`,
+            `file://${home}/.icons/${theme}/48x48/apps/${iconName}.png`,
+            `file:///run/current-system/sw/share/icons/${theme}/48x48/apps/${iconName}.png`,
         ]
     }
 
@@ -385,7 +399,7 @@ for subdir in ["gtk-3.0", "gtk-4.0"]:
 
     Process {
         id: currentThemeProc
-        command: ["/usr/bin/gsettings", "get", "org.gnome.desktop.interface", "icon-theme"]
+        command: ["gsettings", "get", "org.gnome.desktop.interface", "icon-theme"]
         stdout: SplitParser {
             onRead: line => {
                 root.currentTheme = line.trim().replace(/'/g, "")
@@ -396,12 +410,16 @@ for subdir in ["gtk-3.0", "gtk-4.0"]:
     Process {
         id: listThemesProc
         command: [
-            "/usr/bin/find",
-            "/usr/share/icons",
+            "find",
             `${FileUtils.trimFileProtocol(Directories.home)}/.local/share/icons`,
+            `${FileUtils.trimFileProtocol(Directories.home)}/.icons`,
+            "/run/current-system/sw/share/icons",
+            "/usr/share/icons",
             "-maxdepth",
             "1",
-            "-type",
+            "-mindepth",
+            "1",
+            "-xtype",
             "d"
         ]
         
