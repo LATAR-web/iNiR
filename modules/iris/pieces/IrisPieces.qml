@@ -54,6 +54,8 @@ QtObject {
     ]
     readonly property var slotIds: root.slots.map(piece => piece.id)
     readonly property var extraIds: root.extras.map(piece => piece.id)
+    readonly property var availableExtras: root.extraIds.filter(id => root.available(id))
+    readonly property Binding frameFeed: Binding { target: IrisFrame; property: "availableExtras"; value: root.availableExtras }
     readonly property var cardIds: root.extras.filter(piece => piece.card).map(piece => piece.id)
     readonly property string defaultPlace: "right"
     function labelOf(id: string): string {
