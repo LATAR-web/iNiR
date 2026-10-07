@@ -32,11 +32,6 @@ output_path = '~/.config/gtk-4.0/gtk.css'
 input_path = '~/.config/matugen/templates/gtk-3.0/gtk.css'
 output_path = '~/.config/gtk-3.0/gtk.css'
 
-# Fuzzel launcher theme
-[templates.fuzzel]
-input_path = '~/.config/matugen/templates/fuzzel/fuzzel_theme.ini'
-output_path = '~/.config/fuzzel/fuzzel_theme.ini'
-
 # KDE source color cache (used by kde-material-you-colors-wrapper)
 [templates.kde_colors]
 input_path = '~/.config/matugen/templates/kde/color.txt'

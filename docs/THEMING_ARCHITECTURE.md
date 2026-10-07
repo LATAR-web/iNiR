@@ -62,7 +62,7 @@ Important practical rule:
 - `terminal.json` is the explicit terminal palette contract for future target consumers
 - `theme-meta.json` carries generation metadata such as source, mode, scheme, and generator
 - `generate_colors_material.py` is the single authoritative palette generator: it handles
-  both Material You color extraction AND template rendering (GTK, fuzzel, KDE, etc.)
+  both Material You color extraction AND template rendering (GTK, KDE, etc.)
 
 Current state:
 
