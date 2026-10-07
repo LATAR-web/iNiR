@@ -65,6 +65,10 @@ MouseArea {
     readonly property color colError:            config.errorColor            || "#f38ba8"
     readonly property real  blurRadius:          isNaN(Number(config.blurRadius)) ? 64 : Number(config.blurRadius)
     readonly property bool materialShapeChars:   String(config.materialShapeChars || "false").toLowerCase() === "true"
+    // What sits under text follows the text: dark washes and shadows under light text, light ones under dark text
+    // (a light-mode palette), or the dark text drowns in its own smoke.
+    readonly property bool lightText: (0.2126 * colOnSurface.r + 0.7152 * colOnSurface.g + 0.0722 * colOnSurface.b) > 0.5
+    function wash(alpha) { return lightText ? Qt.rgba(0, 0, 0, alpha) : Qt.rgba(1, 1, 1, alpha) }
 
     function symFont(): string {
         return materialSymbolsFont.status === FontLoader.Ready ? materialSymbolsFont.name : ""
@@ -135,17 +139,23 @@ MouseArea {
     }
 
 
+    // Light text over a light picture gets the even veil the sync measured for it (`irisLift`); dark text needs none.
+    Rectangle {
+        anchors.fill: parent
+        color: Qt.rgba(0, 0, 0, root.lightText ? Math.max(0, Math.min(0.5, Number(config.irisLift) || 0)) : 0)
+    }
+
     Rectangle {
         anchors.fill: parent
         gradient: Gradient {
-            GradientStop { position: 0.0; color: Qt.rgba(0,0,0,0.1) }
-            GradientStop { position: 0.5; color: Qt.rgba(0,0,0,0.05) }
-            GradientStop { position: 1.0; color: Qt.rgba(0,0,0,0.3) }
+            GradientStop { position: 0.0; color: root.wash(0.1) }
+            GradientStop { position: 0.5; color: root.wash(0.05) }
+            GradientStop { position: 1.0; color: root.wash(0.3) }
         }
     }
 
     Rectangle {
-        id: smokeOverlay; anchors.fill: parent; color: Qt.rgba(0,0,0,0.4)
+        id: smokeOverlay; anchors.fill: parent; color: root.wash(root.lightText ? 0.4 : 0.5)
         opacity: root.showLoginView ? 1 : 0
         Behavior on opacity { NumberAnimation { duration: 350; easing.type: Easing.OutCubic } }
     }
@@ -178,7 +188,7 @@ MouseArea {
                 font.pixelSize: 108; font.weight: Font.DemiBold; font.family: "Roboto"
                 color: root.colOnSurface
                 layer.enabled: true
-                layer.effect: DropShadow { horizontalOffset: 0; verticalOffset: 3; radius: 16; samples: 33; color: Qt.rgba(0,0,0,0.5) }
+                layer.effect: DropShadow { horizontalOffset: 0; verticalOffset: 3; radius: 16; samples: 33; color: root.wash(0.5) }
                 Timer { interval: 1000; running: true; repeat: true
                     onTriggered: clockText.text = Qt.formatTime(new Date(), "hh:mm") }
             }
@@ -189,7 +199,7 @@ MouseArea {
                 text: Qt.formatDate(new Date(), "dddd, d MMMM")
                 font.pixelSize: 22; font.weight: Font.Normal; color: root.colOnSurface
                 layer.enabled: true
-                layer.effect: DropShadow { horizontalOffset: 0; verticalOffset: 1; radius: 8; samples: 17; color: Qt.rgba(0,0,0,0.4) }
+                layer.effect: DropShadow { horizontalOffset: 0; verticalOffset: 1; radius: 8; samples: 17; color: root.wash(0.4) }
                 Timer { interval: 60000; running: true; repeat: true
                     onTriggered: dateText.text = Qt.formatDate(new Date(), "dddd, d MMMM") }
             }
@@ -204,7 +214,7 @@ MouseArea {
             opacity: hintOpacity
             property real hintOpacity: 0.7
             layer.enabled: true
-            layer.effect: DropShadow { horizontalOffset: 0; verticalOffset: 1; radius: 4; samples: 9; color: Qt.rgba(0,0,0,0.3) }
+            layer.effect: DropShadow { horizontalOffset: 0; verticalOffset: 1; radius: 4; samples: 9; color: root.wash(0.3) }
             Behavior on hintOpacity { NumberAnimation { duration: 600; easing.type: Easing.OutCubic } }
             Timer { interval: 4000; running: clockView.visible; onTriggered: hintText.hintOpacity = 0 }
             Connections {
@@ -348,7 +358,7 @@ MouseArea {
                             font.pixelSize: 22; font.weight: Font.Medium; color: root.colOnSurface
                             anchors.verticalCenter: parent.verticalCenter
                             layer.enabled: true
-                            layer.effect: DropShadow { horizontalOffset: 0; verticalOffset: 1; radius: 6; samples: 13; color: Qt.rgba(0,0,0,0.4) }
+                            layer.effect: DropShadow { horizontalOffset: 0; verticalOffset: 1; radius: 6; samples: 13; color: root.wash(0.4) }
                         }
                         MSymbol {
                             text: "swap_horiz"; iconSize: 18; iconColor: root.colOnSurfaceVariant

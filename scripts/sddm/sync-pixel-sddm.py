@@ -381,7 +381,9 @@ def main():
     if iris["irisSceneSource"] == "custom" and update_picture(own, "lock-picture.png"):
         values["irisPicture"] = "assets/lock-picture.png"
 
-    shown = os.path.join(THEME_DIR, values["irisPicture"]) if values["irisPicture"] else os.path.join(ASSETS_DIR, "background.png")
+    # The veil is measured on the picture the chosen look shows: Classic always shows the desktop's.
+    own_shown = appearance == "iris" and values["irisPicture"]
+    shown = os.path.join(THEME_DIR, values["irisPicture"]) if own_shown else os.path.join(ASSETS_DIR, "background.png")
     wallpaper = read_wallpaper(config)
     if not wallpaper or not update_picture(wallpaper, "background.png"):
         print("[sddm-pixel] No wallpaper path found, keeping existing background")
