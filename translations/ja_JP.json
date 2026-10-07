@@ -7381,7 +7381,6 @@
   "Move earlier": "前へ移動",
   "Move later": "後ろへ移動",
   "Music in the Island and on the lock screen": "アイランドとロック画面の音楽",
-  "Music will show here": "ここに音楽が表示されます",
   "Mute": "ミュート",
   "Mute the input.": "入力をミュート。",
   "Mute the speakers.": "スピーカーをミュート。",
@@ -9002,5 +9001,7 @@
   "Fill crops, Fit shows bars, Span lays one picture across every screen": "塗りつぶしは切り抜き、フィットは余白を残し、スパンは1枚の画像をすべての画面にまたがせます",
   "Open %1": "%1を開く",
   "Login screen": "ログイン画面",
-  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "コンピューターの起動後にサインインする画面です。「自動」では iRiS を使っている間、iRiS のロック画面の見た目になります。"
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "コンピューターの起動後にサインインする画面です。「自動」では iRiS を使っている間、iRiS のロック画面の見た目になります。",
+  "Opening %1…": "%1を開いています…",
+  "%1 didn't open": "%1を開けませんでした"
 }

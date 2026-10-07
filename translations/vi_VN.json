@@ -7381,7 +7381,6 @@
   "Move earlier": "Di chuyển lên trước",
   "Move later": "Di chuyển ra sau",
   "Music in the Island and on the lock screen": "Nhạc trong Đảo và trên màn hình khóa",
-  "Music will show here": "Nhạc sẽ hiện ở đây",
   "Mute": "Tắt tiếng",
   "Mute the input.": "Tắt tiếng đầu vào.",
   "Mute the speakers.": "Tắt tiếng loa.",
@@ -9002,5 +9001,7 @@
   "Fill crops, Fit shows bars, Span lays one picture across every screen": "Lấp đầy cắt bớt, Vừa khít chừa viền, Trải rộng phủ một ảnh lên mọi màn hình",
   "Open %1": "Mở %1",
   "Login screen": "Màn hình đăng nhập",
-  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "Nơi bạn đăng nhập sau khi bật máy. Tự động sẽ khoác giao diện khóa iRiS khi bạn dùng iRiS."
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "Nơi bạn đăng nhập sau khi bật máy. Tự động sẽ khoác giao diện khóa iRiS khi bạn dùng iRiS.",
+  "Opening %1…": "Đang mở %1…",
+  "%1 didn't open": "%1 không mở được"
 }

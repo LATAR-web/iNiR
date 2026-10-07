@@ -7374,7 +7374,6 @@
   "Move earlier": "Pindahkan lebih awal",
   "Move later": "Pindahkan lebih akhir",
   "Music in the Island and on the lock screen": "Musik di Pulau dan di layar kunci",
-  "Music will show here": "Musik akan tampil di sini",
   "Mute": "Bisukan",
   "Mute the input.": "Bisukan input.",
   "Mute the speakers.": "Bisukan speaker.",
@@ -9002,5 +9001,7 @@
   "Fill crops, Fit shows bars, Span lays one picture across every screen": "Isi memotong, Paskan menyisakan bilah, Rentang membentangkan satu gambar di semua layar",
   "Open %1": "Buka %1",
   "Login screen": "Layar masuk",
-  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "Tempat Anda masuk setelah komputer dinyalakan. Otomatis memakai tampilan kunci iRiS selama Anda memakai iRiS."
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "Tempat Anda masuk setelah komputer dinyalakan. Otomatis memakai tampilan kunci iRiS selama Anda memakai iRiS.",
+  "Opening %1…": "Membuka %1…",
+  "%1 didn't open": "%1 tidak terbuka"
 }

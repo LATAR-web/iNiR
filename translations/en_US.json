@@ -7376,7 +7376,6 @@
   "Move earlier": "Move earlier",
   "Move later": "Move later",
   "Music in the Island and on the lock screen": "Music in the Island and on the lock screen",
-  "Music will show here": "Music will show here",
   "Mute": "Mute",
   "Mute the input.": "Mute the input.",
   "Mute the speakers.": "Mute the speakers.",
@@ -9002,5 +9001,7 @@
   "Fill crops, Fit shows bars, Span lays one picture across every screen": "Fill crops, Fit shows bars, Span lays one picture across every screen",
   "Open %1": "Open %1",
   "Login screen": "Login screen",
-  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS."
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.",
+  "Opening %1…": "Opening %1…",
+  "%1 didn't open": "%1 didn't open"
 }

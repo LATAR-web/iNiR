@@ -7381,7 +7381,6 @@
   "Move earlier": "Öne taşı",
   "Move later": "Sona taşı",
   "Music in the Island and on the lock screen": "Ada'da ve kilit ekranında müzik",
-  "Music will show here": "Müzik burada görünecek",
   "Mute": "Sessize al",
   "Mute the input.": "Girişi sessize al.",
   "Mute the speakers.": "Hoparlörleri sessize al.",
@@ -9002,5 +9001,7 @@
   "Fill crops, Fit shows bars, Span lays one picture across every screen": "Doldur kırpar, Sığdır kenar boşluğu bırakır, Yay tek resmi tüm ekranlara yayar",
   "Open %1": "Aç: %1",
   "Login screen": "Giriş ekranı",
-  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "Bilgisayarı açtıktan sonra oturum açtığınız yer. Otomatik, iRiS kullandığınız sürece iRiS kilidinin görünümünü kullanır."
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "Bilgisayarı açtıktan sonra oturum açtığınız yer. Otomatik, iRiS kullandığınız sürece iRiS kilidinin görünümünü kullanır.",
+  "Opening %1…": "%1 açılıyor…",
+  "%1 didn't open": "%1 açılmadı"
 }

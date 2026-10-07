@@ -7381,7 +7381,6 @@
   "Move earlier": "前移",
   "Move later": "后移",
   "Music in the Island and on the lock screen": "岛屿和锁屏上的音乐",
-  "Music will show here": "音乐会显示在这里",
   "Mute": "静音",
   "Mute the input.": "静音输入。",
   "Mute the speakers.": "静音扬声器。",
@@ -9002,5 +9001,7 @@
   "Fill crops, Fit shows bars, Span lays one picture across every screen": "填充会裁切，适应会留边，跨屏把一张图铺满所有屏幕",
   "Open %1": "打开 %1",
   "Login screen": "登录界面",
-  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "开机后登录的界面。选择“自动”时，只要你在使用 iRiS，它就会换上 iRiS 锁屏的样子。"
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "开机后登录的界面。选择“自动”时，只要你在使用 iRiS，它就会换上 iRiS 锁屏的样子。",
+  "Opening %1…": "正在打开 %1…",
+  "%1 didn't open": "%1 没有打开"
 }

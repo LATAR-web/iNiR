@@ -7381,7 +7381,6 @@
   "Move earlier": "पहले करें",
   "Move later": "बाद में करें",
   "Music in the Island and on the lock screen": "द्वीप और लॉक स्क्रीन पर संगीत",
-  "Music will show here": "संगीत यहाँ दिखेगा",
   "Mute": "म्यूट करें",
   "Mute the input.": "इनपुट म्यूट करें।",
   "Mute the speakers.": "स्पीकर म्यूट करें।",
@@ -9002,5 +9001,7 @@
   "Fill crops, Fit shows bars, Span lays one picture across every screen": "फ़िल काटता है, फ़िट किनारे छोड़ता है, फैलाएँ एक तस्वीर को सभी स्क्रीन पर बिछाता है",
   "Open %1": "%1 खोलें",
   "Login screen": "लॉगिन स्क्रीन",
-  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "कंप्यूटर चालू करने के बाद जहाँ आप साइन इन करते हैं। स्वचालित में, जब तक आप iRiS इस्तेमाल करते हैं, यह iRiS लॉक जैसा दिखता है।"
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "कंप्यूटर चालू करने के बाद जहाँ आप साइन इन करते हैं। स्वचालित में, जब तक आप iRiS इस्तेमाल करते हैं, यह iRiS लॉक जैसा दिखता है।",
+  "Opening %1…": "%1 खुल रहा है…",
+  "%1 didn't open": "%1 नहीं खुला"
 }

@@ -54,14 +54,15 @@ Item {
             || root.grewSamples >= 2
             || root.atEndSamples >= 2)
     readonly property bool hasTimeline: root.hasPlayer && !root.liveStream && media.effectiveLength > 0
-    // Nothing playing: the card says where music comes from and opens it.
-    readonly property bool offersMusic: !root.hasPlayer && IrisPieces.musicAppName.length > 0
-    readonly property string emptyDetail: root.offersMusic ? Translation.tr("Open %1").arg(IrisPieces.musicAppName) : Translation.tr("Your music appears here")
-    readonly property string emptyIcon: root.offersMusic ? String(IrisPieces.musicApp?.icon ?? "") : ""
+    // Nothing playing: the card offers the music app you use most and opens it. Not on the lock, where nothing opens.
+    property bool offersOpen: true
+    readonly property bool offersMusic: root.offersOpen && !root.hasPlayer && IrisPieces.musicAppName.length > 0
+    readonly property string emptyDetail: root.offersOpen ? IrisPieces.musicDetail : Translation.tr("Your music appears here")
+    readonly property string emptyIcon: root.offersMusic ? IrisPieces.musicAppIcon : ""
     MouseArea {
         anchors.fill: parent
         visible: root.offersMusic
-        cursorShape: Qt.PointingHandCursor
+        cursorShape: IrisPieces.musicLaunch === "opening" ? Qt.BusyCursor : Qt.PointingHandCursor
         onClicked: IrisPieces.openMusic()
     }
     implicitHeight: (root.compact ? compactBody.implicitHeight : body.implicitHeight) + 28 * IrisStyle.density
@@ -102,7 +103,7 @@ Item {
                 Layout.fillWidth: true
                 spacing: Math.round(4 * IrisStyle.density)
                 IrisText { Layout.fillWidth: true; text: root.hasPlayer ? media.effectiveTitle : Translation.tr("Nothing playing"); color: root.ink; font.weight: IrisStyle.weight(Font.DemiBold); elide: Text.ElideRight }
-                IrisText { Layout.fillWidth: true; text: root.hasPlayer ? media.effectiveArtist : root.emptyDetail; role: IrisText.Meta; color: root.inkMeta; elide: Text.ElideRight }
+                IrisText { Layout.fillWidth: true; text: root.hasPlayer ? media.effectiveArtist : root.emptyDetail; role: IrisText.Meta; color: !root.hasPlayer && IrisPieces.musicLaunch === "failed" && root.offersOpen ? (root.overMedia ? IrisStyle.dangerOnMedia : IrisStyle.danger) : root.inkMeta; elide: Text.ElideRight }
             }
         }
         IrisScrubber {
@@ -223,7 +224,7 @@ Item {
             Layout.fillWidth: true
             spacing: Math.round(2 * IrisStyle.density)
             IrisText { Layout.fillWidth: true; text: root.hasPlayer ? media.effectiveTitle : Translation.tr("Nothing playing"); color: root.ink; font.weight: IrisStyle.weight(Font.DemiBold); elide: Text.ElideRight }
-            IrisText { Layout.fillWidth: true; text: root.hasPlayer ? media.effectiveArtist : root.emptyDetail; role: IrisText.Meta; color: root.inkMeta; elide: Text.ElideRight }
+            IrisText { Layout.fillWidth: true; text: root.hasPlayer ? media.effectiveArtist : root.emptyDetail; role: IrisText.Meta; color: !root.hasPlayer && IrisPieces.musicLaunch === "failed" && root.offersOpen ? (root.overMedia ? IrisStyle.dangerOnMedia : IrisStyle.danger) : root.inkMeta; elide: Text.ElideRight }
             Rectangle {
                 Layout.fillWidth: true
                 Layout.topMargin: 5 * IrisStyle.density

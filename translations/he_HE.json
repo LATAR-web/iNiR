@@ -7381,7 +7381,6 @@
   "Move earlier": "הקדמה",
   "Move later": "דחייה",
   "Music in the Island and on the lock screen": "מוזיקה באיילנד ובמסך הנעילה",
-  "Music will show here": "המוזיקה תוצג כאן",
   "Mute": "השתקה",
   "Mute the input.": "השתקת הקלט.",
   "Mute the speakers.": "השתקת הרמקולים.",
@@ -9002,5 +9001,7 @@
   "Fill crops, Fit shows bars, Span lays one picture across every screen": "מילוי חותך, התאמה משאירה פסים, פריסה מניחה תמונה אחת על כל המסכים",
   "Open %1": "פתח את %1",
   "Login screen": "מסך הכניסה",
-  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "המקום שבו נכנסים אחרי הפעלת המחשב. אוטומטי מלביש עליו את נעילת iRiS כל עוד אתה משתמש ב-iRiS."
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "המקום שבו נכנסים אחרי הפעלת המחשב. אוטומטי מלביש עליו את נעילת iRiS כל עוד אתה משתמש ב-iRiS.",
+  "Opening %1…": "פותח את %1…",
+  "%1 didn't open": "%1 לא נפתח"
 }

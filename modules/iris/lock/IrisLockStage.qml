@@ -618,6 +618,7 @@ Item {
                 active: media.playing
                 showBackground: false
                 overMedia: true
+                offersOpen: false
             }
         }
     }

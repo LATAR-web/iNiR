@@ -7381,7 +7381,6 @@
   "Move earlier": "Sposta prima",
   "Move later": "Sposta dopo",
   "Music in the Island and on the lock screen": "Musica nell'Isola e sulla schermata di blocco",
-  "Music will show here": "La musica apparirà qui",
   "Mute": "Silenzia",
   "Mute the input.": "Silenzia l'ingresso.",
   "Mute the speakers.": "Silenzia gli altoparlanti.",
@@ -9002,5 +9001,7 @@
   "Fill crops, Fit shows bars, Span lays one picture across every screen": "Riempi ritaglia, Adatta mostra bande, Estendi stende un'immagine su tutti gli schermi",
   "Open %1": "Apri %1",
   "Login screen": "Schermata di accesso",
-  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "Dove accedi dopo aver acceso il computer. Automatico veste il blocco di iRiS finché usi iRiS."
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "Dove accedi dopo aver acceso il computer. Automatico veste il blocco di iRiS finché usi iRiS.",
+  "Opening %1…": "Apertura di %1…",
+  "%1 didn't open": "%1 non si è aperto"
 }

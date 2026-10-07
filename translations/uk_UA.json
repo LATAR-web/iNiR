@@ -7381,7 +7381,6 @@
   "Move earlier": "Перемістити раніше",
   "Move later": "Перемістити пізніше",
   "Music in the Island and on the lock screen": "Музика в Острові й на екрані блокування",
-  "Music will show here": "Тут з'явиться музика",
   "Mute": "Вимкнути звук",
   "Mute the input.": "Вимкнути вхід.",
   "Mute the speakers.": "Вимкнути динаміки.",
@@ -9002,5 +9001,7 @@
   "Fill crops, Fit shows bars, Span lays one picture across every screen": "Заповнити обрізає, Вписати лишає поля, Розтягнути на всі кладе одне зображення на всі екрани",
   "Open %1": "Відкрити %1",
   "Login screen": "Екран входу",
-  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "Тут ви входите після ввімкнення комп’ютера. «Автоматичний» показує блокування iRiS, поки ви користуєтеся iRiS."
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "Тут ви входите після ввімкнення комп’ютера. «Автоматичний» показує блокування iRiS, поки ви користуєтеся iRiS.",
+  "Opening %1…": "Відкривається %1…",
+  "%1 didn't open": "%1 не відкрився"
 }

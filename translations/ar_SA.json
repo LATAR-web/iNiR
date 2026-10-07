@@ -7381,7 +7381,6 @@
   "Move earlier": "نقل للأمام",
   "Move later": "نقل للخلف",
   "Music in the Island and on the lock screen": "الموسيقى في الجزيرة وعلى شاشة القفل",
-  "Music will show here": "ستظهر الموسيقى هنا",
   "Mute": "كتم",
   "Mute the input.": "كتم الإدخال.",
   "Mute the speakers.": "كتم مكبرات الصوت.",
@@ -9002,5 +9001,7 @@
   "Fill crops, Fit shows bars, Span lays one picture across every screen": "الملء يقص، والملاءمة تترك أشرطة، والامتداد يمد صورة واحدة على كل الشاشات",
   "Open %1": "افتح %1",
   "Login screen": "شاشة تسجيل الدخول",
-  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "حيث تسجّل الدخول بعد تشغيل الحاسوب. «تلقائي» يُلبسها قفل iRiS ما دمت تستخدم iRiS."
+  "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "حيث تسجّل الدخول بعد تشغيل الحاسوب. «تلقائي» يُلبسها قفل iRiS ما دمت تستخدم iRiS.",
+  "Opening %1…": "جارٍ فتح %1…",
+  "%1 didn't open": "لم يُفتح %1"
 }
