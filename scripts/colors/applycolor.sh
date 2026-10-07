@@ -29,6 +29,7 @@ inputs_fingerprint() {
     while IFS= read -r path; do
       if [[ -f "$path/profiles.ini" ]]; then stat -c '%n %s' "$path/profiles.ini"; fi
     done < <(firefox_profile_roots)
+    installed_chromium_browsers
   } 2>/dev/null | sha1sum | cut -d' ' -f1
 }
 

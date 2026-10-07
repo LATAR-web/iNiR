@@ -119,6 +119,8 @@ ii is built for **Niri**. Some features were inherited from the original Hyprlan
 ### Browsers
 
 - **Firefox and its forks** (LibreWolf, Floorp, Waterfox, Zen) take new colors when they start, not while they're open. They wear them with the default "System theme"; another theme you picked in Firefox keeps its own look.
+- **Chromium browsers** (Chrome, Chromium, ungoogled-chromium, Brave, Helium, Thorium) repaint a few seconds after the wallpaper changes. They build their own palette from one color, so their accent won't match the shell's exactly. The first time, iNiR asks for your password once to make their policy folders under `/etc` writable; if you dismiss it, a notification gives you the commands to run instead. Flatpak Chromium needs no password. Flatpak Chrome and Brave pick up a new color when they start.
+- **Vivaldi, Edge and Opera** aren't themed. Vivaldi draws its window with its own theme system, Edge has no policy for colors, and Opera doesn't read policies.
 
 ### Terminal Theming
 

@@ -60,26 +60,6 @@ post_process() {
     # Editor theming is handled by modules/30-editors.sh via applycolor.sh.
 }
 
-hex_to_rgb_triplet() {
-    local hex="$1"
-    hex="${hex#\#}"
-    [[ "$hex" =~ ^[A-Fa-f0-9]{6}$ ]] || return 1
-    printf "%d,%d,%d\n" "0x${hex:0:2}" "0x${hex:2:2}" "0x${hex:4:2}"
-}
-
-write_chromium_theme_contract() {
-    local source_json="$1"
-    local output_path="$2"
-    local hex_color=""
-    local rgb_color=""
-
-    [[ -f "$source_json" ]] || return 1
-    hex_color=$(jq -r '.app_headerbar_bg // .app_surface // .surface_container_low // .surface // .background // empty' "$source_json" 2>/dev/null)
-    [[ "$hex_color" =~ ^#[A-Fa-f0-9]{6}$ ]] || return 1
-    rgb_color=$(hex_to_rgb_triplet "$hex_color") || return 1
-    printf '%s\n' "$rgb_color" > "$output_path"
-}
-
 write_generated_wallpaper_path() {
     local wallpaper_path="$1"
     local wallpaper_state_path="$STATE_DIR/user/generated/wallpaper/path.txt"
@@ -594,8 +574,6 @@ switch() {
     _terminal_out="$STATE_DIR/user/generated/terminal.json"
     _meta_tmp="$STATE_DIR/user/generated/theme-meta.json.tmp"
     _meta_out="$STATE_DIR/user/generated/theme-meta.json"
-    _chromium_tmp="$STATE_DIR/user/generated/chromium.theme.tmp"
-    _chromium_out="$STATE_DIR/user/generated/chromium.theme"
     force_dark_terminal="$cfg_force_dark_terminal"
 
     # 1) Generate authoritative shell/UI colors.json + render app templates.
@@ -620,11 +598,6 @@ switch() {
         if [[ "$force_dark_terminal" != "true" ]]; then
             [[ -s "$_scss_tmp" ]] && mv "$_scss_tmp" "$STATE_DIR/user/generated/material_colors.scss" || rm -f "$_scss_tmp"
         fi
-        if write_chromium_theme_contract "$_app_palette_out" "$_chromium_tmp" && [[ -s "$_chromium_tmp" ]]; then
-            mv "$_chromium_tmp" "$_chromium_out"
-        else
-            rm -f "$_chromium_tmp"
-        fi
     else
         echo "[switchwall] Warning: colors.json generation failed, keeping previous JSON" >&2
         rm -f "$_json_tmp"
@@ -633,7 +606,6 @@ switch() {
         rm -f "$_terminal_tmp"
         rm -f "$_meta_tmp"
         rm -f "$_scss_tmp"
-        rm -f "$_chromium_tmp"
     fi
 
     if [[ "$force_dark_terminal" == "true" ]]; then
