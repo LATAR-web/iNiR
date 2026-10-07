@@ -72,42 +72,48 @@ elevate() {
     return $?
   fi
 
-  # 3. Graphical session with polkit — try pkexec if an agent is running
+  # 3. Graphical session: pkexec asks through whichever polkit agent runs (iNiR's lives inside the shell, so no
+  # process name gives it away). Without an agent it exits 127 at once; a dismissed dialog exits 126.
   if command -v pkexec >/dev/null 2>&1 && [[ -n "${DISPLAY:-}${WAYLAND_DISPLAY:-}" ]]; then
-    if pgrep -xf 'polkit-.+-authentication-agent' >/dev/null 2>&1 \
-       || pgrep -xf 'polkitd' >/dev/null 2>&1 \
-       || pgrep -xf 'gnome-shell' >/dev/null 2>&1 \
-       || pgrep -xf 'kwin_wayland' >/dev/null 2>&1; then
-      pkexec "$@"
-      return $?
-    else
-      log "elevate: pkexec available but no polkit agent detected — skipping elevation"
-      return 1
-    fi
+    pkexec "$@"
+    return $?
   fi
 
-  log "elevate: no elevation method available (need sudo/pkexec with agent)"
+  log "elevate: no elevation method available (need sudo or pkexec)"
   return 1
 }
 
-ensure_policy_dir_writable() {
-  local policy_dir="$1"
-  local name="$2"
+POLICY_DECLINED_FILE="$STATE_DIR/user/generated/chrome-policy.declined"
 
-  if [[ -d "$policy_dir" && -w "$policy_dir" ]]; then
+# One password prompt for every browser's policy dir, once. A dismissed or failed prompt is remembered, so a wallpaper
+# change never asks again; the notification carries the command to do it by hand.
+prepare_policy_dirs() {
+  local missing=() dir
+  for dir in "$@"; do
+    [[ -d "$dir" && -w "$dir" ]] || missing+=("$dir")
+  done
+  (( ${#missing[@]} )) || return 0
+
+  if [[ -f "$POLICY_DECLINED_FILE" && "$(cat "$POLICY_DECLINED_FILE")" == "${missing[*]}" ]]; then
+    log "policy dirs not writable, prompt declined earlier: ${missing[*]}"
+    return 1
+  fi
+
+  log "requesting writable policy dirs: ${missing[*]}"
+  # shellcheck disable=SC2016 # expanded by the elevated shell, paths passed as arguments
+  if elevate sh -c 'for d; do mkdir -p "$d" && chmod a+rw "$d" || exit 1; done' sh "${missing[@]}"; then
+    rm -f "$POLICY_DECLINED_FILE"
+    log "policy dirs ready: ${missing[*]}"
     return 0
   fi
 
-  log "$name: requesting writable policy dir: $policy_dir"
-  if elevate mkdir -p "$policy_dir" && elevate chmod a+rw "$policy_dir"; then
-    log "$name: policy dir ready: $policy_dir"
-    notify_user "$name can now write browser policy files."
-    return 0
-  fi
-
-  log "$name: ERROR — failed to prepare $policy_dir"
-  log "$name: run manually: sudo mkdir -p $policy_dir && sudo chmod a+rw $policy_dir"
-  notify_user "$name needs writable policy files.\nsudo mkdir -p $policy_dir && sudo chmod a+rw $policy_dir"
+  printf '%s\n' "${missing[*]}" > "$POLICY_DECLINED_FILE"
+  local manual=""
+  for dir in "${missing[@]}"; do
+    manual+="sudo mkdir -p $dir && sudo chmod a+rw $dir"$'\n'
+  done
+  log "policy dirs not prepared; by hand: ${manual//$'\n'/; }"
+  notify_user "Browser colours need writable policy folders. Run once:"$'\n'"${manual%$'\n'}"
   return 1
 }
 
@@ -299,7 +305,7 @@ apply_to_browser() {
   # 2. Write policy — BrowserThemeColor persists across restarts.
   # BackgroundModeEnabled prevents Chromium-based browsers from staying resident
   # after a headless policy refresh or after the last window closes.
-  if ensure_policy_dir_writable "$policy_dir" "$name"; then
+  if [[ -d "$policy_dir" && -w "$policy_dir" ]]; then
     printf '{"BrowserThemeColor": "%s", "BackgroundModeEnabled": false}\n' "$theme_color" > "$policy_dir/ii-theme.json"
     policy_written='true'
     log "$name: policy written to $policy_dir/ii-theme.json"
@@ -394,6 +400,13 @@ main() {
     log "No Chromium-based browsers found. Skipping."
     return 0
   fi
+
+  local policy_dirs=()
+  for entry in "${BROWSERS[@]}"; do
+    IFS='|' read -r bin policy_dir prefs_dir <<< "$entry"
+    policy_dirs+=("$policy_dir")
+  done
+  prepare_policy_dirs "${policy_dirs[@]}" || true
 
   for entry in "${BROWSERS[@]}"; do
     IFS='|' read -r bin policy_dir prefs_dir <<< "$entry"
