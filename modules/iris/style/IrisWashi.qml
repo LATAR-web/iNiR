@@ -15,7 +15,7 @@ Singleton {
     id: root
 
     // The solver's version (scripts/colors/washi Version): a newer solver answers the same request again.
-    readonly property int version: 10
+    readonly property int version: 23
     readonly property string cachePath: `${Directories.stateUserPath}/generated/iris-washi.json`
     readonly property var appearance: Config.options?.iris?.appearance ?? ({})
     readonly property bool followsTheme: String(ThemeService.currentTheme ?? "auto") !== "auto" && Boolean(root.appearance?.followTheme ?? true)
@@ -26,9 +26,12 @@ Singleton {
     }
     // Primitives only: a config write that changes none of these asks nothing.
     readonly property string requestJson: JSON.stringify({
-        language: String(root.appearance?.language ?? "washi"),
+        language: String(root.appearance?.language ?? "iris"),
         variant: String(root.appearance?.variant ?? "tonalSpot"),
         material: root.followsTheme ? "theme" : String(root.appearance?.theme?.surface ?? "black"),
+        glass: ["wallpaper", "compositor"].includes(String(root.appearance?.glass?.mode ?? "off")),
+        inkStyle: String(root.appearance?.inkStyle ?? "washi"),
+        darkStyle: String(root.appearance?.darkStyle ?? "style"),
         accent: root.followsTheme ? "theme" : String(root.appearance?.accent ?? "blue"),
         accentHue: Number(root.appearance?.theme?.accentHue ?? 212),
         highlight: root.followsTheme ? "theme" : String(root.appearance?.highlight ?? "orange"),
@@ -36,7 +39,8 @@ Singleton {
         vibrance: Math.max(0, Math.min(100, Number(Config.options?.iris?.widgets?.vibrance ?? 85))) / 100,
         tune: ["dark", "ink", "light"].reduce((out, name) => {
             const t = root.appearance?.tune?.[name]
-            out[name] = { tone: Number(t?.tone ?? 0), colour: Number(t?.colour ?? 100), widgets: t?.widgets === undefined ? null : Number(t.widgets) }
+            out[name] = { tone: Number(t?.tone ?? 0), colour: Number(t?.colour ?? 100), widgets: t?.widgets === undefined ? null : Number(t.widgets),
+                warmth: t?.warmth === undefined ? null : Number(t.warmth) }
             return out
         }, ({})),
         seeds: {

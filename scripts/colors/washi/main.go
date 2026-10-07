@@ -15,7 +15,10 @@ import (
 )
 
 func defaultRequest() Request {
-	return Request{Material: "black", Accent: "blue", AccentHue: 212, Highlight: "orange", HighlightHue: 32, Vibrance: 0.85}
+	// Light's fresh paper is Soft (defaults/config.json tune.light), so a first start is not a blank white.
+	soft := 38.0
+	return Request{Language: "iris", Material: "black", Accent: "blue", AccentHue: 212, Highlight: "orange", HighlightHue: 32, Vibrance: 0.85,
+		Tune: map[string]Tune{"light": {Tone: -8, Warmth: &soft}}}
 }
 
 func main() {

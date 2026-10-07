@@ -119,7 +119,7 @@ Item {
             for (const cluster of clusters) {
                 const groups = cluster.groups.map(key => root.groups.find(entry => entry.key === key)).filter(entry => entry !== undefined)
                 groups.forEach(entry => placed.add(entry.key))
-                if (groups.length > 0) out.push({ caption: Translation.tr(cluster.caption), groups: groups })
+                if (groups.length > 0) out.push({ caption: Translation.tr(cluster.caption), groups: groups, flow: cluster.flow ?? false })
             }
             const rest = root.groups.filter(entry => !placed.has(entry.key))
             if (rest.length > 0) out.push({ caption: out.length > 0 ? Translation.tr("More") : "", groups: rest })
@@ -143,7 +143,8 @@ Item {
         case "icon": return String(value ?? "").length > 0 ? Translation.tr("Custom") : ""
         case "zone":
         case "choice":
-            if (spec.fallback === "" && value === "") return ""
+            // "None" says nothing in a group's summary ("Graphite, None"): only what is there is named.
+            if ((spec.fallback === "" && value === "") || value === "none") return ""
             return Translation.tr(String(IrisOptions.choicesOf(spec).find(choice => IrisOptions.same(choice.value, value))?.label ?? ""))
         case "range":
             if (spec.fallback !== undefined && IrisOptions.same(value, spec.fallback)) return ""
@@ -1055,8 +1056,10 @@ Item {
             anchors.right: parent.right
             anchors.bottom: parent.bottom
             height: sectionRow.rowHeight
-            radius: IrisStyle.radiusRow
-            color: sectionRow.selected ? (sectionRow.compact ? IrisStyle.tintFill(sectionRow.modelData.tint) : IrisStyle.accent)
+            // Concentric with the mark it holds; where you are is a wash of the accent, as light as a hover, never a
+            // solid block heavier than the buttons around it.
+            radius: Math.min(height / 2, IrisStyle.iconRadius(sectionMark.width) + sectionMark.x)
+            color: sectionRow.selected ? IrisStyle.tintFillHover(sectionRow.compact ? sectionRow.modelData.tint : IrisStyle.accent)
                 : sectionRow.containsMouse ? IrisStyle.fillHover : "transparent"
             Behavior on color { ColorAnimation { duration: IrisStyle.duration(110); easing.type: IrisStyle.feedbackEasing } }
             IrisSquircle {
@@ -1076,7 +1079,7 @@ Item {
                 anchors.rightMargin: 8 * root.d
                 anchors.verticalCenter: parent.verticalCenter
                 text: Translation.tr(sectionRow.modelData.title)
-                color: sectionRow.selected ? IrisStyle.inkOnAccent : IrisStyle.text
+                color: IrisStyle.text
                 font.pixelSize: IrisStyle.typeLabel
                 font.weight: IrisStyle.weight(sectionRow.selected ? Font.DemiBold : Font.Medium)
                 elide: Text.ElideRight
@@ -1127,6 +1130,9 @@ Item {
                     font.family: IrisStyle.fontTitle
                     font.pixelSize: IrisStyle.typeHeadline
                     font.weight: IrisStyle.weight(Font.DemiBold)
+                    // A half-screen window leaves the title beside the scene a third of the page: it wraps, never cuts.
+                    wrapMode: Text.WordWrap
+                    maximumLineCount: 2
                     elide: Text.ElideRight
                 }
                 IrisText {
@@ -1179,6 +1185,17 @@ Item {
             implicitHeight: listColumn.implicitHeight
             radius: IrisStyle.radiusTile
             color: IrisStyle.readingCard
+            // A block whose groups feed one another (colour: source, mode, accent, material, apps) threads its marks
+            // together, under them, from the first to the last.
+            Rectangle {
+                visible: list.modelData.flow ?? false
+                x: Math.round(27 * root.d - width / 2)
+                y: Math.round(23 * root.d)
+                width: Math.max(1, Math.round(2 * root.d))
+                height: Math.max(0, parent.height - 46 * root.d)
+                radius: width / 2
+                color: IrisStyle.hairlineStrong
+            }
             Column {
                 id: listColumn
                 width: parent.width
@@ -1407,25 +1424,50 @@ Item {
                 }
             }
         }
-        Rectangle {
-            Layout.fillWidth: true
-            implicitHeight: groupRows.implicitHeight
-            radius: IrisStyle.radiusTile
-            color: IrisStyle.readingCard
+        // A long group reads as captioned cards, one per `part` its rows name; search shows one card. Keyed by caption,
+        // so a write (a slider mid-drag) never rebuilds a card under the pointer.
+        function partOf(spec: var): string { return root.searching ? "" : String(spec.part ?? "") }
+        readonly property var parts: [...new Set(group.modelData.rows.map(spec => group.partOf(spec)))]
+        Repeater {
+            model: ScriptModel { values: group.parts }
             ColumnLayout {
-                id: groupRows
-                anchors.left: parent.left
-                anchors.right: parent.right
-                spacing: 0
-                Repeater {
-                    model: ScriptModel { objectProp: "modelKey"; values: group.modelData.rows }
-                    IrisSetting {
-                        required property var modelData
-                        required property int index
-                        Layout.fillWidth: true
-                        spec: modelData
-                        highlight: root.query
-                        last: index === group.modelData.rows.length - 1
+                id: part
+                required property string modelData
+                required property int index
+                readonly property var rows: group.modelData.rows.filter(spec => group.partOf(spec) === part.modelData)
+                Layout.fillWidth: true
+                Layout.topMargin: part.index > 0 ? 12 * root.d : 0
+                spacing: 6 * root.d
+                IrisText {
+                    visible: text.length > 0
+                    Layout.leftMargin: 16 * root.d
+                    text: part.modelData.length > 0 ? Translation.tr(part.modelData) : ""
+                    color: IrisStyle.label
+                    font.family: IrisStyle.fontTitle
+                    font.pixelSize: IrisStyle.typeMeta
+                    font.weight: IrisStyle.weight(Font.DemiBold)
+                }
+                Rectangle {
+                    Layout.fillWidth: true
+                    implicitHeight: groupRows.implicitHeight
+                    radius: IrisStyle.radiusTile
+                    color: IrisStyle.readingCard
+                    ColumnLayout {
+                        id: groupRows
+                        anchors.left: parent.left
+                        anchors.right: parent.right
+                        spacing: 0
+                        Repeater {
+                            model: ScriptModel { objectProp: "modelKey"; values: part.rows }
+                            IrisSetting {
+                                required property var modelData
+                                required property int index
+                                Layout.fillWidth: true
+                                spec: modelData
+                                highlight: root.query
+                                last: index === part.rows.length - 1
+                            }
+                        }
                     }
                 }
             }

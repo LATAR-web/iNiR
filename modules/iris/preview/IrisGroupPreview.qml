@@ -41,15 +41,15 @@ ClippingRectangle {
     function sceneFor(section: string, group: string): string {
         if (group.length === 0)
             return ({ dock: "dock", player: "player", desktop: "widgets", sidebars: "panels", controlCenter: "controlCenter", spotlight: "spotlight", bubbles: "bubbles",
-                bar: "islandEdge", appearance: "light", motion: "motion", lock: "lock", frameMusic: "frame", notifications: "feedback", sound: "feedback" })[section] ?? ""
+                bar: "islandEdge", appearance: "palette", motion: "motion", lock: "lock", frameMusic: "frame", notifications: "feedback", sound: "feedback" })[section] ?? ""
         const key = section + "/" + group
         return ({
             "bar/Visibility": "islandReserve", "bar/Interaction": "islandInteraction",
             "bar/Shape": "shapes", "bar/Layout": "islandEdge", "bar/Bar": "barZones",
-            "appearance/Light": "light", "appearance/Shape": "shapes", "appearance/Colour theme": "glass", "appearance/Scheme": "glass", "appearance/Dark look": "glass", "appearance/Ink look": "glass", "appearance/Light look": "glass", "appearance/Corners per surface": "fusion", "appearance/Glass": "glass", "appearance/Edges": "glass",
+            "appearance/Light": "light", "appearance/Shape": "shapes", "appearance/Colour theme": "palette", "appearance/Scheme": "palette", "appearance/Dark look": "palette", "appearance/Ink look": "palette", "appearance/Light look": "palette", "appearance/App colours": "palette", "appearance/Wallpaper": "palette", "appearance/Corners per surface": "fusion", "appearance/Glass": "glass", "appearance/Edges": "glass",
             "appearance/Menus": "menus", "appearance/Settings": "settings",
             "appearance/Material": "glass", "appearance/Material per surface": "glass", "appearance/Look": "fusion",
-            "appearance/Adaptive": "fusion", "appearance/Accent": "controlCenter", "appearance/Highlight": "controlCenter",
+            "appearance/Adaptive": "fusion", "appearance/Accent": "palette", "appearance/Highlight": "palette",
             "appearance/Faces": "typography", "appearance/Text": "typography", "appearance/Frame": "frame",
             "desktop/Desktop menu": "menus",
             "motion/Motion": "motion", "motion/Curve": "motion", "motion/Timing": "motion",
@@ -111,7 +111,7 @@ ClippingRectangle {
                 spotlight: spotlightScene, controlCenter: controlScene, cards: cardsScene, menus: menusScene,
                 settings: settingsScene, panels: panelsScene, joining: joiningScene, feedback: feedbackScene,
                 tray: trayScene, player: playerScene, islandReserve: reserveScene, islandEdge: edgeScene, barZones: zonesScene,
-                light: lightScene, fusion: fusionScene, shapes: shapesScene, glass: glassScene, islandInteraction: interactionScene, islandPage: islandPageScene, bubbles: bubblesScene
+                light: lightScene, palette: paletteScene, fusion: fusionScene, shapes: shapesScene, glass: glassScene, islandInteraction: interactionScene, islandPage: islandPageScene, bubbles: bubblesScene
             })[root.scene] ?? null
         }
     }
@@ -933,6 +933,139 @@ ClippingRectangle {
             Caption {
                 glyph: "rounded_corner"
                 text: Translation.tr("Island shape") + " · " + shapeRoot.shapeName(IrisStyle.barShape) + "   " + Translation.tr("Dock shape") + " · " + shapeRoot.shapeName(IrisStyle.dockShape)
+            }
+        }
+    }
+
+    // Colour, end to end: the shell's paper, ink, identities, accent and highlight on the left, and on the right a window
+    // painted with the roles the solver hands the apps, so a choice shows in both at once.
+    Component {
+        id: paletteScene
+        Item {
+            id: pal
+            readonly property real naturalWidth: Math.round(620 * root.d)
+            readonly property real naturalHeight: Math.round(300 * root.d)
+            readonly property var apps: { root.rev; return IrisStyle.washi?.apps ?? ({}) }
+            readonly property bool appsFollow: { root.rev; return Boolean(root.opt("appearance.wallpaperTheming.enableAppsAndShell", true)) }
+            function app(key: string, fallback: color): color {
+                const hex = pal.apps[key]
+                return hex ? Qt.color(String(hex)) : fallback
+            }
+            IslandPill {
+                id: palIsland
+                anchors.horizontalCenter: palPlate.horizontalCenter
+                y: IrisFrame.band
+            }
+            Plate {
+                id: palPlate
+                surface: "controlCenter"
+                fallbackRadius: IrisStyle.radiusPlate
+                x: Math.round(24 * root.d)
+                y: palIsland.y + palIsland.height + IrisFrame.bodyAir
+                width: Math.round(300 * root.d)
+                height: palColumn.implicitHeight + Math.round(28 * root.d)
+                ColumnLayout {
+                    id: palColumn
+                    x: Math.round(14 * root.d); y: Math.round(14 * root.d)
+                    width: parent.width - 2 * x
+                    spacing: Math.round(8 * root.d)
+                    IrisText { text: Translation.tr("Your shell"); font.weight: IrisStyle.weight(Font.DemiBold); font.pixelSize: IrisStyle.typeBody }
+                    IrisText { Layout.fillWidth: true; text: Translation.tr("Ink on its paper, colours that keep their meaning"); color: IrisStyle.subtext; elide: Text.ElideRight; font.pixelSize: IrisStyle.typeMeta }
+                    Row {
+                        spacing: Math.round(8 * root.d)
+                        Repeater {
+                            model: [["blue", "wifi"], ["green", "battery_full"], ["orange", "light_mode"], ["pink", "volume_up"], ["purple", "dark_mode"], ["teal", "bluetooth"]]
+                            Rectangle {
+                                id: palTile
+                                required property var modelData
+                                readonly property color tint: IrisStyle.identityColor(modelData[0])
+                                width: Math.round(28 * root.d); height: width
+                                radius: IrisStyle.iconRadius(width)
+                                // A Gradient is not an Item: its stops have no `parent` to read the tile from.
+                                gradient: Gradient {
+                                    GradientStop { position: 0; color: IrisStyle.tileTop(palTile.tint) }
+                                    GradientStop { position: 1; color: palTile.tint }
+                                }
+                                MaterialSymbol { anchors.centerIn: parent; text: palTile.modelData[1]; fill: 1; iconSize: Math.round(16 * root.d); color: IrisStyle.onTint }
+                            }
+                        }
+                    }
+                    RowLayout {
+                        Layout.fillWidth: true
+                        spacing: Math.round(10 * root.d)
+                        IrisSwitch { on: true; enabled: false }
+                        Rectangle {
+                            implicitWidth: palButton.implicitWidth + Math.round(24 * root.d)
+                            implicitHeight: Math.round(28 * root.d)
+                            radius: height / 2
+                            color: IrisStyle.accent
+                            IrisText { id: palButton; anchors.centerIn: parent; text: Translation.tr("Accent"); color: IrisStyle.inkOnAccent; font.weight: IrisStyle.weight(Font.DemiBold); font.pixelSize: IrisStyle.typeMeta }
+                        }
+                        Item { Layout.fillWidth: true }
+                        IrisText { text: "42"; color: IrisStyle.secondaryAccent; font.family: IrisStyle.fontNumbers; font.weight: IrisStyle.weight(Font.DemiBold); font.pixelSize: IrisStyle.typeHeadline }
+                    }
+                }
+            }
+            MaterialSymbol {
+                anchors.verticalCenter: palPlate.verticalCenter
+                x: palPlate.x + palPlate.width + Math.round(10 * root.d)
+                text: pal.appsFollow ? "arrow_forward" : "link_off"
+                iconSize: Math.round(20 * root.d)
+                color: IrisStyle.onMedia
+            }
+            // An app window in the roles the apps wear: title bar, a selected row, text and its primary button.
+            Rectangle {
+                id: palApp
+                x: palPlate.x + palPlate.width + Math.round(40 * root.d)
+                anchors.verticalCenter: palPlate.verticalCenter
+                width: Math.round(230 * root.d)
+                height: Math.round(160 * root.d)
+                radius: IrisStyle.radiusTile
+                color: pal.app("surface", IrisStyle.surfaceOpaque)
+                border.width: 1
+                border.color: pal.app("outlineVariant", IrisStyle.border)
+                opacity: pal.appsFollow ? 1 : 0.45
+                clip: true
+                Rectangle {
+                    width: parent.width
+                    height: Math.round(26 * root.d)
+                    color: pal.app("surfaceContainer", IrisStyle.surfaceHighOpaque)
+                    Row {
+                        anchors.verticalCenter: parent.verticalCenter
+                        x: Math.round(10 * root.d)
+                        spacing: Math.round(6 * root.d)
+                        Repeater {
+                            model: 3
+                            Rectangle { width: Math.round(8 * root.d); height: width; radius: width / 2; color: pal.app("outline", IrisStyle.muted) }
+                        }
+                    }
+                }
+                Column {
+                    x: Math.round(12 * root.d)
+                    y: Math.round(36 * root.d)
+                    width: parent.width - 2 * x
+                    spacing: Math.round(6 * root.d)
+                    IrisText { text: Translation.tr("An app"); color: pal.app("onSurface", IrisStyle.text); font.weight: IrisStyle.weight(Font.DemiBold); font.pixelSize: IrisStyle.typeBody }
+                    Rectangle {
+                        width: parent.width
+                        height: Math.round(24 * root.d)
+                        radius: IrisStyle.radiusRow
+                        color: pal.app("primaryContainer", IrisStyle.accentContainer)
+                        IrisText { anchors.verticalCenter: parent.verticalCenter; x: Math.round(8 * root.d); text: Translation.tr("Selected"); color: pal.app("onPrimaryContainer", IrisStyle.text); font.pixelSize: IrisStyle.typeMeta }
+                    }
+                    IrisText { width: parent.width; text: Translation.tr("Its text and its quieter lines"); color: pal.app("onSurfaceVariant", IrisStyle.subtext); elide: Text.ElideRight; font.pixelSize: IrisStyle.typeMeta }
+                    Rectangle {
+                        width: palAppButton.implicitWidth + Math.round(22 * root.d)
+                        height: Math.round(26 * root.d)
+                        radius: height / 2
+                        color: pal.app("primary", IrisStyle.accent)
+                        IrisText { id: palAppButton; anchors.centerIn: parent; text: Translation.tr("OK"); color: pal.app("onPrimary", IrisStyle.inkOnAccent); font.weight: IrisStyle.weight(Font.DemiBold); font.pixelSize: IrisStyle.typeMeta }
+                    }
+                }
+            }
+            Caption {
+                glyph: "palette"
+                text: pal.appsFollow ? Translation.tr("The shell and your apps, one palette") : Translation.tr("Your apps keep their own colours")
             }
         }
     }

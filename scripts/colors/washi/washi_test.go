@@ -17,12 +17,60 @@ func TestShellKnowsVersion(t *testing.T) {
 	}
 }
 
+// Settings' paper tiles write the same tone and warmth the solver swatches them with.
+func TestShellKnowsPaperLevels(t *testing.T) {
+	qml, err := os.ReadFile("../../../modules/iris/settings/IrisOptions.qml")
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, levels := range paperLevels {
+		for _, l := range levels {
+			want := fmt.Sprintf("\"%s\", %g, %g]", l.name, l.tone, l.warmth)
+			if !strings.Contains(string(qml), want) {
+				t.Errorf("IrisOptions.paperChoices must carry %s", want)
+			}
+		}
+	}
+}
+
+// Paper levels keep the language's paper at its own warmth, read on every level, and Ink wears washi unless asked.
+func TestPaperLevels(t *testing.T) {
+	for _, lang := range []string{"iris", "washi", "material"} {
+		for scheme, levels := range paperLevels {
+			plain := build(Request{Language: lang, Material: "black"}, scheme)
+			own := ownWarmth[scheme]
+			same := build(Request{Language: lang, Material: "black", Tune: map[string]Tune{scheme: {Warmth: &own}}}, scheme)
+			if plain.Surface != same.Surface {
+				t.Errorf("%s %s: own warmth moved the paper %s -> %s", lang, scheme, plain.Surface, same.Surface)
+			}
+			for _, l := range levels {
+				w := l.warmth
+				p := build(Request{Language: lang, Material: "black", Tune: map[string]Tune{scheme: {Tone: l.tone, Warmth: &w}}}, scheme)
+				text, _ := parseHex(p.Text)
+				for _, g := range []string{p.Surface, p.SurfaceHigh, p.SurfaceHighest} {
+					ground, _ := parseHex(g)
+					if contrast(text, ground) < readInk {
+						t.Errorf("%s %s %s: ink %s on %s", lang, scheme, l.name, p.Text, g)
+					}
+				}
+			}
+		}
+	}
+	washiInk := build(Request{Language: "washi", Material: "black"}, "ink").Surface
+	if got := build(Request{Language: "iris", Material: "black"}, "ink").Surface; got != washiInk {
+		t.Errorf("Ink under iRiS wears %s, want washi's %s", got, washiInk)
+	}
+	if got := build(Request{Language: "iris", Material: "black", InkStyle: "style"}, "ink").Surface; got == washiInk {
+		t.Errorf("Ink following the style still wears washi's %s", got)
+	}
+}
+
 // Every combination Settings can make must read: each language and variant, scheme, material, accent, highlight,
 // tone and colour strength, over seeds from a grey, a vivid and a pale wallpaper and a dark and a light colour theme.
 // Washi runs every accent; each Material variant every third, in parallel.
 func TestEveryCombinationReads(t *testing.T) {
 	type lang struct{ name, variant string }
-	langs := []lang{{"washi", ""}}
+	langs := []lang{{"washi", ""}, {"iris", ""}}
 	for _, v := range variants {
 		langs = append(langs, lang{"material", v.name})
 	}
@@ -84,7 +132,7 @@ func everyCombinationReads(t *testing.T, language, variant string) {
 							for _, s := range schemes {
 								req.Tune[s.name] = Tune{Tone: tone, Colour: f(colour), Widgets: f(160)}
 							}
-							out := Solve(req, "")
+							out := solveSchemes(req, "")
 							for name, p := range out.Schemes {
 								where := fmt.Sprintf("%s:%s seeds %d %s %s/%s/%s tone %.0f colour %.0f", language, variant, si, name, material, accent, highlight, tone, colour)
 								grounds := []string{p.Surface, p.SurfaceHigh, p.SurfaceHighest}
@@ -181,6 +229,11 @@ func TestAppSurfacesKeepTheirOrder(t *testing.T) {
 			surface := l(a["surface"])
 			if l(a["surfaceDim"]) > surface+1e-6 || l(a["surfaceBright"]) < surface-1e-6 {
 				t.Errorf("%s %s: dim %s / surface %s / bright %s", s.name, m, a["surfaceDim"], a["surface"], a["surfaceBright"])
+			}
+			// A dark window on the black material once came out #000000 in every plane: it sits lifted, and its
+			// planes stand apart.
+			if s.dark && (surface < appsNightL-0.01 || l(a["surfaceContainerHighest"])-surface < 0.1) {
+				t.Errorf("%s %s: surface %s, highest %s", s.name, m, a["surface"], a["surfaceContainerHighest"])
 			}
 			ladder := []string{"surfaceContainerLow", "surfaceContainer", "surfaceContainerHigh", "surfaceContainerHighest"}
 			for i := 1; i < len(ladder); i++ {

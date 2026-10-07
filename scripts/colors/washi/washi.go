@@ -1,13 +1,21 @@
 package main
 
-import "math"
+import (
+	"math"
+	"strings"
+)
 
 // Request is everything iRiS chose that colours it, resolved by the shell (a colour theme it follows already
 // names "theme" here) plus the seeds it read from the wallpaper and the colour theme.
 type Request struct {
-	Language     string          `json:"language,omitempty"` // the aesthetic; empty is washi
-	Variant      string          `json:"variant,omitempty"`  // Material's scheme: tonalSpot, vibrant, expressive, fidelity, monochrome
-	Material     string          `json:"material"`
+	Language string `json:"language,omitempty"` // the aesthetic; empty is washi
+	Variant  string `json:"variant,omitempty"`  // Material's scheme: tonalSpot, vibrant, expressive, fidelity, monochrome
+	Material string `json:"material"`
+	Glass    bool   `json:"glass,omitempty"` // the shell wears glass: apps take the colour its frost shows
+	// InkStyle "style" lets Ink follow Language; anything else (the default) dresses Ink in washi, which is what Ink is.
+	InkStyle string `json:"inkStyle,omitempty"`
+	// DarkStyle "ink" dresses Dark in washi too: a sumi night instead of the style's own (Settings' night papers).
+	DarkStyle    string          `json:"darkStyle,omitempty"`
 	Accent       string          `json:"accent"`
 	AccentHue    float64         `json:"accentHue"`
 	Highlight    string          `json:"highlight"`
@@ -21,6 +29,63 @@ type Tune struct {
 	Tone    float64  `json:"tone"`
 	Colour  *float64 `json:"colour"`
 	Widgets *float64 `json:"widgets"`
+	Warmth  *float64 `json:"warmth"` // paper schemes: how much washi fibre the paper carries, 0–100
+}
+
+// paperLevel is a named paper for a paper scheme: its tone and warmth together.
+type paperLevel struct {
+	name         string
+	tone, warmth float64
+}
+
+// paperLevels are the papers Settings offers per paper scheme, lightest first. Light's go from a clean page to a calm
+// evening one; Ink's are washi grades from bleached shironeri to sumi-dyed (darker and greyer, not yellower). Settings' level tiles carry the same
+// numbers (TestShellKnowsPaperLevels).
+var paperLevels = map[string][]paperLevel{
+	"light": {{"bright", 6, 0}, {"soft", -8, 38}, {"calm", -18, 55}},
+	"ink":   {{"shironeri", 14, 30}, {"kinari", 0, 50}, {"torinoko", -10, 68}, {"sumi", -24, 52}},
+	// Dark's are ink at night (DarkStyle "ink"): kuro washi, sumi, then usuzumi, ink thinned to a soft charcoal.
+	"dark": {{"kuro", 40, 42}, {"sumi", 50, 62}, {"usuzumi", 68, 50}},
+}
+
+// ownWarmth is where each paper scheme's own paper sits on the warmth scale: there a language's paper is left as it
+// is, below it the paper loses its hue toward a neutral page, above it it takes washi fibre.
+var ownWarmth = map[string]float64{"light": 20, "ink": 50, "dark": 20}
+
+// fibreC is the most chroma the warmest paper reaches, in the fibre's hue (sumiHue).
+var fibreC = map[string]float64{"light": 0.045, "ink": 0.05, "dark": 0.024}
+
+// warm moves a paper along the warmth scale. Hue and chroma are mixed as a vector (OKLab a, b), so a tinted paper
+// (wallpaper, midnight) warms smoothly instead of jumping hue.
+func warm(s spec, p LCH, warmth float64) LCH {
+	own, ok := ownWarmth[s.name]
+	if !ok {
+		return p
+	}
+	w := clampF(warmth, 0, 100)
+	a, b := p.C*math.Cos(p.H*math.Pi/180), p.C*math.Sin(p.H*math.Pi/180)
+	if w < own {
+		k := 1 - (own-w)/own
+		a, b = a*k, b*k
+	} else {
+		k := (w - own) / (100 - own)
+		fa, fb := fibreC[s.name]*math.Cos(sumiHue*math.Pi/180), fibreC[s.name]*math.Sin(sumiHue*math.Pi/180)
+		a, b = a+(fa-a)*k, b+(fb-b)*k
+	}
+	c := math.Hypot(a, b)
+	h := p.H
+	if c > 1e-6 {
+		h = math.Mod(math.Atan2(b, a)*180/math.Pi+360, 360)
+	}
+	return LCH{p.L, c, h}
+}
+
+// warmthOf is a scheme's warmth: the person's, else its own (the language's paper unchanged).
+func warmthOf(name string, t Tune) float64 {
+	if t.Warmth != nil {
+		return *t.Warmth
+	}
+	return ownWarmth[name]
 }
 
 type Seeds struct {
@@ -69,14 +134,14 @@ var schemes = []spec{
 		name:      "ink",
 		materials: map[string]LCH{"black": {0.905, 0.018, 88}, "graphite": {0.865, 0.03, 72}, "midnight": {0.89, 0.014, 232}},
 		paperL:    0.9, paperC: 0.035, steps: [2]float64{-0.035, -0.07}, inkL: 0.25,
-		accentL: 0.56, accentC: [2]float64{0.06, 0.125}, markL: 0.62, markC: 0.12, widgets: 1.2,
+		accentL: 0.56, accentC: [2]float64{0.05, 0.1}, markL: 0.62, markC: 0.12, widgets: 1,
 	},
 	{
 		// Light: shironeri, washi bleached to almost white. Still paper, not a screen's blank white.
 		name:      "light",
 		materials: map[string]LCH{"black": {0.975, 0.011, 88}, "graphite": {0.935, 0.007, 85}, "midnight": {0.95, 0.014, 240}},
 		paperL:    0.965, paperC: 0.025, steps: [2]float64{-0.03, -0.06}, inkL: 0.21,
-		accentL: 0.6, accentC: [2]float64{0.06, 0.135}, markL: 0.65, markC: 0.13, widgets: 1.1,
+		accentL: 0.6, accentC: [2]float64{0.06, 0.115}, markL: 0.65, markC: 0.13, widgets: 1.1,
 	},
 }
 
@@ -257,6 +322,7 @@ type Palette struct {
 	Accents           map[string]string   `json:"accents"`
 	Highlights        map[string]string   `json:"highlights"`
 	Apps              map[string]string   `json:"apps"`
+	Papers            map[string]string   `json:"papers,omitempty"` // paper schemes: each level's paper
 }
 
 type solver struct {
@@ -313,6 +379,10 @@ func (v solver) accent(seed LCH) RGB {
 // need is readText when the colour is also text (an app's primary), readShape for a shape (a badge).
 func (v solver) fill(seed LCH, need float64) RGB {
 	c := clampF(seed.C, v.lang.fillC[0], v.lang.fillC[1]) * math.Max(0.6, v.colour)
+	if !v.s.dark {
+		// A filled shape on paper is the loudest thing on it: a pigment, never a screen's saturated blue.
+		c = math.Min(c, paperFillC)
+	}
 	from := v.lang.fillFrom[1]
 	if v.s.dark {
 		from = v.lang.fillFrom[0]
@@ -406,8 +476,23 @@ func hexes(cs ...RGB) []string {
 	return out
 }
 
+// schemeLanguage is the language one scheme is solved in: Ink is washi's paper unless the person lets it follow the
+// style, so choosing Ink never needs a second choice to look like Ink.
+func schemeLanguage(req Request, name string) *Language {
+	if name == "ink" && req.InkStyle != "style" || name == "dark" && req.DarkStyle == "ink" {
+		return &washi
+	}
+	return languageOf(req)
+}
+
+// paperOf is a material's paper in a scheme with the person's tone and warmth.
+func paperOf(lang *Language, s spec, material string, req Request) LCH {
+	t := req.Tune[s.name]
+	return warm(s, lang.paper(s, material, req.Seeds, t.Tone), warmthOf(s.name, t))
+}
+
 func build(req Request, name string) Palette {
-	lang := languageOf(req)
+	lang := schemeLanguage(req, name)
 	s := lang.specOf(name)
 	tune := req.Tune[name]
 	colour := 1.0
@@ -422,7 +507,7 @@ func build(req Request, name string) Palette {
 	if _, named := s.materials[material]; !named && material != "wallpaper" && material != "theme" {
 		material = "black"
 	}
-	ramp := lang.ramp(s, lang.paper(s, material, req.Seeds, tune.Tone))
+	ramp := lang.ramp(s, paperOf(lang, s, material, req))
 	v := solver{lang: lang, s: s, req: req, ramp: ramp, grounds: ramp.all(), colour: colour, widgets: widgets}
 	p := Palette{Dark: s.dark, Material: material}
 	p.Surface, p.SurfaceHigh, p.SurfaceHighest = v.grounds[0].Hex(), v.grounds[1].Hex(), v.grounds[2].Hex()
@@ -510,7 +595,16 @@ func build(req Request, name string) Palette {
 	// meanings read as one family on this paper. Never the colour slider: their meaning does not fade.
 	p.Identity = map[string]string{}
 	idC := s.markC * map[string]float64{"dark": 0.86, "ink": 0.8, "light": 0.86}[name]
+	// A language that keeps its own colours (iRiS's system colours) solves each from where it is, softer on paper.
+	for _, id := range lang.identityHex {
+		c, _ := seedLCH(id.hex)
+		k := map[string]float64{"dark": 1, "ink": 0.75, "light": 0.9}[name]
+		p.Identity[id.name] = v.mark(c.H, c.C*k, c.L-s.markL).Hex()
+	}
 	for _, id := range lang.identity {
+		if _, done := p.Identity[id.name]; done {
+			continue
+		}
 		if id.hue < 0 {
 			p.Identity[id.name] = solve(s, pc.H, 0.012, s.markL, readsOn(readMark, v.grounds...)).Hex()
 			continue
@@ -562,7 +656,23 @@ func build(req Request, name string) Palette {
 	// Swatches for Settings: each choice as it would be solved here.
 	p.Materials = map[string]string{}
 	for _, m := range lang.materialNames {
-		p.Materials[m] = lang.paper(s, m, req.Seeds, tune.Tone).RGB().Hex()
+		p.Materials[m] = paperOf(lang, s, m, req).RGB().Hex()
+	}
+	// Each paper level as it would be with this material, for Settings' level tiles.
+	if levels, ok := paperLevels[name]; ok {
+		p.Papers = map[string]string{}
+		for _, l := range levels {
+			other := req
+			other.Tune = map[string]Tune{}
+			for k, t := range req.Tune {
+				other.Tune[k] = t
+			}
+			t := other.Tune[name]
+			t.Tone, t.Warmth = l.tone, &l.warmth
+			other.Tune[name] = t
+			other.DarkStyle = "ink" // a night paper is washi's, whatever Dark wears now
+			p.Papers[l.name] = paperOf(schemeLanguage(other, name), s, material, other).RGB().Hex()
+		}
 	}
 	p.Accents = map[string]string{}
 	for n, hex := range lang.accentSeeds {
@@ -595,10 +705,23 @@ func (v solver) apps(p Palette, accent, highlight, danger, cont RGB) map[string]
 	if !s.dark {
 		sign = -1
 	}
+	// A window is read for hours: at night it sits on a lifted ground (Material's tone 6, Apple's #1c1c1e family),
+	// never the shell's black, and its planes step as far apart as Material's so containers and lines show.
+	base := pc
+	if s.dark && base.L < appsNightL {
+		base = LCH{appsNightL, math.Max(base.C, 0.004), base.H}
+	}
+	if c, ok := seedLCH(v.req.Seeds.Wallpaper); ok && v.req.Glass && c.C >= 0.02 && s.name != "ink" {
+		// Under glass the shell reads as frost over the wallpaper: a window beside it carries that frost's hue, not a
+		// neutral that looks foreign next to it. Ink keeps its paper: that is what Ink is.
+		frost := paperOf(v.lang, s, "wallpaper", v.req)
+		base.H, base.C = frost.H, math.Max(base.C, math.Min(frost.C, map[bool]float64{true: 0.024, false: 0.018}[s.dark]))
+		pc.H = frost.H
+	}
 	at := func(d, cScale float64) string {
-		q := pc
-		if s.dark && pc.L < 0.05 {
-			q = LCH{0, 0.006, pc.H}
+		q := base
+		if s.dark {
+			d *= appsNightStep
 		}
 		q.L = clampF(q.L+sign*d, 0, 1)
 		q.C = math.Min(0.05, q.C*cScale)
@@ -607,15 +730,52 @@ func (v solver) apps(p Palette, accent, highlight, danger, cont RGB) map[string]
 	al, hl, dl := accent.LCH(), highlight.LCH(), danger.LCH()
 	deepest, _ := parseHex(at(0.105, 1.15))
 	grounds := append([]RGB{deepest}, v.grounds...)
-	sec := solve(s, al.H, math.Min(0.06, al.C*0.4), s.accentL, readsOn(readText, grounds...))
+	accentFrom, textGrounds := s.accentL, grounds
+	if !s.dark {
+		// A window on paper has its own planes, not the shell's ink groups over frost: its colours read on those, from
+		// the lightest tone that does (the shell's deep ink is the loud button the eye trips on). A fill reads 4.5:1 on
+		// the window, its cards and wells; on the deepest container (a pressed tab) it keeps a shape's 3:1, as Material.
+		lowest, _ := parseHex(at(-0.012, 0.8))
+		ground, _ := parseHex(at(0, 1))
+		card, _ := parseHex(at(0.04, 1.05))
+		textGrounds = []RGB{lowest, ground, card}
+		accentFrom = math.Max(accentFrom, appsPaperFromL)
+	}
+	// Secondary and tertiary are text in apps (captions, chips): they read on every app plane.
+	appRamp := append([]RGB{deepest}, textGrounds...)
+	reads := func(need float64) func(RGB) bool {
+		if s.dark {
+			return readsOn(need, grounds...)
+		}
+		return both(readsOn(need, textGrounds...), readsOn(math.Min(need, readShape), deepest))
+	}
+	sec := solve(s, al.H, math.Min(0.06, al.C*0.4), accentFrom, readsOn(readText, appRamp...))
 	secCont := LCH{cont.LCH().L, math.Min(0.035, al.C*0.25), al.H}.RGB()
-	ter := solve(s, hl.H, hl.C, s.accentL, readsOn(readText, grounds...))
+	// Apps paint tertiary on large marks (badges, chips, highlights): Material's band, not the shell's full highlight.
+	ter := solve(s, hl.H, math.Min(hl.C, map[bool]float64{true: 0.11, false: 0.09}[s.dark]), accentFrom, readsOn(readText, appRamp...))
 	terCont := LCH{cont.LCH().L, math.Min(0.07, hl.C*0.45), hl.H}.RGB()
 	errCont := LCH{cont.LCH().L, math.Min(0.08, dl.C*0.45), dl.H}.RGB()
 	onC := func(fill RGB, h, c float64) string {
 		side := spec{dark: fill.LCH().L < 0.6}
 		return solve(side, h, c, map[bool]float64{true: 0.9, false: 0.3}[side.dark], readsOn(readOn, fill)).Hex()
 	}
+	// A window fills large shapes with primary (buttons, switches, a selected tab) and badges with errorFill, read for
+	// hours: the shell's pigment at full strength turns into a loud blue and red there. Same hue and start, less
+	// colour, still text on every ground and carrying its own ink.
+	appFill := func(hex string, need, paperC, nightC float64) RGB {
+		src, _ := parseHex(hex)
+		l := src.LCH()
+		check := reads(need)
+		from := l.L
+		if !s.dark {
+			check = both(check, readsOn(readOn, v.lang.onColour))
+			from = math.Max(from, appsPaperFromL)
+		}
+		return solve(s, l.H, math.Min(l.C, map[bool]float64{true: nightC, false: paperC}[s.dark]), from, check)
+	}
+	primary := appFill(p.AccentFill, readText, appsFillC[0], appsFillC[1])
+	errorFill := appFill(p.DangerFill, readShape, appsAlertC[0], appsAlertC[1])
+	errorText := appFill(p.Danger, readText, appsAlertC[0], appsAlertC[1])
 	text, _ := parseHex(p.Text)
 	tl := text.LCH()
 	variant := solve(s, pc.H, math.Min(0.02, pc.C*1.5+0.006), pc.L+(tl.L-pc.L)*0.62, readsOn(readSecondary, grounds...))
@@ -625,42 +785,101 @@ func (v solver) apps(p Palette, accent, highlight, danger, cont RGB) map[string]
 	inversePrimary := solve(s, al.H, al.C, map[bool]float64{true: 0.5, false: 0.8}[s.dark], readsOn(readText, inverse))
 	m := map[string]string{
 		// Dim is darker and Bright lighter in both polarities (at moves toward the ink: darker on paper).
-		"background": p.Surface, "surface": p.Surface, "surfaceDim": at(-0.03*sign, 1), "surfaceBright": at(0.035*sign, 1),
+		"background": at(0, 1), "surface": at(0, 1), "surfaceDim": at(-0.03*sign, 1), "surfaceBright": at(0.035*sign, 1),
 		"surfaceContainerLowest": at(-0.012, 0.8), "surfaceContainerLow": at(0.02, 1), "surfaceContainer": at(0.04, 1.05),
 		"surfaceContainerHigh": at(0.065, 1.1), "surfaceContainerHighest": at(0.09, 1.15), "surfaceVariant": at(0.065, 1.2),
 		"onBackground": onSurface, "onSurface": onSurface, "onSurfaceVariant": variant.Hex(), "outline": outline.Hex(),
-		"outlineVariant": at(0.16, 1.2), "inverseSurface": inverse.Hex(), "inverseOnSurface": p.Surface,
+		"outlineVariant": at(0.16, 1.2), "inverseSurface": inverse.Hex(), "inverseOnSurface": at(0, 1),
 		// Apps fill with primary and error (buttons, badges, switches): the pigments, not the shell's text accent.
-		"primary": p.AccentFill, "onPrimary": p.OnAccentFill, "primaryContainer": p.AccentContainer, "onPrimaryContainer": p.OnAccentContainer,
-		"inversePrimary": inversePrimary.Hex(), "surfaceTint": p.AccentFill,
+		"primary": primary.Hex(), "onPrimary": v.onFill(primary, readOn).Hex(), "primaryContainer": p.AccentContainer, "onPrimaryContainer": p.OnAccentContainer,
+		"inversePrimary": inversePrimary.Hex(), "surfaceTint": primary.Hex(),
 		"secondary": sec.Hex(), "onSecondary": v.onFill(sec, readOn).Hex(), "secondaryContainer": secCont.Hex(),
 		"onSecondaryContainer": onC(secCont, al.H, 0.05),
 		"tertiary":             ter.Hex(), "onTertiary": v.onFill(ter, readOn).Hex(), "tertiaryContainer": terCont.Hex(),
 		"onTertiaryContainer": onC(terCont, hl.H, 0.1),
-		"error":               p.Danger, "onError": p.OnDanger, "errorFill": p.DangerFill, "onErrorFill": p.OnDangerFill, "errorContainer": errCont.Hex(), "onErrorContainer": onC(errCont, dl.H, 0.12),
+		"error":               errorText.Hex(), "onError": v.onFill(errorText, readOn).Hex(), "errorFill": errorFill.Hex(), "onErrorFill": v.onFill(errorFill, readOn).Hex(), "errorContainer": errCont.Hex(), "onErrorContainer": onC(errCont, dl.H, 0.12),
 		"success": p.Success, "shadow": "#000000", "scrim": "#000000",
-	}
-	if s.dark && pc.L < 0.05 {
-		m["surfaceDim"], m["surfaceContainerLowest"] = "#000000", "#000000"
 	}
 	return m
 }
+
+// The most colour an app's filled primary and alert carry, on paper and at night (Material You's own primary sits
+// near 0.07 on paper).
+var appsFillC = [2]float64{0.085, 0.12}
+
+// paperFillC is the most colour the shell's own filled shapes keep on paper.
+const paperFillC = 0.12
+
+var appsAlertC = [2]float64{0.11, 0.12}
+
+// appsPaperFromL is the lightest an app's colour on paper starts from; appsNightL is the lowest ground a dark app
+// window gets; appsNightStep widens the paper's plane steps at night, where OKLCH's small lightness steps vanish.
+const (
+	appsPaperFromL = 0.62
+	appsNightL     = 0.18
+	appsNightStep  = 1.45
+)
 
 // Output holds every scheme, so switching scheme in Settings needs no new solve.
 type Output struct {
 	Version int                `json:"version"`
 	Request string             `json:"request"` // the request as the shell sent it: the shell compares it to know the file is current
 	Schemes map[string]Palette `json:"schemes"`
+	// Every style as it would look with the same choices, per scheme: Settings paints its style tiles with them.
+	Styles map[string]map[string]StyleSwatch `json:"styles"`
+}
+
+// StyleSwatch is a style in a few colours: its paper, a raised group, its ink, its accent and three identities.
+type StyleSwatch struct {
+	Surface string   `json:"surface"`
+	High    string   `json:"high"`
+	Text    string   `json:"text"`
+	Accent  string   `json:"accent"`
+	Dots    []string `json:"dots"`
+}
+
+// styleIDs are the styles Settings offers, in its order: a language, or Material You with its variant.
+func styleIDs() []string {
+	out := []string{"iris", "washi"}
+	for _, v := range variants {
+		out = append(out, "material:"+v.name)
+	}
+	return out
 }
 
 // Version changes whenever a solve would give other colours for the same request; IrisWashi.qml asks again when it
 // differs (TestShellKnowsVersion keeps the two equal).
-const Version = 10
+const Version = 23
 
-func Solve(req Request, key string) Output {
+// solveSchemes is the palette alone, without the other styles' swatches.
+func solveSchemes(req Request, key string) Output {
 	out := Output{Version: Version, Request: key, Schemes: map[string]Palette{}}
 	for _, s := range languageOf(req).schemes {
 		out.Schemes[s.name] = build(req, s.name)
+	}
+	return out
+}
+
+func Solve(req Request, key string) Output {
+	out := solveSchemes(req, key)
+	out.Styles = map[string]map[string]StyleSwatch{}
+	for _, id := range styleIDs() {
+		other := req
+		other.Language, other.Variant = id, ""
+		// A tile shows the style itself: never Ink's washi or the ink night laid over it.
+		other.InkStyle, other.DarkStyle = "style", "style"
+		if strings.HasPrefix(id, "material:") {
+			other.Language, other.Variant = "material", strings.TrimPrefix(id, "material:")
+		}
+		out.Styles[id] = map[string]StyleSwatch{}
+		for _, s := range languageOf(other).schemes {
+			p := out.Schemes[s.name]
+			if schemeLanguage(other, s.name) != schemeLanguage(req, s.name) {
+				p = build(other, s.name)
+			}
+			out.Styles[id][s.name] = StyleSwatch{Surface: p.Surface, High: p.SurfaceHigh, Text: p.Text, Accent: p.Accent,
+				Dots: []string{p.Identity["blue"], p.Identity["green"], p.Identity["orange"]}}
+		}
 	}
 	return out
 }

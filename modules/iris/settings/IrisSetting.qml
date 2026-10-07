@@ -432,12 +432,13 @@ Item {
         id: tilesComponent
         Column {
             id: tiles
-            readonly property real gap: Math.round(10 * root.d)
-            readonly property int columns: width >= 700 * root.d ? 4 : width >= 480 * root.d ? 3 : 2
+            readonly property real gap: Math.round(8 * root.d)
+            readonly property int columns: width >= 640 * root.d ? 4 : width >= 440 * root.d ? 3 : 2
             readonly property real tileWidth: Math.floor((width - (tiles.columns - 1) * tiles.gap) / tiles.columns)
             spacing: Math.round(14 * root.d)
             Repeater {
-                model: [
+                // Styles share the mode in use: one band. Themes split into wallpaper, light and dark.
+                model: root.spec.flatTiles ? [{ title: "", pick: choice => true }] : [
                     { title: "", pick: choice => Boolean(choice.palette?.wallpaper) },
                     { title: "Light mode", pick: choice => !choice.palette?.wallpaper && !choice.palette?.dark },
                     { title: "Dark mode", pick: choice => !choice.palette?.wallpaper && Boolean(choice.palette?.dark) }
@@ -461,75 +462,111 @@ Item {
                         spacing: tiles.gap
                         Repeater {
                             model: band.members
+                            // A row, not a card: a chip draws the palette in miniature (paper, two lines of its ink,
+                            // its colours; night and day side by side for a style), the name reads in Settings' own ink.
                             Rectangle {
                                 id: tile
                                 required property var modelData
                                 readonly property bool selected: root.value === tile.modelData.value
                                 readonly property var pal: tile.modelData.palette ?? ({})
                                 readonly property bool wall: Boolean(tile.pal.wallpaper)
+                                readonly property var sides: tile.pal.split ?? [tile.pal]
                                 width: tiles.tileWidth
-                                height: Math.round(66 * root.d)
+                                height: Math.round(44 * root.d)
                                 radius: IrisStyle.radiusTile
-                                color: tile.wall ? IrisStyle.fillQuiet : tile.pal.bg
-                                border.width: tile.selected ? 2 : 1
-                                border.color: tile.selected ? IrisStyle.accent : tileHover.hovered ? IrisStyle.borderStrong : IrisStyle.border
-                                scale: tileTap.pressed ? IrisStyle.pressScale(0.97) : tileHover.hovered ? 1.015 : 1
+                                color: tile.selected ? IrisStyle.tintFill(IrisStyle.accent)
+                                    : tileHover.hovered ? IrisStyle.fillHover : IrisStyle.fillQuiet
+                                scale: tileTap.pressed ? IrisStyle.pressScale(0.97) : 1
                                 Behavior on scale { NumberAnimation { duration: IrisStyle.feedbackDuration; easing.type: IrisStyle.feedbackEasing } }
-                                Behavior on border.color { ColorAnimation { duration: IrisStyle.feedbackDuration; easing.type: IrisStyle.feedbackEasing } }
+                                Behavior on color { ColorAnimation { duration: IrisStyle.feedbackDuration; easing.type: IrisStyle.feedbackEasing } }
                                 Accessible.name: Translation.tr(root.spec.label) + ": " + Translation.tr(tile.modelData.label)
                                 Accessible.role: Accessible.Button
                                 Accessible.checked: tile.selected
-                                Loader {
-                                    anchors.fill: parent
-                                    anchors.margins: tile.border.width
-                                    active: tile.wall
-                                    sourceComponent: ClippingRectangle {
-                                        radius: Math.max(0, tile.radius - tile.border.width)
-                                        color: "transparent"
-                                        IrisImage { anchors.fill: parent; source: Wallpapers.stillUrlFor(String(Wallpapers.effectiveWallpaperPath ?? "")) }
-                                        Rectangle { anchors.fill: parent; color: IrisStyle.veil }
-                                    }
-                                }
-                                Column {
-                                    anchors.left: parent.left
-                                    anchors.leftMargin: Math.round(12 * root.d)
+                                ClippingRectangle {
+                                    id: chip
+                                    readonly property real inset: Math.round(7 * root.d)
+                                    x: chip.inset
                                     anchors.verticalCenter: parent.verticalCenter
-                                    spacing: 0
-                                    IrisText {
-                                        text: "Aa"
-                                        color: tile.wall ? IrisStyle.onMedia : tile.pal.fg
-                                        font.pixelSize: Math.round(20 * IrisStyle.typeScale)
-                                        font.weight: IrisStyle.weight(Font.DemiBold)
+                                    width: Math.round(30 * root.d)
+                                    height: width
+                                    // Concentric with the row: the row's radius less the air around the chip.
+                                    radius: Math.max(Math.round(5 * root.d), tile.radius - chip.inset)
+                                    color: tile.sides[0]?.bg ?? IrisStyle.fillQuiet
+                                    IrisImage {
+                                        visible: tile.wall
+                                        anchors.fill: parent
+                                        source: tile.wall ? Wallpapers.stillUrlFor(String(Wallpapers.effectiveWallpaperPath ?? "")) : ""
                                     }
-                                    IrisText {
-                                        width: tile.width - Math.round(44 * root.d)
-                                        text: Translation.tr(tile.modelData.label)
-                                        color: tile.wall ? IrisStyle.onMedia : tile.pal.fg
-                                        opacity: 0.85
-                                        elide: Text.ElideRight
-                                        font.pixelSize: IrisStyle.typeMeta
+                                    Row {
+                                        visible: !tile.wall
+                                        anchors.fill: parent
+                                        Repeater {
+                                            model: tile.wall ? [] : tile.sides
+                                            Rectangle {
+                                                id: half
+                                                required property var modelData
+                                                required property int index
+                                                readonly property real pad: Math.round((tile.sides.length > 1 ? 3 : 5) * root.d)
+                                                width: chip.width / tile.sides.length
+                                                height: chip.height
+                                                color: modelData.bg ?? IrisStyle.fillQuiet
+                                                Column {
+                                                    x: half.pad
+                                                    y: Math.round(7 * root.d)
+                                                    spacing: Math.round(4 * root.d)
+                                                    Repeater {
+                                                        model: [0.62, 0.4]
+                                                        Rectangle {
+                                                            required property real modelData
+                                                            width: Math.max(2, Math.round((half.width - 2 * half.pad) * modelData / 0.62))
+                                                            height: Math.max(2, Math.round(2.5 * root.d))
+                                                            radius: height / 2
+                                                            color: half.modelData.fg ?? IrisStyle.text
+                                                            opacity: 0.8
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
                                     }
+                                    Row {
+                                        visible: !tile.wall
+                                        x: Math.round(5 * root.d)
+                                        anchors.bottom: parent.bottom
+                                        anchors.bottomMargin: Math.round(6 * root.d)
+                                        spacing: Math.round(2 * root.d)
+                                        Repeater {
+                                            model: (tile.sides[tile.sides.length - 1]?.dots ?? tile.pal.dots ?? []).slice(0, 3)
+                                            Rectangle { required property var modelData; width: Math.round(5 * root.d); height: width; radius: width / 2; color: modelData }
+                                        }
+                                    }
+                                    // The chip's own edge, so a paper chip never melts into a paper row.
+                                    Rectangle { anchors.fill: parent; radius: chip.radius; color: "transparent"; border.width: 1; border.color: IrisStyle.border }
                                 }
-                                Row {
-                                    visible: !tile.wall
-                                    anchors.right: parent.right
-                                    anchors.rightMargin: Math.round(12 * root.d)
-                                    anchors.top: parent.top
-                                    anchors.topMargin: Math.round(12 * root.d)
-                                    spacing: Math.round(4 * root.d)
-                                    Repeater {
-                                        model: tile.pal.dots ?? []
-                                        Rectangle { required property var modelData; width: Math.round(11 * root.d); height: width; radius: width / 2; color: modelData }
-                                    }
+                                IrisText {
+                                    anchors.left: chip.right
+                                    anchors.leftMargin: Math.round(10 * root.d)
+                                    anchors.right: check.left
+                                    anchors.rightMargin: Math.round(6 * root.d)
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: Translation.tr(tile.modelData.label)
+                                    color: tile.selected ? IrisStyle.accent : IrisStyle.text
+                                    elide: Text.ElideRight
+                                    font.pixelSize: IrisStyle.typeLabel
+                                    font.weight: IrisStyle.weight(tile.selected ? Font.DemiBold : Font.Medium)
                                 }
-                                Rectangle {
-                                    visible: tile.selected
+                                MaterialSymbol {
+                                    id: check
                                     anchors.right: parent.right
-                                    anchors.bottom: parent.bottom
-                                    anchors.margins: Math.round(8 * root.d)
-                                    width: Math.round(18 * root.d); height: width; radius: width / 2
+                                    anchors.rightMargin: Math.round(10 * root.d)
+                                    anchors.verticalCenter: parent.verticalCenter
+                                    text: "check"
+                                    iconSize: Math.round(16 * root.d)
                                     color: IrisStyle.accent
-                                    MaterialSymbol { anchors.centerIn: parent; text: "check"; iconSize: Math.round(13 * root.d); color: IrisStyle.inkOnAccent }
+                                    opacity: tile.selected ? 1 : 0
+                                    scale: tile.selected ? 1 : 0.6
+                                    Behavior on opacity { NumberAnimation { duration: IrisStyle.feedbackDuration; easing.type: IrisStyle.feedbackEasing } }
+                                    Behavior on scale { NumberAnimation { duration: IrisStyle.feedbackDuration; easing.type: IrisStyle.feedbackEasing } }
                                 }
                                 HoverHandler { id: tileHover; cursorShape: Qt.PointingHandCursor }
                                 TapHandler { id: tileTap; onTapped: root.commit(tile.modelData.value) }

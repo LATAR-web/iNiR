@@ -55,11 +55,15 @@ func TestVariantsDiffer(t *testing.T) {
 // Apps read Material's ladder by name in every language: Dim darker, Bright lighter, containers toward the ink.
 func TestEveryLanguageKeepsAppOrder(t *testing.T) {
 	l := func(hex string) float64 { c, _ := parseHex(hex); return c.LCH().L }
-	for _, v := range variants {
-		lang := languageOf(Request{Language: "material", Variant: v.name})
+	for _, v := range append([]variant{{name: "iris"}}, variants...) {
+		language := "material"
+		if v.name == "iris" {
+			language = "iris"
+		}
+		lang := languageOf(Request{Language: language, Variant: v.name})
 		for _, s := range lang.schemes {
 			for _, m := range lang.materialNames {
-				req := Request{Language: "material", Variant: v.name, Material: m, Seeds: Seeds{Wallpaper: "#7a4030", Primary: "#a8c7fa", Background: "#1a110f"}}
+				req := Request{Language: language, Variant: v.name, Material: m, Seeds: Seeds{Wallpaper: "#7a4030", Primary: "#a8c7fa", Background: "#1a110f"}}
 				a := build(req, s.name).Apps
 				if l(a["surfaceDim"]) > l(a["surface"])+1e-6 || l(a["surfaceBright"]) < l(a["surface"])-1e-6 {
 					t.Errorf("%s %s %s: dim %s / surface %s / bright %s", v.name, s.name, m, a["surfaceDim"], a["surface"], a["surfaceBright"])

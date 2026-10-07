@@ -3984,8 +3984,10 @@ Singleton {
                     property string morph: "direct" // IrisStyle.morphStyles: direct, liquid, glide, snap, elastic, instant
                     property string accent: "blue" // "blue", "mint", "rose", "lilac" or "wallpaper"
                     property string scheme: "auto" // "auto" (follows the system), "dark", "ink" or "light"
-                    property string language: "washi" // the palette's style: "washi" (paper and pigment) or "material" (Material You)
+                    property string language: "iris" // the palette's style: "iris" (iRiS's own), "washi" (paper and pigment) or "material" (Material You)
                     property string variant: "tonalSpot" // Material You's scheme: "tonalSpot", "vibrant", "expressive", "fidelity" or "monochrome"
+                    property string inkStyle: "washi" // Ink's own style: "washi" (paper and sumi, whatever the style) or "style" (follows language)
+                    property string darkStyle: "style" // Dark's: "style" (the style's own night) or "ink" (washi, a sumi night paper)
                     property bool followTheme: true // with a colour theme chosen, the shell wears its accent, highlight and material
                     property bool materialForApps: true // with the wallpaper colour theme, terminals and apps sit on the shell's material
                     property bool accentForApps: true // with the wallpaper colour theme, apps take the shell's own accent when it has one
@@ -4002,11 +4004,11 @@ Singleton {
                     }
                     // Per scheme: tone lifts or dims the material (-30..30), colour is how strong accents read (0..100 %),
                     // widgets is how colourful the desktop widgets read (40..160 %), lume makes bodies frost the wallpaper
-                    // shows through instead of solid.
+                    // shows through instead of solid; warmth (0..100) is how much washi fibre the paper (or Dark's ink night) carries.
                     property JsonObject tune: JsonObject {
-                        property JsonObject dark: JsonObject { property int tone: 0; property int colour: 100; property int widgets: 100; property bool lume: false }
-                        property JsonObject ink: JsonObject { property int tone: 0; property int colour: 100; property int widgets: 120; property bool lume: true }
-                        property JsonObject light: JsonObject { property int tone: 0; property int colour: 85; property int widgets: 110; property bool lume: true }
+                        property JsonObject dark: JsonObject { property int tone: 0; property int warmth: 20; property int colour: 100; property int widgets: 100; property bool lume: false }
+                        property JsonObject ink: JsonObject { property int tone: 0; property int warmth: 50; property int colour: 100; property int widgets: 100; property bool lume: true }
+                        property JsonObject light: JsonObject { property int tone: -8; property int warmth: 38; property int colour: 85; property int widgets: 110; property bool lume: true }
                     }
                     property string highlight: "orange" // "orange", "yellow", "red", "pink", "green", "accent" or "wallpaper"
                     property JsonObject anime: JsonObject {

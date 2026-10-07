@@ -8,9 +8,9 @@ import (
 	"testing"
 )
 
-// goldenSum is the fingerprint of every palette goldenMatrix solves. A refactor keeps it; a change that gives other
-// colours updates it together with Version, so IrisWashi asks again.
-const goldenSum = "daa1ca5668cc43cf8363eb366120d1f6783a6ab6fb1bca907ef8440e5dd4b847"
+// goldenSum is the fingerprint of every scheme goldenMatrix solves (the colours alone, not the version or the other
+// styles' swatches). A refactor keeps it; a change that gives other colours updates it together with Version.
+const goldenSum = "3ecb810abddce4a8b68d09dfa36cb0c741daa83231bd95d2a5756f910d928ba1"
 
 func goldenMatrix() []Request {
 	seedSets := []Seeds{
@@ -37,13 +37,16 @@ func goldenMatrix() []Request {
 			}
 		}
 	}
-	return append(out, defaultRequest())
+	// The fresh install's choices in washi: the golden is washi's, whatever language a fresh install starts in.
+	washiDefault := defaultRequest()
+	washiDefault.Language = ""
+	return append(out, washiDefault)
 }
 
 func goldenFingerprint(t *testing.T) string {
 	h := sha256.New()
 	for i, req := range goldenMatrix() {
-		data, err := json.Marshal(Solve(req, fmt.Sprint(i)))
+		data, err := json.Marshal(solveSchemes(req, fmt.Sprint(i)).Schemes)
 		if err != nil {
 			t.Fatal(err)
 		}

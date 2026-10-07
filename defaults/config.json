@@ -2431,15 +2431,17 @@
             "motionDuration": 220,
             "accent": "blue",
             "scheme": "auto",
-            "language": "washi",
+            "language": "iris",
             "variant": "tonalSpot",
+            "inkStyle": "washi",
+            "darkStyle": "style",
             "followTheme": true,
             "materialForApps": true,
             "accentForApps": true,
             "tune": {
-                "dark": { "tone": 0, "colour": 100, "widgets": 100, "lume": false },
-                "ink": { "tone": 0, "colour": 100, "widgets": 120, "lume": true },
-                "light": { "tone": 0, "colour": 85, "widgets": 110, "lume": true }
+                "dark": { "tone": 0, "warmth": 20, "colour": 100, "widgets": 100, "lume": false },
+                "ink": { "tone": 0, "warmth": 50, "colour": 100, "widgets": 100, "lume": true },
+                "light": { "tone": -8, "warmth": 38, "colour": 85, "widgets": 110, "lume": true }
             },
             "expandedRadius": 28,
             "preset": "iris",

@@ -637,7 +637,7 @@ QtObject {
     readonly property real paperGlass: 0.66
     function paperFloor(paper: color, level: real, strength: real): real {
         const paperLevel = Math.pow(ColorUtils.relativeLuminance(paper), 1 / 2.2)
-        const target = (paperLevel - 0.1) * Math.min(1, strength)
+        const target = (paperLevel - 0.06) * Math.min(1, strength)
         return level < target ? Math.min(0.86, (target - level) / Math.max(0.001, paperLevel - level)) : 0
     }
 

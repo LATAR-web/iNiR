@@ -14,6 +14,9 @@ const (
 	readOn        = 4.5 // ink on a filled colour, and a colour that carries the language's own ink
 )
 
+// namedHex is a colour by the name a choice or a meaning goes by.
+type namedHex struct{ name, hex string }
+
 type identitySeed struct {
 	name string
 	hue  float64 // OKLCH hue; below zero is the neutral, in the paper's own hue
@@ -31,6 +34,7 @@ type Language struct {
 	highlightSeeds map[string]string
 	identity       []identitySeed
 	identityPull   float64    // the most degrees an identity hue turns toward the accent
+	identityHex    []namedHex // identities kept as these colours (their own lightness and chroma) instead of one band
 	neutralHue     float64    // the warmth of ink and greys where the ground has no hue of its own
 	onColour       RGB        // the light ink on a filled colour
 	darkOn         [2]float64 // the dark ink on a filled colour: lightness and most chroma, in the fill's hue
