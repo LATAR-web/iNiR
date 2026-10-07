@@ -45,12 +45,19 @@ Singleton {
         return { level: sample.level * keep, spread: sample.spread * keep, color: colour,
             luminance: ColorUtils.relativeLuminance(colour) }
     }
-    // The same for a surface that shows its own image (Waffle's wallpaper, a lock background).
+    // The same for a surface that shows its own image (Waffle's wallpaper). Read as the desktop scales it
+    // (Wallpapers.fillMode): bars are black, span reads this output's slice of the whole canvas.
     function readFrom(path: string, output: string, x: real, y: real, w: real, h: real): var {
         void root.revision
         const screen = root.screenNamed(output)
         if (!screen || !path) return null
-        return WallpaperLuma.sample(path, Math.round(screen.width), Math.round(screen.height), x, y, w, h)
+        const mode = Wallpapers.fillMode
+        if (mode === "span") {
+            const area = Wallpapers.spanArea
+            return WallpaperLuma.sample(path, Math.round(area.width), Math.round(area.height),
+                x + screen.x - area.x, y + screen.y - area.y, w, h, "fill")
+        }
+        return WallpaperLuma.sample(path, Math.round(screen.width), Math.round(screen.height), x, y, w, h, mode)
     }
 
     // Windows are open on the output's active workspace: compositor blur shows them, not the wallpaper.
