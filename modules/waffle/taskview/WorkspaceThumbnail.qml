@@ -293,6 +293,9 @@ Item {
                 source: root.wallpaperPath ? "file://" + root.wallpaperPath : ""
                 fillMode: Image.PreserveAspectCrop
                 asynchronous: true
+                sourceSize: Qt.size(
+                    Math.ceil(root.thumbnailWidth * Math.max(1, root.QsWindow.window?.devicePixelRatio ?? 1)),
+                    Math.ceil(root.thumbnailHeight * Math.max(1, root.QsWindow.window?.devicePixelRatio ?? 1)))
                 visible: false
             }
 

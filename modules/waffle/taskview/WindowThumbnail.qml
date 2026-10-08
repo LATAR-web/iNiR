@@ -249,7 +249,7 @@ Item {
                         }
 
                         SequentialAnimation on x {
-                            running: shimmerBg.visible && Looks.transition.enabled
+                            running: shimmerBg.visible && previewArea.previewUrl !== "" && Looks.transition.enabled
                             loops: Animation.Infinite
                             NumberAnimation {
                                 from: -shimmer.width

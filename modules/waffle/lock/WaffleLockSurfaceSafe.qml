@@ -80,6 +80,8 @@ MouseArea {
          fillMode: Image.PreserveAspectCrop
          asynchronous: true
          cache: false // Don't retain in QPixmapCache after lock surface destroys (#163)
+         // A lock surface is no QsWindow: the item's own screen gives the scale.
+         sourceSize: Qt.size(Math.ceil(root.width * Screen.devicePixelRatio), Math.ceil(root.height * Screen.devicePixelRatio))
          visible: false
          z: -2
      }

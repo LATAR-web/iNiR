@@ -129,6 +129,7 @@ Rectangle {
                 source: MediaArtwork.displaySource
                 fillMode: Image.PreserveAspectCrop
                 cache: false
+                sourceSize: Qt.size(width * 2, height * 2)
             }
 
             FluentIcon {

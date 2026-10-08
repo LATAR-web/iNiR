@@ -226,6 +226,8 @@ Scope {
         GlobalStates.waffleAltSwitcherOpen = false
         root.cardVisible = false
         quickSwitchDone = false  // Reset for next session
+        // The window unmaps right here (the fade already ran in the content), so drop the delegates
+        itemSnapshot = []
         maybeCloseOverview()
     }
 

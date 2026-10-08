@@ -4,6 +4,7 @@ import qs
 import qs.modules.common
 import qs.modules.common.widgets
 import qs.services
+import qs.modules.waffle.looks
 import QtQuick
 import QtQuick.Effects
 import QtMultimedia
@@ -166,6 +167,7 @@ Variants {
                 // No sourceSize for GIFs - let Qt handle native size for performance
                 visible: backdropWindow.wallpaperIsGif
                 playing: visible && backdropWindow.enableAnimation && !Wallpapers.batteryPauseActive
+                    && !GlobalStates.screenLocked && !Looks.gameModeActive
 
                 layer.enabled: visible && Appearance.effectsEnabled
                     && backdropWindow.enableAnimatedBlur
@@ -212,8 +214,10 @@ Variants {
                 anchors.fill: parent
                 anchors.margins: -parent.blurOverflow
                 visible: backdropWindow.wallpaperIsVideo && !backdropWindow.useFrozenVideoFrame
+                // Empty once the frozen frame stands in, so the decoder is released; until then the paused
+                // first frame is the fallback.
                 source: {
-                    if (!backdropWindow.wallpaperIsVideo) return "";
+                    if (!backdropWindow.wallpaperIsVideo || backdropWindow.useFrozenVideoFrame) return "";
                     const path = backdropWindow.wallpaperPathRaw;
                     if (!path) return "";
                     return path.startsWith("file://") ? path : ("file://" + path);
@@ -224,6 +228,7 @@ Variants {
                 autoPlay: true
 
                 readonly property bool shouldPlay: backdropWindow.enableAnimation && !Wallpapers.batteryPauseActive
+                    && !GlobalStates.screenLocked && !Looks.gameModeActive
 
                 function pauseAndShowFirstFrame() {
                     pause()
