@@ -424,8 +424,8 @@ Singleton {
         if (!o) return ""
         const lock = o.iris?.lock
         const look = o.iris?.appearance
-        return JSON.stringify([o.lock?.loginScreen, o.panelFamily, o.lock?.materialShapeChars, lock?.scene, lock?.type,
-            lock?.blocks?.clock, lock?.blocks?.session, look?.fontFamily, look?.numbersFontFamily, look?.titleFontFamily,
+        return JSON.stringify([o.lock?.loginScreen, o.lock?.loginStyle, o.panelFamily, o.lock?.materialShapeChars, lock?.scene, lock?.type,
+            lock?.blocks?.session, look?.fontFamily, look?.numbersFontFamily, look?.titleFontFamily,
             look?.followTheme, look?.theme?.surface])
     }
     // What the config held once loaded, like _appliedAppTargetsKey below.
@@ -449,11 +449,18 @@ Singleton {
             Config.setNestedValue("lock.loginScreen", look)
             return look
         }
+        // The iRiS login's composition: cover (the picture as a cover), frame (hung in a mat), lens (the time as a lens).
+        function style(name: string): string {
+            if (["cover", "frame", "lens"].indexOf(name) < 0) return "unknown style: " + name + " (cover, frame or lens)"
+            Config.setNestedValue("lock.loginStyle", name)
+            return name
+        }
         function status(): string {
             if (!root.loginScreenInstalled) return "not installed"
             const look = String(Config.options?.lock?.loginScreen ?? "auto")
-            if (look !== "auto") return look
-            return "auto (" + ((Config.options?.panelFamily ?? "ii") === "iris" ? "iris" : "classic") + ")"
+            const iris = look === "iris" || (look === "auto" && (Config.options?.panelFamily ?? "ii") === "iris")
+            const shown = iris ? "iris, " + String(Config.options?.lock?.loginStyle ?? "lens") : "classic"
+            return look === "auto" ? "auto (" + shown + ")" : shown
         }
         function sync(): void { loginScreenSync.restart() }
     }

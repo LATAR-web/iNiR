@@ -130,13 +130,22 @@ def read_appearance(config):
     return "iris" if config.get("panelFamily") == "iris" else "classic"
 
 
+# What the 2026-10 login read from the iRiS lock's layout and scene; the login styles compose their own.
+RETIRED_KEYS = {
+    "irisBlur", "irisSaturation", "irisDim", "irisVignette", "irisScrim", "irisScrimStrength", "irisFit",
+    "irisClockColour", "irisClockSize", "irisClockWeight", "irisClockTracking", "irisClockSeconds", "irisClock",
+    "irisClockZone", "irisClockStyle", "irisClockDate", "irisClockFx", "irisClockFy",
+    "irisSessionZone", "irisSessionFx", "irisSessionFy", "irisSessionWidth",
+}
+
+
 def read_iris(config, palette):
-    """The iRiS lock as theme.conf keys: what modules/iris/lock reads, resolved for SDDM's own Qt."""
+    """What the iRiS login styles read, resolved for SDDM's own Qt: the iRiS palette and type, and which of the
+    lock's choices a login keeps (the picture, who you are, the clock and date formats)."""
     lock = dig(config, "iris", "lock", default={}) or {}
     appearance = dig(config, "iris", "appearance", default={}) or {}
     scene = lock.get("scene") or {}
     kind = lock.get("type") or {}
-    clock = dig(lock, "blocks", "clock", default={}) or {}
     session = dig(lock, "blocks", "session", default={}) or {}
 
     washi = dig(load_json(IRIS_WASHI_JSON) or {}, "schemes", "dark", default={}) or {}
@@ -150,44 +159,23 @@ def read_iris(config, palette):
         "main": main_font,
         "title": appearance.get("titleFontFamily") or "Inter Display",
     }.get(str(kind.get("clockFont", "numbers")), appearance.get("numbersFontFamily") or "Rubik")
-    clock_colour = {"accent": accent, "highlight": highlight}.get(str(kind.get("accent", "plain")), "#ffffff")
 
     def flag(value):
         return "true" if value else "false"
 
+    style = str(dig(config, "lock", "loginStyle", default="lens"))
     return {
+        "irisLoginStyle": style if style in ("cover", "frame", "lens") else "lens",
         "irisSceneSource": scene.get("source", "desktop"),
-        "irisBlur": scene.get("blur", 100),
-        "irisSaturation": scene.get("saturation", 15),
-        "irisDim": scene.get("dim", 0),
-        "irisVignette": scene.get("vignette", 0),
-        "irisScrim": scene.get("scrim", "gradient"),
-        "irisScrimStrength": scene.get("scrimStrength", 100),
-        "irisFit": scene.get("fit", "cover"),
         "irisSurface": surface,
         "irisDanger": washi.get("danger") or "#ff6961",
         "irisAccent": accent,
         "irisHighlight": highlight,
-        "irisClockColour": clock_colour,
         "irisFontMain": main_font,
         "irisFontClock": clock_font,
         "irisTypeScale": kind.get("scale", 100),
-        "irisClockSize": kind.get("clockSize", 112),
-        "irisClockWeight": kind.get("clockWeight", 700),
-        "irisClockTracking": kind.get("clockTracking", -2),
         "irisClockFormat": kind.get("clockFormat", "auto"),
-        "irisClockSeconds": flag(kind.get("seconds", False)),
         "irisDateFormat": kind.get("dateFormat", "long"),
-        "irisClock": flag(clock.get("enable", True)),
-        "irisClockZone": clock.get("zone", "top"),
-        "irisClockStyle": clock.get("style", "stack"),
-        "irisClockDate": flag(clock.get("date", True)),
-        "irisClockFx": clock.get("fx", 0.5),
-        "irisClockFy": clock.get("fy", 0.4),
-        "irisSessionZone": session.get("zone", "bottom"),
-        "irisSessionFx": session.get("fx", 0.5),
-        "irisSessionFy": session.get("fy", 0.6),
-        "irisSessionWidth": session.get("width", 248),
         "irisAvatar": flag(session.get("avatar", True)),
         "irisName": flag(session.get("name", True)),
         "irisHint": flag(session.get("hint", True)),
@@ -218,6 +206,8 @@ def update_theme_conf(values):
     new_lines = []
     for line in lines:
         key = line.split("=", 1)[0].strip() if "=" in line else None
+        if key in RETIRED_KEYS:
+            continue
         if key in remaining:
             new_lines.append(f"{key}={remaining.pop(key)}")
         else:

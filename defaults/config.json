@@ -1499,6 +1499,7 @@
         "launchOnStartup": false,
         "materialShapeChars": true,
         "loginScreen": "auto",
+        "loginStyle": "lens",
         "enableAnimation": false,
         "notifications": {
             "enable": false,

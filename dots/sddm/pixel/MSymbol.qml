@@ -3,6 +3,7 @@
 import QtQuick 2.15
 
 Text {
+    renderType: Text.NativeRendering
     property int iconSize: 22
     property color iconColor: "#cdd6f4"
     property string symFont: ""

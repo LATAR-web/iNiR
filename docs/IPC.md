@@ -297,13 +297,14 @@ Super+Alt+L allow-when-locked=true { spawn "inir" "lock" "activate"; }
 
 ### loginScreen
 
-The login screen you see after starting the computer. It copies the lock screen and follows your colours.
+The login screen you see after starting the computer. It wears your wallpaper and colours.
 
 | Function | Description |
 |----------|-------------|
-| `set <look>` | `auto` (the iRiS lock while you use iRiS, Classic otherwise), `classic` or `iris` |
-| `status` | Print the choice and the look it gives (e.g. `auto (iris)`), or `not installed` |
-| `sync` | Copy the current lock, colours and wallpaper to the login screen now |
+| `set <look>` | `auto` (iRiS while you use iRiS, Classic otherwise), `classic` or `iris` |
+| `style <style>` | How the iRiS login is composed: `cover` (your picture sharp, the clock in a corner), `frame` (the picture hung in a mat) or `lens` (the time cut out of the picture) |
+| `status` | Print the choice and the look it gives (e.g. `auto (iris, lens)`), or `not installed` |
+| `sync` | Copy the current colours, wallpaper and style to the login screen now |
 
 ---
 

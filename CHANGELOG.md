@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **Three iRiS login styles**: Cover shows your picture sharp with the clock in a corner, Frame hangs it in a mat, and Lens cuts the time out of it. Pick one under Login screen in Settings, or with `inir loginScreen style <cover|frame|lens>`.
+
 ## [2.32.0] - 2026-09-29
 
 **iRiS 0.2**

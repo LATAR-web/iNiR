@@ -225,6 +225,7 @@ Item {
         { pageIndex: 6, pageName: "Interface", section: "Lock Screen", label: "Center clock", targetLabel: "Center clock", keywords: ["lock", "screen", "clock", "center", "position"] },
         { pageIndex: 6, pageName: "Interface", section: "Lock Screen", label: "Show 'Locked' text", targetLabel: "Show 'Locked' text", keywords: ["lock", "screen", "text", "locked"] },
         { pageIndex: 6, pageName: "Interface", section: "Lock Screen", label: "Login screen", targetLabel: "Login screen", keywords: ["login", "sddm", "greeter", "sign in", "boot", "startup", "iris", "classic", "lock", "screen", "password"] },
+        { pageIndex: 6, pageName: "Interface", section: "Lock Screen", label: "Login style", targetLabel: "Login style", keywords: ["login", "sddm", "greeter", "style", "cover", "frame", "lens", "mat", "picture", "clock", "blur"] },
         { pageIndex: 6, pageName: "Interface", section: "Screen Corners", label: "Fake rounded corners", targetLabel: "Fake rounded corners", keywords: ["screen", "corners", "rounded", "rounding", "fake"] },
         
         // === Modules (7) ===

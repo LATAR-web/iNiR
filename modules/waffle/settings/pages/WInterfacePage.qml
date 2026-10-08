@@ -810,7 +810,7 @@ WSettingsPage {
             visible: MaterialThemeLoader.loginScreenInstalled
             label: Translation.tr("Login screen")
             icon: "key"
-            description: Translation.tr("Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.")
+            description: Translation.tr("Where you sign in after starting the computer. Automatic shows iRiS while you use iRiS.")
             currentValue: Config.options?.lock?.loginScreen ?? "auto"
             options: [
                 { value: "auto", displayName: Translation.tr("Automatic") },
@@ -818,6 +818,22 @@ WSettingsPage {
                 { value: "iris", displayName: Translation.tr("iRiS") }
             ]
             onSelected: newValue => Config.setNestedValue("lock.loginScreen", newValue)
+        }
+
+        WSettingsDropdown {
+            readonly property string look: Config.options?.lock?.loginScreen ?? "auto"
+            visible: MaterialThemeLoader.loginScreenInstalled
+                && (look === "iris" || (look === "auto" && (Config.options?.panelFamily ?? "ii") === "iris"))
+            label: Translation.tr("Login style")
+            icon: "image"
+            description: Translation.tr("Cover shows your picture sharp, Frame hangs it in a mat, Lens cuts the time out of it.")
+            currentValue: Config.options?.lock?.loginStyle ?? "lens"
+            options: [
+                { value: "cover", displayName: Translation.tr("Cover") },
+                { value: "frame", displayName: Translation.tr("Frame") },
+                { value: "lens", displayName: Translation.tr("Lens") }
+            ]
+            onSelected: newValue => Config.setNestedValue("lock.loginStyle", newValue)
         }
     }
 
