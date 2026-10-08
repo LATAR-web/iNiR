@@ -34,7 +34,8 @@ Singleton {
         property Notification notification
         property list<var> actions: notification?.actions.map((action) => ({
             "identifier": action.identifier,
-            "text": action.text,
+            "text": action.identifier === "default" && String(action.text ?? "").trim().length === 0
+                ? Translation.tr("Open") : action.text,
         })) ?? []
         property bool popup: false
         property bool isTransient: notification?.hints.transient ?? false
