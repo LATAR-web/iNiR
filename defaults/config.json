@@ -2284,6 +2284,7 @@
         "disableVisualizers": true,
         "disableNiriAnimations": false,
         "disableReloadToasts": true,
+        "disableDiscoverOverlay": true,
         "suppressNotifications": true,
         "minimalMode": false,
         "niriWindowListUpdateIntervalMs": 100,

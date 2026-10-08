@@ -1269,6 +1269,7 @@ Singleton {
                 property bool disableVisualizers: true
                 property bool disableNiriAnimations: true
                 property bool disableReloadToasts: true
+                property bool disableDiscoverOverlay: true // Only where discover-overlay is installed
                 property bool suppressNotifications: true // Hide notification popups during GameMode
                 property bool minimalMode: true // Make panels transparent/minimal during GameMode
                 // Throttle Niri window list updates - 100ms = 10 FPS, sufficient for smooth UI

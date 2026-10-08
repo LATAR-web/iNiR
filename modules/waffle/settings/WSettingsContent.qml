@@ -118,6 +118,7 @@ Item {
         { pageIndex: 1, pageName: "General", section: "Game Mode", label: "Disable effects", targetLabel: "Disable effects", keywords: ["game", "gaming", "effects", "blur", "shadows", "performance"] },
         { pageIndex: 1, pageName: "General", section: "Game Mode", label: "Disable audio visualizers", targetLabel: "Disable audio visualizers", keywords: ["game", "gaming", "cava", "visualizer", "spectrum", "audio", "performance"] },
         { pageIndex: 1, pageName: "General", section: "Game Mode", label: "Disable Niri animations", targetLabel: "Disable Niri animations", keywords: ["game", "gaming", "niri", "compositor", "animations"] },
+        { pageIndex: 1, pageName: "General", section: "Game Mode", label: "Disable Discover overlay", targetLabel: "Disable Discover overlay", keywords: ["game", "gaming", "discover", "overlay", "discord", "performance"] },
         { pageIndex: 1, pageName: "General", section: "Game Mode", label: "Minimal mode", targetLabel: "Minimal mode", keywords: ["game", "gaming", "minimal", "lightweight", "performance", "shell"] },
         { pageIndex: 16, pageName: "Effects", section: "Blur and glass", label: "Default blur backend", targetLabel: "Default blur backend", keywords: ["effects", "blur", "backend", "wallpaper", "compositor", "style", "glass"] },
         { pageIndex: 16, pageName: "Effects", section: "Blur and glass", label: "Allow compositor blur", targetLabel: "Allow compositor blur", keywords: ["performance", "native", "blur", "niri", "gpu", "compositor", "glass"] },

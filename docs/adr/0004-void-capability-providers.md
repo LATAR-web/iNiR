@@ -26,8 +26,8 @@ A capability contract contains five independently testable parts:
 - **verification**: a repeatable local or Void VM check.
 
 Controls without a complete contract must not claim that the capability is
-available. `discover-overlay` has no identifiable provider or documented user
-need, so its GameMode setting and process control are removed rather than
-ported speculatively.
+available on Void, and a capability Void lacks is never removed for the other
+distributions: it is gated on what the host has. Game Mode's `discover-overlay`
+control runs and shows only where `discover-overlay` is installed.
 
 Status: accepted for the remaining Void V1 work.

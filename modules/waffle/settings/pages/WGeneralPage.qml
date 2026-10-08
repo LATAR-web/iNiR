@@ -449,6 +449,15 @@ WSettingsPage {
         }
 
         WSettingsSwitch {
+            visible: GameMode.discoverOverlayInstalled
+            label: Translation.tr("Disable Discover overlay")
+            icon: "headphones"
+            description: Translation.tr("Stop discover-overlay while game mode is active")
+            checked: Config.options?.gameMode?.disableDiscoverOverlay ?? true
+            onCheckedChanged: Config.setNestedValue("gameMode.disableDiscoverOverlay", checked)
+        }
+
+        WSettingsSwitch {
             label: Translation.tr("Minimal mode")
             icon: "leaf-two"
             description: Translation.tr("Make shell surfaces lighter while game mode is active")

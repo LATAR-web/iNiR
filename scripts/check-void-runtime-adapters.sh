@@ -56,12 +56,11 @@ else
   printf 'PASS: usable systemd user manager predicate is false\n'
 fi
 
-if grep -R -Fq 'disableDiscoverOverlay' \
-    "$repo_root/defaults" "$repo_root/modules" "$repo_root/services"; then
-  printf 'FAIL: discover-overlay integration is still exposed\n' >&2
-  failures=$((failures + 1))
+if grep -Fq 'command -v discover-overlay' "$repo_root/services/GameMode.qml"; then
+  printf 'PASS: discover-overlay control runs only where it is installed\n'
 else
-  printf 'PASS: discover-overlay integration removed\n'
+  printf 'FAIL: discover-overlay control is not gated on the overlay being installed\n' >&2
+  failures=$((failures + 1))
 fi
 
 for warp_toggle in \

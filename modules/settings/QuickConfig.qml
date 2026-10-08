@@ -1909,6 +1909,19 @@ ContentPage {
             }
 
             SettingsSwitch {
+                visible: GameMode.discoverOverlayInstalled
+                buttonIcon: "visibility_off"
+                text: Translation.tr("Disable Discover overlay")
+                checked: Config.options?.gameMode?.disableDiscoverOverlay ?? true
+                onCheckedChanged: {
+                    Config.setNestedValue("gameMode.disableDiscoverOverlay", checked)
+                }
+                StyledToolTip {
+                    text: Translation.tr("Stop discover-overlay while Game Mode is active")
+                }
+            }
+
+            SettingsSwitch {
                 buttonIcon: "visibility_off"
                 text: Translation.tr("Minimal mode")
                 checked: Config.options?.gameMode?.minimalMode ?? true

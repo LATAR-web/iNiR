@@ -926,6 +926,7 @@ QtObject {
         { section: "gaming", group: "Game mode", label: "Stop Niri animations", path: "gameMode.disableNiriAnimations", kind: "switch", fallback: true },
         { section: "gaming", group: "Game mode", label: "Hold notifications", description: "Banners wait until you are done; they still collect in Today.", path: "gameMode.suppressNotifications", kind: "switch", fallback: true },
         { section: "gaming", group: "Game mode", label: "Stop audio visualizers", path: "gameMode.disableVisualizers", kind: "switch", fallback: true },
+        { section: "gaming", group: "Game mode", label: "Close the Discord overlay", path: "gameMode.disableDiscoverOverlay", kind: "switch", fallback: true, showIf: () => GameMode.discoverOverlayInstalled, keywords: ["discover", "discord", "overlay"] },
         { section: "gaming", group: "Game mode", label: "Hide reload notices", description: "The small notice when your config reloads stays away while you play.", path: "gameMode.disableReloadToasts", kind: "switch", fallback: true, keywords: ["toast", "reload"] },
 
         { section: "lock", group: "When idle", label: "Turn the screen off after", path: "idle.screenOffTimeout", kind: "choice", fallback: 300, choices: root.idleChoices, keywords: ["idle", "timeout", "screen off", "sleep"] },

@@ -2422,9 +2422,13 @@ if ! grep -Fq '/dev/urandom' "$runtime_root/sdata/subcmd-install/3.files.sh"; th
     printf 'FAIL: fresh installs do not generate a hotspot password\n' >&2
     exit 1
 fi
-if grep -R -Fq 'disableDiscoverOverlay' \
-        "$runtime_root/defaults" "$runtime_root/modules" "$runtime_root/services"; then
-    printf 'FAIL: discover-overlay integration is still exposed\n' >&2
+# Game Mode closes discover-overlay only where it is installed; the switch hides elsewhere (Void has no package).
+if ! grep -Fq 'command -v discover-overlay' "$runtime_root/services/GameMode.qml" \
+        || ! grep -Fq 'root.discoverOverlayInstalled' "$runtime_root/services/GameMode.qml" \
+        || ! grep -Fq 'visible: GameMode.discoverOverlayInstalled' "$runtime_root/modules/settings/QuickConfig.qml" \
+        || ! grep -Fq 'visible: GameMode.discoverOverlayInstalled' "$runtime_root/modules/waffle/settings/pages/WGeneralPage.qml" \
+        || ! grep -Fq 'showIf: () => GameMode.discoverOverlayInstalled' "$runtime_root/modules/iris/settings/IrisOptions.qml"; then
+    printf 'FAIL: discover-overlay control is not gated on the overlay being installed\n' >&2
     exit 1
 fi
 for warp_toggle in \

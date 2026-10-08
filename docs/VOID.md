@@ -190,9 +190,8 @@ capability it exposes. Provider resolution prefers official XBPS packages,
 then a maintained Flatpak, then a pinned upstream artifact with an update
 path. See ADR-0004 and `docs/VOID_CAPABILITIES.md`.
 
-`discover-overlay` is not a supported capability: the repository contains no
-provider, origin, install path, or documented user requirement for it, so the
-Void path does not invent a service for it.
+Game Mode closes `discover-overlay` only where it is installed. Void has no
+package for it, so the switch stays hidden there and nothing runs.
 
 ## Package management UI (Updates / PackageSearch / AppCatalog)
 
