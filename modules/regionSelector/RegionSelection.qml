@@ -388,6 +388,7 @@ PanelWindow {
             case RegionSelection.SnipAction.Edit:
                 if (Config.options?.regionSelector?.annotation?.useNativeEditor ?? true) {
                     editCropProc.editFile = `${root.screenshotDir}/edit-${root.screen.name}.png`;
+                    editCropProc.editScreenName = root.screen.name;
                     editCropProc.command = ["/usr/bin/bash", "-c", `${cropBase} '${StringUtils.shellSingleQuoteEscape(editCropProc.editFile)}' && ${cleanup}`];
                     editCropProc.running = true;
                     return; // editCropProc.onExited opens the native editor and dismisses
@@ -486,9 +487,11 @@ PanelWindow {
     Process {
         id: editCropProc
         property string editFile: ""
+        property string editScreenName: ""
         onExited: (exitCode, exitStatus) => {
             if (exitCode === 0) {
                 GlobalStates.annotationEditorPath = editCropProc.editFile;
+                GlobalStates.annotationEditorScreenName = editCropProc.editScreenName;
                 GlobalStates.annotationEditorOpen = true;
             } else {
                 Quickshell.execDetached(["/usr/bin/notify-send", "Edit failed", "Could not prepare the region for editing", "-a", "Screenshot", "-t", "3000"]);

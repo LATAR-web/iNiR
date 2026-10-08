@@ -217,6 +217,7 @@ Singleton {
     // Native screenshot annotation editor (Edit action)
     property bool annotationEditorOpen: false
     property string annotationEditorPath: ""
+    property string annotationEditorScreenName: ""
     property bool screenLocked: false
     property bool screenLockContainsCharacters: false
     property bool screenUnlockFailed: false
