@@ -137,7 +137,7 @@ cut_changelog_section() {
   grep -q '^## \[Unreleased\]$' "$changelog" || die "$changelog has no ## [Unreleased] heading"
   [[ -n "$(unreleased_body | tr -d '[:space:]')" ]] || die "[Unreleased] is empty: write the changes first"
   awk -v v="$v" -v d="$today" -v iris="$(iris_version)" '
-    !done && $0 == "## [Unreleased]" { print; print ""; print "## [" v "] - " d; print ""; if (iris != "") { print "**iRiS " iris "**"; print "" } done = 1; skip = 1; next }
+    !done && $0 == "## [Unreleased]" { print "## [" v "] - " d; print ""; if (iris != "") { print "**iRiS " iris "**"; print "" } done = 1; skip = 1; next }
     skip && /^$/ { skip = 0; next }
     { skip = 0; print }
   ' "$changelog" > "$changelog.tmp"
@@ -447,7 +447,7 @@ gallery_html() {
 
 cmd_prepare() {
   local v="$1"
-  local files=(VERSION "$changelog" ARCHITECTURE.md README.md docs/readme/README.*.md
+  local files=(VERSION modules/iris/VERSION "$changelog" ARCHITECTURE.md README.md docs/readme/README.*.md
     distro/arch/inir-meta distro/arch/inir-shell sdata/dist-arch/inir-deps/PKGBUILD
     sdata/dist-arch/install-deps.sh scripts/lyrics/lyrics.py)
   local excludes=() f
