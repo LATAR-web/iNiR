@@ -176,6 +176,8 @@ optdepends=(
   'ttf-rubik-vf: alternate UI font'
   'ttf-oxanium: display font'
   'millennium-bin: Steam theming via Millennium (requires steam)'
+  'mangohud: live FPS and frametime telemetry for the Game Performance overlay'
+  'lib32-mangohud: MangoHud support for 32-bit games'
   'whitesur-icon-theme: macOS-style icons'
   'qt6-avif-image-plugin: AVIF wallpaper support'
 )

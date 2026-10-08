@@ -201,7 +201,7 @@ cleanup_orphans "$2/installed" "$2/installed/.inir-manifest"
         self.assertTrue(os.access(self.target / "scripts/inir", os.X_OK))
 
     def test_arch_package_functions(self):
-        for name in ['LICENSE', 'NOTICE', 'README.md', 'docs/SETUP.md', 'docs/IPC.md',
+        for name in ['LICENSE', 'NOTICE', 'README.md', 'docs/SETUP.md', 'docs/IPC.md', 'docs/GAME_PERFORMANCE.md',
                      'assets/systemd/inir.service', 'assets/applications/inir.desktop',
                      'assets/applications/inir-settings.desktop', 'assets/icons/desktop-symbolic.svg',
                      'distro/arch/inir-shell/inir-quickshell-rebuild.hook']:

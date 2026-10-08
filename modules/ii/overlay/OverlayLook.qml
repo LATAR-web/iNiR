@@ -47,6 +47,6 @@ Singleton {
 
     readonly property var titles: ({
         crosshair: "Crosshair", fpsLimiter: "FPS limiter", floatingImage: "Floating image", recorder: "Recorder",
-        resources: "Resources", notes: "Notes", discord: "Discord", volumeMixer: "Volume mixer", notifications: "Notifications"
+        resources: "Resources", gamePerformance: "Game Performance", notes: "Notes", discord: "Discord", volumeMixer: "Volume mixer", notifications: "Notifications"
     })
 }

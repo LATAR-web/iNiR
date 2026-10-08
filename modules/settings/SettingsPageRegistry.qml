@@ -1060,6 +1060,20 @@ Singleton {
         },
         {
             pageIndex: 5, pageName: root.pages[5].name,
+            section: Translation.tr("Visual Effects"),
+            label: Translation.tr("Game Performance opacity"),
+            description: Translation.tr("Background opacity of the Game Performance readout"),
+            keywords: ["game", "performance", "fps", "opacity", "background", "transparent"]
+        },
+        {
+            pageIndex: 5, pageName: root.pages[5].name,
+            section: Translation.tr("Visual Effects"),
+            label: Translation.tr("Transparent Game Performance background"),
+            description: Translation.tr("Set panel opacity to 0%; metrics remain visible"),
+            keywords: ["game", "performance", "fps", "opacity", "background", "transparent", "toggle"]
+        },
+        {
+            pageIndex: 5, pageName: root.pages[5].name,
             section: Translation.tr("Alt+Tab"),
             label: Translation.tr("Alt+Tab opens"),
             description: Translation.tr("Niri's Recent Windows or the iNiR switcher"),
