@@ -2,8 +2,8 @@
 # Auto-generated from QML IpcHandler declarations + docs/IPC.md metadata.
 # Do not edit manually.
 # Regenerate: python3 scripts/lib/generate-ipc-registry.py
-# IPC.md hash: 2180dce5e9f82e3c
-# Targets: 71
+# IPC.md hash: aa0cd9a9782a3c34
+# Targets: 73
 
 declare -gA IPC_TARGET_DESC=(
   [ai]="Shared multi-provider AI service. It supports Gemini, OpenAI-compatible chat and Responses APIs, Mistral and Anthropic; live provider catalogs are normalized into capability-aware model records. Catalog visibility is separate from execution readiness, so public model lists remain browseable without pretending an API key exists. OpenCode Zen and Go resolve their current model lists and per-model API routes dynamically. Normal shell tools use typed actions and approval cards, while arbitrary commands are isolated in Advanced mode."
@@ -13,6 +13,8 @@ declare -gA IPC_TARGET_DESC=(
   [autostart]="Niri login autostart manager. Reads and writes the managed section of \`~/.config/niri/config.d/50-startup.kdl\` (delimited by \`// >>> inir-managed-autostart >>>\` / \`// <<< inir-managed-autostart <<<\`). Base iNiR lines and any hand-written \`spawn-at-startup\` lines outside the markers are preserved verbatim; toggling an entry comments the line out instead of deleting it. Safe no-op on non-Niri compositors (the page shows a guard instead)."
   [background]="Desktop background and widget controls."
   [bar]="Top bar visibility."
+  [battery]="The laptop battery as every family shows it. \`simulate\` lets you see the battery surfaces on a machine without one."
+  [bluetooth]="The Bluetooth adapter as every family shows it. \`simulate\` lets you see the Bluetooth surfaces without the hardware."
   [brightness]="Display brightness control."
   [cheatsheet]="Keyboard shortcuts reference. For when you forget what you just configured five minutes ago."
   [clipboard]="Clipboard history panel. Because Ctrl+V only remembers one thing, and that's not enough for power users."
@@ -87,6 +89,8 @@ declare -gA IPC_TARGET_FAMILY=(
   [autostart]="waffle"
   [background]="shared"
   [bar]="shared"
+  [battery]="shared"
+  [bluetooth]="shared"
   [brightness]="shared"
   [cheatsheet]="shared"
   [clipboard]="shared"
@@ -161,6 +165,8 @@ declare -gA IPC_TARGET_FUNCTIONS=(
   [autostart]="status addCommand addApp removeLast reload"
   [background]="widgetDesign widgetMaterial widgetSearch toggleEditMode toggleWidgetManager setEditMode editState applyOrganicEdgePreset applyOrganicEdgeComposition applyOrganicEdgeMaterial applyOrganicEdgeResponse organicEdgeState setOrganicEdgeEnabled quickControlsPage quickControlsGeometry widgetSnapshot legibilityState desktopItemsState focusWidget promoteWidget resetLayerOrder setWidgetEnabled clockDebugState clockDebugSetMode clockDebugSetRegion clockDebugSetLayout clockDebugRestore"
   [bar]="mediaWidth toggle close open"
+  [battery]="status simulate"
+  [bluetooth]="status simulate"
   [brightness]="increment decrement refresh set status sleepBegin restoreAfterWake"
   [cheatsheet]="toggle close open"
   [clipboard]="open close toggle"
@@ -187,7 +193,7 @@ declare -gA IPC_TARGET_FUNCTIONS=(
   [memory]="collect stats restart dismiss reset"
   [minimize]="minimize minimizeId restore restoreOriginal"
   [mpris]="pauseAll playPause previous next select"
-  [network]="status check simulate"
+  [network]="status check simulate simulateLink"
   [niriAnimations]="list active apply"
   [notifications]="test clearAll toggleSilent invokeAction"
   [orbit]="toggle close open pocket studio find stage orbital next previous status toggleView"
@@ -286,6 +292,10 @@ declare -gA IPC_FUNCTION_DESC=(
   ["bar:toggle"]="Show/hide bar"
   ["bar:close"]="Hide bar"
   ["bar:open"]="Show bar"
+  ["battery:status"]="Print the level and whether it is charging, discharging or plugged in, marked \`(simulated)\` while simulating"
+  ["battery:simulate"]="Pretend the battery is at a level and state until the shell restarts: \`14\`, \`\"14 charging\"\`, \`full\` or \`off\`. Never suspends the machine. For testing"
+  ["bluetooth:status"]="Print \`on\`, \`off\`, \`no adapter\` or how many devices are connected, marked \`(simulated)\` while simulating"
+  ["bluetooth:simulate"]="Pretend the adapter is \`off\`, \`on\`, has a number of connected devices (\`2\`) or is missing (\`none\`) until \`clear\` or a restart. For testing"
   ["brightness:increment"]="Increase brightness"
   ["brightness:decrement"]="Decrease brightness"
   ["brightness:refresh"]="Re-read every output's level from the hardware (after the monitor's own buttons moved it)"
@@ -461,6 +471,7 @@ declare -gA IPC_FUNCTION_DESC=(
   ["network:status"]="Print the state as JSON: \`online\`, \`connectivity\` (\`full\`, \`limited\`, \`portal\`, \`none\`, \`unknown\`), connection name"
   ["network:check"]="Ask NetworkManager to check connectivity again, for example after signing in to a captive portal"
   ["network:simulate"]="Pretend the connectivity is \`none\`, \`limited\`, \`portal\` or \`full\` until the shell restarts; any other value clears it. For testing"
+  ["network:simulateLink"]="Pretend the link is \`\"wifi 40\"\` (a signal strength), \`searching\`, \`connecting\`, \`\"radio off\"\`, \`ethernet\` or \`none\` (no adapter) until \`off\` or a restart. For testing"
   ["niriAnimations:list"]="List the presets; \`*\` marks the one your config matches"
   ["niriAnimations:active"]="Print the preset your config matches, or \`custom\` after hand edits"
   ["niriAnimations:apply"]="Apply a preset: \`snappy\`, \`niri\`, \`material\`, \`bouncy\`, \`gentle\`, \`instant\` or one of yours"
@@ -679,6 +690,8 @@ declare -gA IPC_FUNCTION_ARGS=(
   ["background:clockDebugSetRegion"]="<color> <brightness> <spread>"
   ["background:clockDebugSetLayout"]="<x> <y> <quickControlsOpen>"
   ["bar:mediaWidth"]="<px>"
+  ["battery:simulate"]="<spec>"
+  ["bluetooth:simulate"]="<state>"
   ["brightness:set"]="<percent>"
   ["closeConfirm:triggerWindow"]="<windowId> <appId>"
   ["colorMode:set"]="<mode>"
@@ -759,6 +772,7 @@ declare -gA IPC_FUNCTION_ARGS=(
   ["minimize:restoreOriginal"]="<windowId>"
   ["mpris:select"]="<which>"
   ["network:simulate"]="<state>"
+  ["network:simulateLink"]="<spec>"
   ["niriAnimations:apply"]="<id>"
   ["notifications:invokeAction"]="<identifier>"
   ["orbit:find"]="<query>"
@@ -812,6 +826,8 @@ declare -gA IPC_FUNCTION_VALUES=(
   ["background:widgetDesign"]="iris material individual instrument readout undo status"
   ["background:widgetMaterial"]="status match"
   ["background:widgetSearch"]="open next previous take close"
+  ["battery:simulate"]="full off"
+  ["bluetooth:simulate"]="off on none clear"
   ["colorMode:set"]="dark light toggle"
   ["connections:sample"]="network internet bluetooth usb power audio displays drives"
   ["dev:dragSim"]="extra-clock"
@@ -864,6 +880,7 @@ declare -gA IPC_FUNCTION_VALUES=(
   ["mascotMood:set"]="neutral sleepy hyper snarky contemplative"
   ["mpris:select"]="next prev spotify firefox"
   ["network:simulate"]="none limited portal full"
+  ["network:simulateLink"]="searching connecting ethernet none off"
   ["niriAnimations:apply"]="snappy niri material bouncy gentle instant"
   ["osd:media"]="play pause next previous"
   ["overlay:tool"]="crosshair fpsLimiter floatingImage recorder resources notes discord volumeMixer notifications gamePerformance on off toggle"
@@ -923,8 +940,8 @@ Ctrl+Alt+A { spawn "inir" "wallpaperSelector" "openLauncher" "animated"; }'
   [ytmusic]='Mod+M+Space { spawn "inir" "ytmusic" "playPause"; }'
 )
 
-IPC_ALL_TARGETS=(ai altSwitcher appCatalog audio autostart background bar brightness cheatsheet clipboard cliphistService closeConfirm colorMode connections controlPanel coverflowSelector customWidgets dashboard dev equalizer gamemode globalActions globalStyle iris keyboard lock loginScreen mascot mascotMood mediaControls memory minimize mpris network niriAnimations notifications orbit osd osdVolume osk overlay overview packageSearch panelFamily pill recordingOsd region search session settings settingsNav shellLayout shellUpdate sidebarLeft sidebarRight taskview tiling voiceSearch vpn wactionCenter waffleAltSwitcher wallpaperLauncher wallpaperSelector wbar widgetStacks widgetpower wnotificationCenter workspaceStrip wwidgets ytmusic zoom)
-IPC_SHARED_TARGETS=(ai altSwitcher appCatalog audio background bar brightness cheatsheet clipboard cliphistService closeConfirm colorMode connections controlPanel coverflowSelector dashboard dev gamemode globalActions globalStyle iris keyboard lock loginScreen mascot mascotMood mediaControls memory minimize mpris network niriAnimations notifications orbit osd osdVolume osk overlay overview packageSearch panelFamily pill region session settings settingsNav shellLayout shellUpdate sidebarLeft sidebarRight taskview tiling voiceSearch vpn wallpaperLauncher wallpaperSelector workspaceStrip ytmusic zoom)
+IPC_ALL_TARGETS=(ai altSwitcher appCatalog audio autostart background bar battery bluetooth brightness cheatsheet clipboard cliphistService closeConfirm colorMode connections controlPanel coverflowSelector customWidgets dashboard dev equalizer gamemode globalActions globalStyle iris keyboard lock loginScreen mascot mascotMood mediaControls memory minimize mpris network niriAnimations notifications orbit osd osdVolume osk overlay overview packageSearch panelFamily pill recordingOsd region search session settings settingsNav shellLayout shellUpdate sidebarLeft sidebarRight taskview tiling voiceSearch vpn wactionCenter waffleAltSwitcher wallpaperLauncher wallpaperSelector wbar widgetStacks widgetpower wnotificationCenter workspaceStrip wwidgets ytmusic zoom)
+IPC_SHARED_TARGETS=(ai altSwitcher appCatalog audio background bar battery bluetooth brightness cheatsheet clipboard cliphistService closeConfirm colorMode connections controlPanel coverflowSelector dashboard dev gamemode globalActions globalStyle iris keyboard lock loginScreen mascot mascotMood mediaControls memory minimize mpris network niriAnimations notifications orbit osd osdVolume osk overlay overview packageSearch panelFamily pill region session settings settingsNav shellLayout shellUpdate sidebarLeft sidebarRight taskview tiling voiceSearch vpn wallpaperLauncher wallpaperSelector workspaceStrip ytmusic zoom)
 IPC_II_TARGETS=(equalizer)
 IPC_WAFFLE_TARGETS=(autostart customWidgets recordingOsd search wactionCenter waffleAltSwitcher wbar widgetStacks widgetpower wnotificationCenter wwidgets)
 

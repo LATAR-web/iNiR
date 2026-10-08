@@ -800,6 +800,28 @@ Short notices when something is plugged in, connected, unplugged or lost: networ
 
 ---
 
+### bluetooth
+
+The Bluetooth adapter as every family shows it. `simulate` lets you see the Bluetooth surfaces without the hardware.
+
+| Function | Description |
+|----------|-------------|
+| `status` | Print `on`, `off`, `no adapter` or how many devices are connected, marked `(simulated)` while simulating |
+| `simulate <state>` | Pretend the adapter is `off`, `on`, has a number of connected devices (`2`) or is missing (`none`) until `clear` or a restart. For testing |
+
+---
+
+### battery
+
+The laptop battery as every family shows it. `simulate` lets you see the battery surfaces on a machine without one.
+
+| Function | Description |
+|----------|-------------|
+| `status` | Print the level and whether it is charging, discharging or plugged in, marked `(simulated)` while simulating |
+| `simulate <spec>` | Pretend the battery is at a level and state until the shell restarts: `14`, `"14 charging"`, `full` or `off`. Never suspends the machine. For testing |
+
+---
+
 ### network
 
 Whether the shell can reach the internet, as NetworkManager sees it. Surfaces that show online content (wallpaper sources, news, anime, weather, calendars, lyrics) read this to say why they are empty instead of failing quietly.
@@ -809,6 +831,7 @@ Whether the shell can reach the internet, as NetworkManager sees it. Surfaces th
 | `status` | Print the state as JSON: `online`, `connectivity` (`full`, `limited`, `portal`, `none`, `unknown`), connection name |
 | `check` | Ask NetworkManager to check connectivity again, for example after signing in to a captive portal |
 | `simulate <state>` | Pretend the connectivity is `none`, `limited`, `portal` or `full` until the shell restarts; any other value clears it. For testing |
+| `simulateLink <spec>` | Pretend the link is `"wifi 40"` (a signal strength), `searching`, `connecting`, `"radio off"`, `ethernet` or `none` (no adapter) until `off` or a restart. For testing |
 
 ---
 
