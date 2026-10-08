@@ -250,7 +250,7 @@ check_dependencies() {
         # Provide distro-specific install hints
         case "${OS_GROUP_ID:-unknown}" in
             arch)
-                echo -e "    ${STY_FAINT}Run: yay -S ${missing_cmds[*]}${STY_RST}"
+                echo -e "    ${STY_FAINT}Run: ./setup install (installs the matching Arch packages)${STY_RST}"
                 ;;
             fedora)
                 echo -e "    ${STY_FAINT}Run: sudo dnf install ... (see ./setup install)${STY_RST}"
