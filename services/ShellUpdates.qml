@@ -607,7 +607,7 @@ Singleton {
         running: false
         command: [
             "/usr/bin/bash", "-c",
-            "p='" + root.configDir + "'; [[ -d \"$p/.git\" && -f \"$p/setup\" && -f \"$p/shell.qml\" ]] && echo OK || echo ''"
+            "p='" + root.configDir + "'; [[ -e \"$p/.git\" && -f \"$p/setup\" && -f \"$p/shell.qml\" ]] && echo OK || echo ''"
         ]
         stdout: StdioCollector {
             onStreamFinished: {
@@ -650,7 +650,7 @@ Singleton {
         running: false
         command: [
             "/usr/bin/bash", "-c",
-            "p='" + root.repoPath + "'; [[ -d \"$p/.git\" && -f \"$p/setup\" && -f \"$p/shell.qml\" ]] && echo OK || echo ''"
+            "p='" + root.repoPath + "'; [[ -e \"$p/.git\" && -f \"$p/setup\" && -f \"$p/shell.qml\" ]] && echo OK || echo ''"
         ]
         stdout: StdioCollector {
             onStreamFinished: {
@@ -678,7 +678,7 @@ Singleton {
         command: [
             "/usr/bin/bash", "-c",
             // First check if config dir itself is a git repo (dev setup)
-            "if [[ -d \"" + root.configDir + "/.git\" ]]; then echo \"" + root.configDir + "\"; exit 0; fi; " +
+            "if [[ -e \"" + root.configDir + "/.git\" ]]; then echo \"" + root.configDir + "\"; exit 0; fi; " +
             // Search for a git repo containing setup + shell.qml (our repo signature)
             // Check common locations first, then broader search
             "for dir in ~/illogical-impulse ~/inir ~/iNiR " +
@@ -686,7 +686,7 @@ Singleton {
             "~/Projects/illogical-impulse ~/Projects/inir " +
             "~/Downloads/illogical-impulse ~/Downloads/inir " +
             "~/src/illogical-impulse ~/src/inir; do " +
-            "if [[ -d \"$dir/.git\" && -f \"$dir/setup\" && -f \"$dir/shell.qml\" ]]; then echo \"$dir\"; exit 0; fi; done; " +
+            "if [[ -e \"$dir/.git\" && -f \"$dir/setup\" && -f \"$dir/shell.qml\" ]]; then echo \"$dir\"; exit 0; fi; done; " +
             // Last resort: find in home (max depth 3, timeout 2s)
             "timeout 2 find \"$HOME\" -maxdepth 3 -name setup \\( -path '*/inir/setup' -o -path '*/illogical-impulse/setup' -o -path '*/ii/setup' \\) 2>/dev/null | while read -r f; do [[ -f \"$(dirname \"$f\")/shell.qml\" ]] && dirname \"$f\" && break; done; "
         ]
@@ -1167,7 +1167,7 @@ Singleton {
             "  if [[ -n \"$checksum\" ]]; then " +
             "    current=$(sha256sum \"$target/$path\" 2>/dev/null | cut -d' ' -f1); " +
             "    [[ \"$current\" != \"$checksum\" ]] && echo \"$path\"; " +
-            "  elif [[ -d \"$repo/.git\" ]]; then " +
+            "  elif [[ -e \"$repo/.git\" ]]; then " +
             "    repo_hash=$(git -C \"$repo\" show HEAD:\"$path\" 2>/dev/null | sha256sum | cut -d' ' -f1); " +
             "    local_hash=$(sha256sum \"$target/$path\" 2>/dev/null | cut -d' ' -f1); " +
             "    [[ -n \"$repo_hash\" && \"$repo_hash\" != \"$local_hash\" ]] && echo \"$path\"; " +

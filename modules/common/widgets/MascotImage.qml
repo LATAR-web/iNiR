@@ -28,7 +28,8 @@ Image {
     // configs (visibility and pose overrides) keep applying through it.
     property string fallbackSurface: ""
     property string rotatingPose: ""
-    readonly property bool active: previewMode || ((Config.options?.mascot?.enable ?? false) && surfaceEnabled)
+    readonly property bool active: MascotCatalog.packAvailable
+        && (previewMode || ((Config.options?.mascot?.enable ?? false) && surfaceEnabled))
     readonly property bool surfaceEnabled: {
         if (surface.length === 0) return true
         const s = Config.options?.mascot?.surfaces

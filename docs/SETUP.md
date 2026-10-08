@@ -61,6 +61,37 @@ Add `-y` for non-interactive mode.
 
 On a fresh CachyOS install, setup also enables `niri-focused-booster` when the package is available and the kernel exposes the required DMEM cgroup interface. Existing installs are not rewritten by this release path.
 
+### Distribution behavior
+
+The setup UI is shared, but dependency and service ownership are selected by
+the detected platform:
+
+| Platform | Dependency path | Session/service model |
+|---|---|---|
+| Arch-based | pacman/AUR providers | systemd user services when available |
+| Void Linux glibc | XBPS first, then validated Flatpak/pinned providers where needed | runit + Turnstile/runsvdir when no usable systemd user manager exists |
+| Fedora / Debian / Ubuntu | distro-specific automated dependency routes | existing supported service adapters |
+
+On Void, a first interactive install also makes the potentially disruptive
+ownership decisions explicit. If the base installation still has
+`dhcpcd`/standalone `wpa_supplicant` enabled, setup offers to hand networking to
+NetworkManager with rollback on activation failure. SDDM is offered only after
+the rest of installation has completed and only when the packaged Niri session
+entry and system D-Bus prerequisites are healthy. A non-interactive `-y` run
+does **not** switch the active network stack or enable SDDM automatically.
+
+The Void TUI also reports the detected system, selected package manager,
+hardware summary, backup destination, install stages and low-memory guidance.
+Before large XBPS transactions it calculates the space required by the packages
+still missing plus build/download headroom, rather than assuming every system
+starts from the same package set.
+
+Void package/update/search integration uses native XBPS operations. The shell
+does not emulate pacman commands on Void; Settings and package actions resolve
+to `xbps-install`, `xbps-query` and `xbps-remove` targets instead. Full provider
+and service details are in [VOID.md](VOID.md) and
+[VOID_CAPABILITIES.md](VOID_CAPABILITIES.md).
+
 If you want a packaging-style local install surface instead of the normal setup-managed `repo-copy` installer:
 
 ```bash
@@ -95,6 +126,12 @@ What happens:
 8. Restarts shell
 9. Checks for missing system packages
 10. Updates Python venv packages
+
+For repo-managed Void installs on `prerelease`, the same update engine tracks
+that branch. Provider repair is part of the update/install maintenance path, so
+an older partial provider can be rebuilt when Doctor marks it missing. System
+ownership changes that can interrupt networking or replace a display manager
+remain confirmation-gated.
 
 The runtime sync does not overwrite your user configs directly. If a release needs config changes, required or optional migrations may update `config.json` or `config.kdl` with backup/rollback coverage.
 
@@ -303,7 +340,7 @@ These checks cover:
 | Cache                                     | `~/.cache/inir/`                                                     |
 | Launcher                                  | `inir` in the install prefix                                         |
 | Super daemon                              | `~/.local/bin/inir_super_overview_daemon.py`                         |
-| Daemon service                            | `~/.config/systemd/user/inir-super-overview.service`                 |
+| Daemon service                            | systemd user unit or `~/.config/service/inir-super-overview/`        |
 
 ### Compositor & Themes
 
@@ -387,6 +424,9 @@ The following are removed without prompting (iNiR-exclusive):
 ~/.cache/inir/                                   # Cache
 ~/.local/bin/inir_super_overview_daemon.py       # Super daemon
 ~/.config/systemd/user/inir-super-overview.service # Daemon service
+~/.config/service/inir/                           # runit/Turnstile shell service
+~/.config/service/inir-xembedsniproxy/            # runit/Turnstile tray bridge
+~/.config/service/inir-super-overview/             # optional Super-tap service
 ~/.config/vesktop/themes/system24.theme.css      # Vesktop Material theme
 ~/.config/vesktop/themes/inir-tui.theme.css      # Vesktop TUI theme
 ~/.config/vesktop/themes/inir-midnight.theme.css # Vesktop Midnight theme
@@ -428,7 +468,7 @@ The script lists packages installed by iNiR but does not remove them automatical
 
 - `cava`, `easyeffects`
 
-The script provides distro-specific removal commands (pacman, dnf, apt) with safety recommendations.
+The script provides distro-specific removal commands (pacman, XBPS, dnf, apt) with safety recommendations.
 
 ### System Changes Not Reverted
 
@@ -464,6 +504,8 @@ If the automated script fails or is unavailable:
 inir stop
 inir service disable
 systemctl --user disable --now inir-super-overview.service 2>/dev/null
+sv down ~/.config/service/inir 2>/dev/null || true
+sv down ~/.config/service/inir-super-overview 2>/dev/null || true
 
 # Remove iNiR-exclusive files
 rm -rf ~/.config/quickshell/inir
@@ -473,6 +515,9 @@ rm -rf ~/.local/state/quickshell/user
 rm -rf ~/.cache/inir
 rm -f ~/.local/bin/inir_super_overview_daemon.py
 rm -f ~/.config/systemd/user/inir-super-overview.service
+rm -rf ~/.config/service/inir
+rm -rf ~/.config/service/inir-xembedsniproxy
+rm -rf ~/.config/service/inir-super-overview
 rm -f ~/.config/vesktop/themes/system24.theme.css
 rm -f ~/.config/vesktop/themes/inir-tui.theme.css
 rm -f ~/.config/vesktop/themes/inir-midnight.theme.css

@@ -21,7 +21,7 @@ import Quickshell.Io
  *
  * Config keys read:
  *   hotspot.ssid     — broadcast network name (default: "iNiR Hotspot")
- *   hotspot.password — WPA2 passphrase        (default: "inirhotspot")
+ *   hotspot.password — WPA2 passphrase generated during installation
  *   hotspot.band     — "bg" (2.4GHz) or "a" (5GHz) (default: "bg")
  */
 QuickToggleModel {
@@ -49,7 +49,7 @@ QuickToggleModel {
             stopProc.running = true
         } else {
             const ssid = Config.options?.hotspot?.ssid ?? "iNiR Hotspot"
-            const password = Config.options?.hotspot?.password ?? "inirhotspot"
+            const password = Config.options?.hotspot?.password ?? ""
             const band = Config.options?.hotspot?.band ?? "bg"
             // Delete any stale "Hotspot" profile first, then create fresh.
             // Uses sh positional params to safely pass user-configured values.

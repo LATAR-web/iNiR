@@ -7,13 +7,15 @@ import Quickshell
 import Quickshell.Io
 
 /*
- * System updates service. Currently only supports Arch.
+ * System updates service for pacman/checkupdates and XBPS.
  */
 Singleton {
     id: root
 
     property bool available: false
     property int count: 0
+    property string _backend: ""
+    property string _availabilityOutput: ""
     
     readonly property bool updateAdvised: available && count > (Config.options?.updates?.adviseUpdateThreshold ?? 75)
     readonly property bool updateStronglyAdvised: available && count > (Config.options?.updates?.stronglyAdviseUpdateThreshold ?? 200)
@@ -22,6 +24,9 @@ Singleton {
     function refresh() {
         if (!available) return;
         print("[Updates] Checking for system updates")
+        checkUpdatesProc.command = root._backend === "xbps"
+            ? ["xbps-install", "-nu"]
+            : ["checkupdates"]
         checkUpdatesProc.running = true;
     }
 
@@ -39,7 +44,10 @@ Singleton {
         id: availabilityDefer
         interval: 1500
         repeat: false
-        onTriggered: checkAvailabilityProc.running = true
+        onTriggered: {
+            root._availabilityOutput = ""
+            checkAvailabilityProc.running = true
+        }
     }
 
     Connections {
@@ -54,16 +62,25 @@ Singleton {
     Process {
         id: checkAvailabilityProc
         running: false
-        command: ["which", "checkupdates"]
+        command: ["/usr/bin/bash", "-c",
+            "if command -v checkupdates &>/dev/null; then printf 'pacman\\n'; " +
+            "elif command -v xbps-install &>/dev/null; then printf 'xbps\\n'; " +
+            "else exit 1; fi"
+        ]
+        stdout: SplitParser {
+            splitMarker: ""
+            onRead: data => { root._availabilityOutput += data }
+        }
         onExited: (exitCode, exitStatus) => {
-            root.available = (exitCode === 0);
+            root._backend = exitCode === 0 ? root._availabilityOutput.trim() : ""
+            root.available = root._backend.length > 0
             root.refresh();
         }
     }
 
     Process {
         id: checkUpdatesProc
-        command: ["checkupdates"]
+        command: []
         stdout: StdioCollector {
             onStreamFinished: {
                 const t = (text ?? "").trim();
@@ -77,7 +94,7 @@ Singleton {
                 return
             }
             if (exitCode !== 0) {
-                console.error("[Updates] checkupdates failed", exitCode, exitStatus)
+                console.error("[Updates] update check failed for", root._backend, exitCode, exitStatus)
             }
         }
     }

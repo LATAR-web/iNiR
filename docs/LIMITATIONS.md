@@ -127,6 +127,12 @@ ii is built for **Niri**. Some features were inherited from the original Hyprlan
 - **Supported tools**: Auto-theming covers foot, kitty, alacritty, starship, fuzzel, btop, lazygit, and yazi. Each can be toggled individually in Settings → Terminal Colors.
 - **Other terminals**: Not supported. You'll need to manually set colors or use pywal/similar.
 
+### Void Linux
+
+- **Validated profile**: the supported Void target is glibc + runit + elogind/Turnstile. Void musl and a seatd-only session are not release targets for this port.
+- **First install should be interactive**: `./setup install -y` intentionally avoids taking over networking or enabling SDDM. Run the interactive installer once if you want setup to offer the NetworkManager and graphical-login handoffs.
+- **Hardware drivers stay with the base OS**: iNiR installs its shell and userland providers, not GPU firmware, Mesa/Vulkan selection, proprietary drivers, bootloader configuration or hardware-specific kernel parameters.
+
 ---
 
 ## Overview & Window Management

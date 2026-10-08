@@ -5,7 +5,7 @@
 resolve_bootstrap_repo_root() {
     local script_dir="$1"
 
-    if [[ -d "${script_dir}/.git" && -f "${script_dir}/setup" && -f "${script_dir}/shell.qml" ]]; then
+    if [[ -e "${script_dir}/.git" && -f "${script_dir}/setup" && -f "${script_dir}/shell.qml" ]]; then
         printf '%s' "$script_dir"
         return
     fi
@@ -39,7 +39,7 @@ resolve_bootstrap_repo_root() {
 
     stored_repo="${stored_repo/#\~/$HOME}"
 
-    if [[ -n "$stored_repo" && -d "${stored_repo}/.git" && -f "${stored_repo}/setup" && -f "${stored_repo}/shell.qml" ]]; then
+    if [[ -n "$stored_repo" && -e "${stored_repo}/.git" && -f "${stored_repo}/setup" && -f "${stored_repo}/shell.qml" ]]; then
         printf '%s' "$stored_repo"
         return
     fi
@@ -115,6 +115,7 @@ prevent_sudo_or_root
 # Defaults
 ask=true
 quiet=false
+assume_yes=false
 
 # Auto-detect non-interactive context (no terminal on stdin).
 # Forces non-interactive mode when launched from QML Process, cron, systemd, etc.
@@ -285,7 +286,7 @@ EOF
 
         # The symlink target can change after git pull without changing the link.
         # Reload every repo-link sync so systemd sees the current checkout unit.
-        command -v systemctl >/dev/null 2>&1 && systemctl --user daemon-reload >/dev/null 2>&1 || true
+        has_usable_systemd_user_manager && systemctl --user daemon-reload >/dev/null 2>&1 || true
         return 0
     fi
 
@@ -310,7 +311,7 @@ EOF
 
     rm -f "$tmp_file"
 
-    if [[ "$changed" == true ]] && command -v systemctl >/dev/null 2>&1; then
+    if [[ "$changed" == true ]] && has_usable_systemd_user_manager; then
         systemctl --user daemon-reload >/dev/null 2>&1 || true
     fi
 
@@ -319,7 +320,7 @@ EOF
 
 ensure_user_inir_service_enabled() {
     INIR_SERVICE_WIRING_CHANGED=0
-    command -v systemctl >/dev/null 2>&1 || return 1
+    has_usable_systemd_user_manager || return 1
 
     local installed_strategy service_path
     installed_strategy="$(get_installed_update_strategy 2>/dev/null || true)"
@@ -436,7 +437,7 @@ setup_remote_state_summary() {
         return
     fi
 
-    if [[ ! -d "${REPO_ROOT}/.git" ]] || ! declare -F check_remote_updates >/dev/null 2>&1; then
+    if [[ ! -e "${REPO_ROOT}/.git" ]] || ! declare -F check_remote_updates >/dev/null 2>&1; then
         printf '%s' "unavailable"
         return
     fi
@@ -464,7 +465,7 @@ setup_runtime_change_summary() {
             return
             ;;
         repo-link)
-            if [[ -d "${REPO_ROOT}/.git" ]]; then
+            if [[ -e "${REPO_ROOT}/.git" ]]; then
                 local dirty_count
                 dirty_count="$(git -C "$REPO_ROOT" status --porcelain 2>/dev/null | wc -l | tr -d ' ')"
                 if [[ "${dirty_count:-0}" -eq 0 ]]; then
@@ -536,7 +537,7 @@ show_setup_context_card() {
         "Service:${service_links}"
     )
 
-    if [[ -d "${REPO_ROOT}/.git" ]]; then
+    if [[ -e "${REPO_ROOT}/.git" ]]; then
         pairs+=("Branch:${current_branch}")
         [[ "$current_branch" == "HEAD" ]] && pairs+=("Tracks:origin/${tracked_branch}")
     fi
@@ -766,7 +767,8 @@ show_status_boot_timing() {
 
     # Process & service start — these often dominate perceived startup time.
     local service_start_ms=0 qs_start_ms=0
-    if command -v systemctl >/dev/null 2>&1; then
+    if declare -F has_usable_systemd_user_manager >/dev/null 2>&1 \
+            && has_usable_systemd_user_manager; then
         local exec_start
         exec_start=$(systemctl --user show inir.service -p ExecMainStartTimestamp --value 2>/dev/null)
         if [[ -n "$exec_start" && "$exec_start" != "n/a" ]]; then
@@ -946,6 +948,18 @@ show_status_environment() {
             fi
         done
         [[ -n "$qs_pkg" ]] && tui_table_row "QS Package" "$qs_pkg" 22 42
+    elif command -v xbps-query >/dev/null 2>&1 \
+            && xbps-query -p pkgver quickshell >/dev/null 2>&1; then
+        local qs_pkgver qs_repo
+        qs_pkgver="$(xbps-query -p pkgver quickshell 2>/dev/null || true)"
+        qs_repo="$(xbps-query -p repository quickshell 2>/dev/null || true)"
+        if [[ -n "$qs_pkgver" ]]; then
+            if [[ -n "$qs_repo" ]]; then
+                tui_table_row "QS Package" "${qs_pkgver} (repo: ${qs_repo})" 22 42
+            else
+                tui_table_row "QS Package" "$qs_pkgver (XBPS)" 22 42
+            fi
+        fi
     fi
 
     # Qt build-time vs runtime (the ABI mismatch witness)
@@ -1558,18 +1572,26 @@ run_theme() {
 # Extras — Optional post-install components
 ###############################################################################
 run_extras() {
+    detect_distro
     echo ""
     tui_title "Optional Extras"
     echo ""
 
     local action
-    action=$(tui_choose_rich "Extras" \
-        "${ICON_DOT}|Install iNiR-Walls|Download optional wallpaper pack and copy image files" \
-        "${ICON_DOT}|Install ii-pixel-sddm|Install/apply iNiR SDDM login theme" \
-        "${ICON_DOT}|Install YAMIS icons|Install/update yet-another-monochrome-icon-set (GPL-3, ~23 MiB)" \
-        "${ICON_DOT}|Install mascot pack|Kira mascot art pack (optional download, feature stays opt-in)" \
-        "${ICON_DOT}|Install all|Run all optional installers" \
-        "${ICON_CIRCLE}|Back|Return to main menu")
+    local -a extra_choices=(
+        "${ICON_DOT}|Install iNiR-Walls|Download optional wallpaper pack and copy image files"
+        "${ICON_DOT}|Install ii-pixel-sddm|Install/apply iNiR SDDM login theme"
+        "${ICON_DOT}|Install YAMIS icons|Install/update yet-another-monochrome-icon-set (GPL-3, ~23 MiB)"
+        "${ICON_DOT}|Install mascot pack|Kira mascot art pack (optional download, feature stays opt-in)"
+    )
+    if [[ "${OS_GROUP_ID:-}" == void ]]; then
+        extra_choices+=("${ICON_DOT}|Install/update Cloudflare WARP|Void glibc x86_64 only; official Cloudflare package, optional")
+    fi
+    extra_choices+=(
+        "${ICON_DOT}|Install all|Run all non-networking optional installers"
+        "${ICON_CIRCLE}|Back|Return to main menu"
+    )
+    action=$(tui_choose_rich "Extras" "${extra_choices[@]}")
 
     case "$action" in
         "Install iNiR-Walls")
@@ -1587,6 +1609,10 @@ run_extras() {
         "Install mascot pack")
             echo ""
             extras_install_mascot_pack
+            ;;
+        "Install/update Cloudflare WARP")
+            echo ""
+            extras_install_void_warp
             ;;
         "Install all")
             echo ""
@@ -1676,6 +1702,12 @@ run_logs() {
 show_reboot_notice() {
     local reasons=("${INIR_REBOOT_REASONS[@]}") reason
     local bar="══════════════════════════════════════════════════════════════"
+    local reboot_cmd="systemctl reboot"
+    if [[ "${OS_GROUP_ID:-}" == void ]]; then
+        reboot_cmd="loginctl reboot"
+    elif ! command -v systemctl >/dev/null 2>&1 && command -v loginctl >/dev/null 2>&1; then
+        reboot_cmd="loginctl reboot"
+    fi
     echo ""
     echo -e "  ${STY_YELLOW}${STY_BOLD}╔${bar}╗${STY_RST}"
     printf "  ${STY_YELLOW}${STY_BOLD}║%-62s║${STY_RST}\n" ""
@@ -1692,7 +1724,7 @@ show_reboot_notice() {
     fi
     echo ""
     echo -e "    Then pick ${STY_BOLD}Niri${STY_RST} at the login screen and you're in."
-    echo -e "    ${STY_FAINT}Reboot now:${STY_RST} ${STY_BOLD}systemctl reboot${STY_RST}"
+    echo -e "    ${STY_FAINT}Reboot now:${STY_RST} ${STY_BOLD}${reboot_cmd}${STY_RST}"
     echo ""
 }
 
@@ -1743,6 +1775,8 @@ show_update_completion() {
 ###############################################################################
 run_install() {
     detect_distro
+    local dependency_repair_only=false
+    [[ -n "${ONLY_MISSING_DEPS:-}" ]] && dependency_repair_only=true
     # Filled by the install steps with what only a fresh login or a reboot applies.
     INIR_REBOOT_REASONS=()
 
@@ -1767,7 +1801,10 @@ run_install() {
         tui_task_run 0 "packages, runtime, compositor"
         tui_task_finalize
         tui_step 1 3 "Installing dependencies" "Package managers, shell runtime pieces, and compositor requirements."
-        source ./sdata/subcmd-install/1.deps-router.sh
+        if ! source ./sdata/subcmd-install/1.deps-router.sh; then
+            tui_error "Dependency installation failed"
+            return 1
+        fi
         # Reinit after step output to show updated state
         echo ""
         tui_task_init \
@@ -1881,7 +1918,18 @@ run_install() {
     #     fi
     # fi
 
-    # Set version tracking
+    # A targeted dependency/provider repair must not claim the current checkout
+    # became the installed source. This path is also used by Doctor and the
+    # provider idempotency checks from temporary worktrees.
+    if $dependency_repair_only; then
+        tui_task_skip 3 "unchanged"
+        tui_task_finalize
+        echo ""
+        tui_success "Dependency/provider repair complete"
+        return 0
+    fi
+
+    # Set version tracking for a real install.
     tui_task_run 3 "recording version"
     set_installed_version "$(get_repo_version)" "$(get_repo_commit)" "setup"
     tui_task_done 3 "$(get_repo_version)"
@@ -1889,6 +1937,21 @@ run_install() {
 
     echo ""
     show_install_completion
+
+    # On Void, enabling a runit service starts it immediately. NetworkManager
+    # may replace the installer-provided dhcpcd/wpa_supplicant stack and briefly
+    # interrupt networking, while SDDM may take over the display. Offer both
+    # only after every install task and version-tracking write has completed.
+    if [[ "${OS_GROUP_ID:-}" == void ]]; then
+        echo ""
+        if ! configure_void_networkmanager_service; then
+            tui_warn "NetworkManager could not be enabled; existing Void networking was preserved when possible"
+        fi
+        echo ""
+        if ! configure_void_sddm_service; then
+            tui_warn "SDDM could not be enabled; use 'niri --session' from a local TTY and inspect the SDDM service"
+        fi
+    fi
 }
 
 ###############################################################################
@@ -2321,7 +2384,7 @@ run_update() {
 
     tui_info "Repo: $REPO_ROOT"
     local invoked_from="${INIR_INVOKED_FROM:-${INVOKED_FROM:-$PWD}}"
-    if [[ "$invoked_from" != "$REPO_ROOT" && -d "${invoked_from}/.git" && -f "${invoked_from}/shell.qml" ]]; then
+    if [[ "$invoked_from" != "$REPO_ROOT" && -e "${invoked_from}/.git" && -f "${invoked_from}/shell.qml" ]]; then
         tui_warn "Updating that repo, not the one you are standing in:"
         tui_dim "    you are in: $invoked_from"
         tui_dim "    repo path comes from ~/.config/inir/version.json"
@@ -2361,8 +2424,11 @@ run_update() {
             tui_warn "User inir.service is masked; package-managed update left it unchanged"
         else
             ensure_user_inir_service_enabled >/dev/null 2>&1 || true
+            # Only start inir if we're running under a supported compositor.
+            # WAYLAND_DISPLAY alone is not enough — KDE/GNOME set it too.
             # The shipped unit is Niri-owned (PartOf/Requisite=niri.service).
-            if [[ -n "${NIRI_SOCKET:-}" ]] || systemctl --user is-active --quiet niri.service >/dev/null 2>&1; then
+            if has_usable_systemd_user_manager \
+                    && { [[ -n "${NIRI_SOCKET:-}" ]] || systemctl --user is-active --quiet niri.service >/dev/null 2>&1; }; then
                 systemctl --user reset-failed inir.service >/dev/null 2>&1 || true
                 systemctl --user start inir.service >/dev/null 2>&1 || true
             fi
@@ -2374,6 +2440,7 @@ run_update() {
         refresh_sddm_theme_on_update "$ask"
         extras_refresh_yamis_icons_on_update
         extras_refresh_mascot_pack_on_update
+        extras_refresh_void_warp_on_update
 
         echo ""
         tui_success "Package-managed installation left unchanged"
@@ -2690,6 +2757,7 @@ run_update() {
     refresh_sddm_theme_on_update "$ask"
     extras_refresh_yamis_icons_on_update
     extras_refresh_mascot_pack_on_update
+    extras_refresh_void_warp_on_update
 
     # Update Vesktop themes (themes live outside quickshell/ii tree)
     if [[ -d "${REPO_ROOT}/dots/.config/vesktop/themes" ]]; then
@@ -2737,27 +2805,29 @@ run_update() {
     repair_update_owned_state false
 
     _step_phase_header 4 "Finalizing"
-    if inir_user_service_is_masked; then
-        tui_warn "User inir.service is masked; leaving it unchanged (restore with: inir service install && inir service enable)"
-    else
-        _service_refresh_status=1
-        if sync_user_inir_service_from_repo_if_present; then
-            _service_refresh_status=0
+    if has_usable_systemd_user_manager; then
+        if inir_user_service_is_masked; then
+            tui_warn "User inir.service is masked; leaving it unchanged (restore with: inir service install && inir service enable)"
         else
-            _service_refresh_status=$?
-        fi
-        if [[ $_service_refresh_status -eq 0 && "${INIR_SERVICE_SYNC_CHANGED:-0}" -gt 0 ]]; then
-            tui_success "Updated existing user inir.service"
-        fi
-
-        if ensure_user_inir_service_enabled; then
-            if [[ "${INIR_SERVICE_WIRING_CHANGED:-0}" -gt 0 ]]; then
-                tui_success "Repaired user inir.service autostart wiring"
+            _service_refresh_status=1
+            if sync_user_inir_service_from_repo_if_present; then
+                _service_refresh_status=0
             else
-                tui_success "User inir.service autostart verified"
+                _service_refresh_status=$?
             fi
-        else
-            tui_warn "Could not wire inir.service to the compositor — run 'inir service enable'"
+            if [[ $_service_refresh_status -eq 0 && "${INIR_SERVICE_SYNC_CHANGED:-0}" -gt 0 ]]; then
+                tui_success "Updated existing user inir.service"
+            fi
+
+            if ensure_user_inir_service_enabled; then
+                if [[ "${INIR_SERVICE_WIRING_CHANGED:-0}" -gt 0 ]]; then
+                    tui_success "Repaired user inir.service autostart wiring"
+                else
+                    tui_success "User inir.service autostart verified"
+                fi
+            else
+                tui_warn "Could not wire inir.service to the compositor — run 'inir service enable'"
+            fi
         fi
     fi
 
@@ -2818,7 +2888,10 @@ run_update() {
                 detect_distro
                 SKIP_SYSUPDATE=true
                 ONLY_MISSING_DEPS="${doctor_missing_deps[*]}"
-                source ./sdata/subcmd-install/1.deps-router.sh
+                if ! source ./sdata/subcmd-install/1.deps-router.sh; then
+                    tui_error "Dependency installation failed"
+                    return 1
+                fi
                 tui_success "Dependencies installed"
             else
                 tui_info "Skipped dependency installation"
@@ -2830,7 +2903,10 @@ run_update() {
             SKIP_SYSUPDATE=true
             ONLY_MISSING_DEPS="${doctor_missing_deps[*]}"
             USE_ELEVATE=true  # Signal deps-router to use elevate() instead of sudo
-            source ./sdata/subcmd-install/1.deps-router.sh
+            if ! source ./sdata/subcmd-install/1.deps-router.sh; then
+                tui_error "Dependency installation failed"
+                return 1
+            fi
             tui_success "Dependencies installed"
         else
             # No way to elevate — just inform
@@ -2838,6 +2914,18 @@ run_update() {
         fi
     else
         tui_success "All required commands available"
+    fi
+
+    # Run after dependency repair so newly installed providers get supervised
+    # during the same update.
+    source "$REPO_ROOT/sdata/lib/functions.sh" 2>/dev/null || true
+    if [[ "${OS_GROUP_ID:-}" == void ]] && ! configure_void_ydotool_uinput; then
+        tui_error "Could not configure the ydotool provider"
+        return 1
+    fi
+    if ! reconcile_inir_supervisor >/dev/null; then
+        tui_error "Could not reconcile the iNiR supervisor"
+        return 1
     fi
 
     # DISABLED: webapps — requires quickshell-webengine rebuild, re-enable when ready
@@ -2909,7 +2997,7 @@ run_update() {
         _step_phase_start 7 "Restarting shell"
         if inir_user_service_is_masked; then
             _step_phase_done "Shell restart skipped: inir.service is masked"
-        elif command -v systemctl >/dev/null 2>&1 && systemctl --user cat inir.service >/dev/null 2>&1; then
+        elif has_usable_systemd_user_manager && systemctl --user cat inir.service >/dev/null 2>&1; then
             restart_shell_and_verify 30
             case $? in
                 0) _step_phase_done "Shell restarted on the new version" ;;
@@ -2945,6 +3033,7 @@ run_update() {
 # Doctor
 ###############################################################################
 run_doctor() {
+    detect_distro
     echo ""
     tui_hero_card "iNiR Doctor" \
         "Diagnosing and auto-fixing your shell setup."
@@ -2964,7 +3053,7 @@ while [[ $# -gt 0 ]]; do
             SUBCMD_ARGS=("$@")
             break
             ;;
-        -y|--yes) ask=false; shift ;;
+        -y|--yes) ask=false; assume_yes=true; shift ;;
         -q|--quiet) quiet=true; shift ;;
         --local) export _II_POST_PULL=local; shift ;;
         --realign) export INIR_REALIGN_REMOTE=1; shift ;;
@@ -2999,7 +3088,7 @@ case "$COMMAND" in
     reinstall)
         for _arg in "${SUBCMD_ARGS[@]}"; do
             case "$_arg" in
-                -y|--yes) ask=false ;;
+                -y|--yes) ask=false; assume_yes=true ;;
                 -q|--quiet) quiet=true ;;
             esac
         done
@@ -3009,7 +3098,7 @@ case "$COMMAND" in
     update)
         for _arg in "${SUBCMD_ARGS[@]}"; do
             case "$_arg" in
-                -y|--yes) ask=false ;;
+                -y|--yes) ask=false; assume_yes=true ;;
                 -q|--quiet) quiet=true ;;
                 --local) export _II_POST_PULL=local ;;
                 --realign) export INIR_REALIGN_REMOTE=1 ;;

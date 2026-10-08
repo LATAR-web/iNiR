@@ -11,9 +11,9 @@ Display manager starts Niri through its managed session
   |
 Niri publishes DISPLAY, WAYLAND_DISPLAY and NIRI_SOCKET to the user manager
   |
-niri.service reports READY
-  |
-systemd starts inir.service (niri.service.wants link)
+session supervisor starts iNiR
+  |-- systemd user manager: niri.service READY -> inir.service
+  `-- Void/runit: Turnstile envdir or guarded runsvdir -> ~/.config/service/inir
   |
 ExecStart calls: /usr/bin/inir run --session
   |
@@ -61,7 +61,14 @@ Shell fully operational
 
 ## Service wiring
 
-The systemd service is the key piece. It does not use `systemctl enable` in the traditional sense because there's no `[Install]` section. iNiR is Niri-only, so it creates a wants link from `niri.service`:
+The service tier is selected by capability, not simply by distro name. If a
+usable systemd user manager exists, iNiR uses the systemd wiring below. If it
+does not, the supported Void path uses Turnstile/runit and falls back to one
+Niri-owned runsvdir only when Turnstile is unavailable.
+
+### systemd user-manager tier
+
+The systemd service does not use `systemctl enable` in the traditional sense because there's no `[Install]` section. iNiR is Niri-only, so it creates a wants link from `niri.service`:
 
 `~/.config/systemd/user/niri.service.wants/inir.service`
 
@@ -75,6 +82,25 @@ inir service disable   # remove it
 inir service status    # check current state
 ```
 
+### Void runit/Turnstile tier
+
+Setup renders `~/.config/service/inir/run` and selects one non-systemd owner:
+
+- Turnstile: `runsv` starts iNiR with the session envdir updated from Niri;
+- fallback: Niri starts a single `runsvdir ~/.config/service` process.
+
+The launcher uses `sv` for service control and status when this tier is active.
+The Turnstile handoff propagates values such as `WAYLAND_DISPLAY`,
+`NIRI_SOCKET` and the session D-Bus address before the shell is restarted. This
+is startup/session synchronization; Turnstile is not in the hot path of every
+keybind.
+
+The Turnstile-owned iNiR run file also sets `QS_DISABLE_POLKIT=1`. Its service
+manager lives in an elogind background session without the graphical seat, so
+the supported Void profile leaves authentication-agent ownership to the
+external polkit agent that Niri starts in the seat0 Wayland session. The plain
+runsvdir fallback does not set this override.
+
 ## The inir launcher
 
 `scripts/inir` is a 3600+ line bash script that wraps Quickshell. It's not the same as running `qs -c inir` directly:
@@ -82,10 +108,10 @@ inir service status    # check current state
 | | `inir run` | `qs -c inir` |
 |---|---|---|
 | Environment setup | Sets shell-only Qt policy and inherits Niri's session env | Raw environment |
-| Output | Backgrounded, logs to journal | Foreground, direct stdout |
-| Crash recovery | systemd restarts on failure (max 3 in 30s) | None |
+| Output | Backgrounded, logs through the active supervisor/runtime path | Foreground, direct stdout |
+| Crash recovery | Active supervisor restarts the managed shell | None |
 | ABI check | Validates Quickshell/Qt compatibility | None |
-| Orphan cleanup | ExecStopPost cleans stale runtime | None |
+| Orphan cleanup | Supervisor-aware iNiR cleanup removes owned stale runtime/helpers | None |
 
 Do not use raw `qs -c inir` as the normal development path: it bypasses iNiR's launcher/runtime ownership and can duplicate or desynchronize the supervised session. Use `inir logs`, `inir logs --full`, `inir logs --debug`, `inir restart`, and `inir doctor`/`inir repair` instead. `inir logs --debug` deliberately stops the supervised shell and launches the resolved runtime in foreground debug mode through the iNiR control path; after `Ctrl+C`, restore the normal service with `inir restart`.
 
@@ -101,7 +127,7 @@ The launcher sets these before starting Quickshell:
 
 The launcher also unsets inherited DPI variables that would cause blur: `QT_WAYLAND_FORCE_DPI`, `QT_FONT_DPI`, `QT_AUTO_SCREEN_SCALE_FACTOR`, `QT_SCREEN_SCALE_FACTORS`, `GDK_SCALE`, `GDK_DPI_SCALE`.
 
-The `--session` flag (used by systemd) consumes the graphical environment that Niri has already published to the user manager. iNiR does not rewrite `DISPLAY`, `WAYLAND_DISPLAY`, or `NIRI_SOCKET`; manual recovery launches may copy missing values from the manager, but they never infer them from filesystem sockets.
+The `--session` flag (used by the supported supervisors) consumes the graphical environment that Niri has already published to the selected session-management path. iNiR does not guess compositor sockets. On the systemd tier it consumes the user-manager environment; on Turnstile/runit the explicit environment handoff carries the same authoritative values into the service.
 
 ## Config loading
 
@@ -155,12 +181,18 @@ Notification/OSD feedback and the rest of the family tree are part of the deferr
 
 ## Crash recovery
 
-The systemd service has:
+On the systemd tier the service has:
 
 - `Restart=on-failure` with `StartLimitBurst=3` and `StartLimitIntervalSec=30`
 - If iNiR crashes, systemd restarts it (up to 3 times in 30 seconds)
 - `ExecStopPost` runs `inir cleanup-orphans` to clear stale Quickshell runtime entries
 - Exit code 143 (SIGTERM) is treated as success, not failure
+
+On the Void non-systemd tier, runit provides the restart loop instead. Session
+boot also removes only iNiR-owned orphaned helpers (for example old `swayidle`
+or keyboard-lock daemon instances) before starting the next shell. This avoids
+the duplicate-helper leak found during the external-disk validation without
+killing unrelated user processes.
 
 ## Deferred initialization
 

@@ -32,7 +32,8 @@ doctor_fix() {
 }
 
 doctor_detect_compositor_service() {
-    if ! command -v systemctl >/dev/null 2>&1; then
+    if ! declare -F has_usable_systemd_user_manager >/dev/null 2>&1 \
+            || ! has_usable_systemd_user_manager; then
         return 1
     fi
 
@@ -110,6 +111,14 @@ check_dependencies() {
     if [[ "${OS_GROUP_ID:-unknown}" == "arch" ]]; then
         cmds+=("checkupdates:pacman-contrib")
     fi
+    if [[ "${OS_GROUP_ID:-unknown}" == "void" ]]; then
+        cmds+=(
+            "ydotool:ydotool"
+            "secret-tool:libsecret"
+            "gnome-keyring-daemon:gnome-keyring"
+            "powerprofilesctl:power-profiles-daemon"
+        )
+    fi
 
     # Check required commands
     for item in "${cmds[@]}"; do
@@ -120,6 +129,55 @@ check_dependencies() {
             missing_cmds+=("$cmd")
         fi
     done
+
+    # Void's source provider is version-pinned, so an old binary is also a
+    # repairable dependency rather than merely an available command.
+    if [[ "${OS_GROUP_ID:-unknown}" == "void" ]]; then
+        local qml_root webengine_qml_found=false layershell_qml_found=false
+        for qml_root in /usr/lib/qt6/qml /usr/lib64/qt6/qml /usr/local/lib/qt6/qml /usr/local/lib64/qt6/qml; do
+            [[ -f "$qml_root/QtWebEngine/qmldir" ]] && webengine_qml_found=true
+            [[ -f "$qml_root/org/kde/layershell/qmldir" ]] && layershell_qml_found=true
+        done
+        if [[ "$webengine_qml_found" != true ]]; then
+            missing+=("Qt WebEngine QML")
+            missing_cmds+=("qt-webengine")
+        fi
+        if [[ "$layershell_qml_found" != true ]]; then
+            missing+=("LayerShellQt QML")
+            missing_cmds+=("layer-shell-qt")
+        fi
+
+        # Older Void Darkly provider builds disabled KDecoration support. The
+        # style itself still loaded, but darkly-settings6 then failed when it
+        # tried to load the decoration settings KCM. Treat that partial install
+        # as repairable so normal updates can rebuild the complete provider.
+        local darkly_kcm_found=false darkly_plugin_root
+        for darkly_plugin_root in \
+            "$(qtpaths6 --plugin-dir 2>/dev/null || true)" \
+            /usr/lib64/qt6/plugins \
+            /usr/lib/qt6/plugins \
+            /usr/lib/x86_64-linux-gnu/qt6/plugins; do
+            [[ -n "$darkly_plugin_root" ]] || continue
+            if [[ -f "$darkly_plugin_root/org.kde.kdecoration3.kcm/kcm_darklydecoration.so" ]]; then
+                darkly_kcm_found=true
+                break
+            fi
+        done
+        if [[ "$darkly_kcm_found" != true ]]; then
+            missing+=("Darkly settings KCM")
+            missing_cmds+=("darkly")
+        fi
+
+        local doctor_repo_root void_ydotool_version installed_ydotool_version
+        doctor_repo_root="${REPO_ROOT:-$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)}"
+        void_ydotool_version="$(sed -n 's/^YDOTOOL_VERSION="\([^"]*\)"/\1/p' "$doctor_repo_root/sdata/dist-void/install-deps.sh")"
+        installed_ydotool_version="$(ydotoold --version 2>/dev/null || true)"
+        if [[ -n "$void_ydotool_version" && "$installed_ydotool_version" != "v${void_ydotool_version}" ]] \
+                && [[ " ${missing_cmds[*]} " != *" ydotool "* ]]; then
+            missing+=("ydotool v${void_ydotool_version}")
+            missing_cmds+=("ydotool")
+        fi
+    fi
 
     # EasyEffects can expose Equalizer settings through its local server even
     # when the actual LSP LV2 DSP backend is absent. Check the bundle itself so
@@ -200,11 +258,43 @@ check_dependencies() {
             debian|ubuntu)
                 echo -e "    ${STY_FAINT}Run: sudo apt install ... (see ./setup install)${STY_RST}"
                 ;;
+            void)
+                echo -e "    ${STY_FAINT}Run: ./setup install (repairs the matching XBPS providers)${STY_RST}"
+                ;;
             *)
                 echo -e "    ${STY_FAINT}Install these tools using your package manager${STY_RST}"
                 ;;
         esac
     fi
+}
+
+check_graphics_stack() {
+    if [[ "${OS_GROUP_ID:-unknown}" != "void" ]]; then
+        doctor_pass "Graphics preflight not required for ${OS_GROUP_ID:-this distro}"
+        return 0
+    fi
+
+    local probe="${DOTS_CORE_CONFDIR:-.}/scripts/check-void-graphics.sh"
+    if [[ ! -f "$probe" && -f ./scripts/check-void-graphics.sh ]]; then
+        probe="./scripts/check-void-graphics.sh"
+    fi
+    if [[ ! -f "$probe" ]]; then
+        doctor_fail "Void graphics preflight helper is missing"
+        return 1
+    fi
+
+    local output rc=0
+    output="$(bash "$probe" 2>&1)" || rc=$?
+    if [[ $rc -eq 0 ]]; then
+        doctor_pass "${output%%$'\n'*}"
+        return 0
+    fi
+
+    doctor_fail "${output%%$'\n'*}"
+    if [[ "$output" == *$'\n'* ]]; then
+        printf '%s\n' "${output#*$'\n'}"
+    fi
+    return "$rc"
 }
 
 get_missing_dependencies() {
@@ -335,7 +425,7 @@ check_repo_checkout_state() {
         return 0
     fi
 
-    if [[ ! -d "${REPO_ROOT}/.git" ]]; then
+    if [[ ! -e "${REPO_ROOT}/.git" ]]; then
         doctor_fail "Repo checkout is missing git metadata"
         echo -e "    ${STY_FAINT}Run setup from a real iNiR checkout, not a random copy${STY_RST}"
         return 1
@@ -839,7 +929,8 @@ _try_install_font_package() {
 check_niri_running() {
     local current_socket="${NIRI_SOCKET:-}"
 
-    if command -v systemctl >/dev/null 2>&1 \
+    if declare -F has_usable_systemd_user_manager >/dev/null 2>&1 \
+            && has_usable_systemd_user_manager \
             && systemctl --user is-active --quiet niri.service >/dev/null 2>&1 \
             && declare -F inir_resolve_niri_service_environment >/dev/null 2>&1; then
         if ! inir_resolve_niri_service_environment; then
@@ -951,8 +1042,19 @@ check_manifest() {
 }
 
 check_service_unit_health() {
-    if ! command -v systemctl >/dev/null 2>&1; then
-        doctor_pass "User service checks skipped (systemctl missing)"
+    if ! declare -F has_usable_systemd_user_manager >/dev/null 2>&1 \
+            || ! has_usable_systemd_user_manager; then
+        if [[ "${OS_GROUP_ID:-unknown}" == void ]]; then
+            if command -v nmcli >/dev/null 2>&1 \
+                    && nmcli -t -f STATE general >/dev/null 2>&1; then
+                doctor_pass "Void NetworkManager provider running"
+            else
+                doctor_fail "NetworkManager is installed but its Void runit service is not running"
+                echo -e "    ${STY_FAINT}Run: ./setup install and accept the NetworkManager migration prompt${STY_RST}"
+            fi
+            return 0
+        fi
+        doctor_pass "User service checks skipped (no usable systemd user manager)"
         return 0
     fi
 
@@ -1221,6 +1323,9 @@ _doctor_abi_rebuild_cmd() {
                 install_kind="arch-repo-official"
             fi
         fi
+    elif command -v xbps-query >/dev/null 2>&1 \
+            && xbps-query -p pkgver quickshell >/dev/null 2>&1; then
+        install_kind="void-xbps"; install_pkg="quickshell"
     elif command -v rpm >/dev/null 2>&1; then
         local rpm_q
         rpm_q="$(rpm -qa 2>/dev/null | grep -E '^quickshell(-git)?-[0-9]' | head -1)"
@@ -1268,6 +1373,9 @@ _doctor_abi_rebuild_cmd() {
             if [[ -n "$rebuild_helper" ]]; then
                 printf '%s -Rdd --noconfirm quickshell-bin && %s -Sa --noconfirm --skipreview quickshell-git' "$rebuild_helper" "$rebuild_helper"
             fi
+            ;;
+        void-xbps)
+            printf 'sudo xbps-install -Sf quickshell'
             ;;
         fedora-pkg)
             printf 'sudo dnf upgrade --refresh %s' "$install_pkg"
@@ -1528,9 +1636,17 @@ check_conflicting_services() {
     if [[ ${#running[@]} -gt 0 ]]; then
         for proc in "${running[@]}"; do
             pkill -x "$proc" 2>/dev/null
-            systemctl --user disable --now "${proc}.service" 2>/dev/null || true
+            if declare -F has_usable_systemd_user_manager >/dev/null 2>&1 \
+                    && has_usable_systemd_user_manager; then
+                systemctl --user disable --now "${proc}.service" 2>/dev/null || true
+            fi
         done
-        doctor_fix "Stopped conflicting: ${running[*]} (iNiR has built-in notifications, re-enable with: systemctl --user enable <service>)"
+        if declare -F has_usable_systemd_user_manager >/dev/null 2>&1 \
+                && has_usable_systemd_user_manager; then
+            doctor_fix "Stopped conflicting: ${running[*]} (iNiR has built-in notifications; re-enable with systemctl --user if desired)"
+        else
+            doctor_fix "Stopped conflicting: ${running[*]} (iNiR has built-in notifications; restart manually if desired)"
+        fi
     else
         doctor_pass "No conflicting notification daemons"
     fi
@@ -1552,14 +1668,18 @@ check_conflicting_shells() {
     )
     local found=()
 
-    if ! command -v pacman &>/dev/null; then
-        doctor_pass "Conflicting shells (not Arch, skipped)"
+    if command -v pacman &>/dev/null; then
+        for pkg in "${shell_pkgs[@]}"; do
+            pacman -Qi "$pkg" &>/dev/null 2>&1 && found+=("$pkg")
+        done
+    elif command -v xbps-query &>/dev/null; then
+        for pkg in "${shell_pkgs[@]}"; do
+            xbps-query -p pkgver "$pkg" &>/dev/null 2>&1 && found+=("$pkg")
+        done
+    else
+        doctor_pass "Conflicting shells (package manager unsupported, skipped)"
         return 0
     fi
-
-    for pkg in "${shell_pkgs[@]}"; do
-        pacman -Qi "$pkg" &>/dev/null 2>&1 && found+=("$pkg")
-    done
 
     if [[ ${#found[@]} -gt 0 ]]; then
         doctor_fail "Conflicting Quickshell shells installed: ${found[*]}"
@@ -1715,6 +1835,7 @@ check_qt_theming() {
             arch) echo -e "    ${STY_FAINT}Run: sudo pacman -S plasma-integration${STY_RST}" ;;
             fedora) echo -e "    ${STY_FAINT}Run: sudo dnf install plasma-integration${STY_RST}" ;;
             debian|ubuntu) echo -e "    ${STY_FAINT}Run: sudo apt install plasma-integration${STY_RST}" ;;
+            void) echo -e "    ${STY_FAINT}Run: ./setup install (repairs the managed Void provider)${STY_RST}" ;;
             *) echo -e "    ${STY_FAINT}Install plasma-integration using your package manager${STY_RST}" ;;
         esac
     else
@@ -1761,6 +1882,7 @@ check_qt_theming() {
         doctor_fail "Darkly Qt style not installed (Qt apps won't have Material You style)"
         case "${OS_GROUP_ID:-unknown}" in
             arch) echo -e "    ${STY_FAINT}Run: yay -S darkly-bin${STY_RST}" ;;
+            void) echo -e "    ${STY_FAINT}Run: ./setup install (repairs the pinned Void Darkly provider)${STY_RST}" ;;
             *) echo -e "    ${STY_FAINT}Install darkly from: https://github.com/AlessioC31/darkly${STY_RST}" ;;
         esac
     else
@@ -1779,6 +1901,7 @@ check_qt_theming() {
                 fedora) echo -e "    ${STY_FAINT}Run: sudo dnf install kde-cli-tools${STY_RST}" ;;
                 debian|ubuntu) echo -e "    ${STY_FAINT}Run: sudo apt install kde-cli-tools${STY_RST}" ;;
                 opensuse) echo -e "    ${STY_FAINT}Run: sudo zypper install kde-cli-tools6${STY_RST}" ;;
+                void) echo -e "    ${STY_FAINT}Run: sudo xbps-install -S kde-cli-tools${STY_RST}" ;;
                 *) echo -e "    ${STY_FAINT}Install kde-cli-tools using your package manager${STY_RST}" ;;
             esac
         fi
@@ -1849,7 +1972,7 @@ _doctor_run_step() {
 }
 
 run_doctor_with_fixes() {
-    local total_steps=24
+    local total_steps=25
     local doctor_started_at=$SECONDS
     doctor_passed=0
     doctor_failed=0
@@ -1861,14 +1984,21 @@ run_doctor_with_fixes() {
     if [[ ${#doctor_missing_deps[@]} -gt 0 ]]; then
         detect_distro
         case "$OS_GROUP_ID" in
-            arch|fedora|debian|ubuntu)
+            arch|fedora|debian|ubuntu|void)
                 if ! $ask || tui_confirm "Install missing dependencies now?"; then
                     SKIP_SYSUPDATE=true
                     ONLY_MISSING_DEPS="${doctor_missing_deps[*]}"
-                    source ./sdata/subcmd-install/1.deps-router.sh
-                    # Re-check after install
-                    doctor_passed=0; doctor_failed=0; doctor_fixed=0
-                    _doctor_run_step 1 $total_steps "Re-checking dependencies" check_dependencies
+                    if ! source ./sdata/subcmd-install/1.deps-router.sh; then
+                        doctor_fail "Dependency installation failed"
+                    elif [[ "$OS_GROUP_ID" == void ]] && ! configure_void_ydotool_uinput; then
+                        doctor_fail "Could not configure the ydotool provider"
+                    elif [[ "$OS_GROUP_ID" == void ]] && ! reconcile_inir_supervisor >/dev/null; then
+                        doctor_fail "Could not activate the ydotool provider"
+                    else
+                        # Re-check after a successful repair.
+                        doctor_passed=0; doctor_failed=0; doctor_fixed=0
+                        _doctor_run_step 1 $total_steps "Re-checking dependencies" check_dependencies
+                    fi
                 fi
                 ;;
             *)
@@ -1968,6 +2098,7 @@ run_doctor_with_fixes() {
     _doctor_run_step 22 $total_steps "Checking wallpaper health"     check_wallpaper_health
     _doctor_run_step 23 $total_steps "Checking environment variables" check_environment_vars
     _doctor_run_step 24 $total_steps "Checking Niri config"          check_niri_config
+    _doctor_run_step 25 $total_steps "Checking graphics renderer"    check_graphics_stack
 
     echo ""
     tui_divider

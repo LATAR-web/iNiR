@@ -1158,7 +1158,9 @@ if [[ "$gtk_css_changed" == true || "$gtk_settings_changed" == true ]]; then
     if pgrep -x nautilus >/dev/null 2>&1; then
         nautilus -q >/dev/null 2>&1 || true
     fi
-    if command -v systemctl >/dev/null 2>&1 \
+    if [[ -S "${XDG_RUNTIME_DIR:-}/systemd/private" ]] \
+            && command -v systemctl >/dev/null 2>&1 \
+            && timeout 3s systemctl --user show-environment >/dev/null 2>&1 \
             && systemctl --user is-active --quiet xdg-desktop-portal-gtk.service; then
         systemctl --user try-restart xdg-desktop-portal-gtk.service >/dev/null 2>&1 || true
     fi

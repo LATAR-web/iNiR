@@ -17,7 +17,13 @@ terminalscheme="$SCRIPT_DIR/terminal/scheme-base.json"
 # Validate critical runtime dependencies early
 if ! command -v jq &>/dev/null; then
     echo "[switchwall.sh] Missing required dependency: jq"
-    echo "  Arch: sudo pacman -S jq"
+    if command -v xbps-install >/dev/null 2>&1; then
+        echo "  Void: sudo xbps-install -S jq"
+    elif command -v pacman >/dev/null 2>&1; then
+        echo "  Arch: sudo pacman -S jq"
+    else
+        echo "  Install jq with your package manager."
+    fi
     exit 1
 fi
 
@@ -119,6 +125,27 @@ check_and_prompt_upscale() {
             if [[ "$action" == "open_upscayl" ]]; then
                 if command -v upscayl &>/dev/null; then
                     nohup upscayl > /dev/null 2>&1 &
+                elif command -v yay >/dev/null 2>&1 || command -v paru >/dev/null 2>&1; then
+                    local aur_helper
+                    aur_helper="$(command -v yay >/dev/null 2>&1 && printf yay || printf paru)"
+                    action2=$(notify-send \
+                        -a "Wallpaper switcher" \
+                        -c "im.error" \
+                        -A "install_upscayl=Install Upscayl (Arch)" \
+                        "Install Upscayl?" \
+                        "${aur_helper} -S upscayl-bin")
+                    if [[ "$action2" == "install_upscayl" ]]; then
+                        kitty -1 "$aur_helper" -S upscayl-bin
+                        if command -v upscayl &>/dev/null; then
+                            nohup upscayl > /dev/null 2>&1 &
+                        fi
+                    fi
+                else
+                    notify-send \
+                        -a "Wallpaper switcher" \
+                        -c "im.error" \
+                        "Upscayl is not installed" \
+                        "Install Upscayl manually for this distribution." >/dev/null
                 fi
             fi
         fi
@@ -382,18 +409,37 @@ switch() {
             # mpvpaper is no longer needed - Qt Multimedia handles video playback natively
             if ! command -v ffmpeg &> /dev/null; then
                 echo "Missing dependency: ffmpeg"
-                echo "Arch: sudo pacman -S ffmpeg"
-                action=$(notify-send \
-                    -a "Wallpaper switcher" \
-                    -c "im.error" \
-                    -A "install_arch=Install (Arch)" \
-                    "Can't switch to video wallpaper" \
-                    "Missing dependency: ffmpeg (needed for thumbnail generation)")
-                if [[ "$action" == "install_arch" ]]; then
-                    kitty -1 sudo pacman -S ffmpeg
-                    if command -v ffmpeg &>/dev/null; then
-                        notify-send 'Wallpaper switcher' 'Alright, try again!' -a "Wallpaper switcher"
+                if command -v xbps-install >/dev/null 2>&1; then
+                    echo "Void: sudo xbps-install -S ffmpeg"
+                    action=$(notify-send \
+                        -a "Wallpaper switcher" \
+                        -c "im.error" \
+                        -A "install_void=Install (Void)" \
+                        "Can't switch to video wallpaper" \
+                        "Missing dependency: ffmpeg (needed for thumbnail generation)")
+                    if [[ "$action" == "install_void" ]]; then
+                        kitty -1 sudo xbps-install -S ffmpeg
                     fi
+                elif command -v pacman >/dev/null 2>&1; then
+                    echo "Arch: sudo pacman -S ffmpeg"
+                    action=$(notify-send \
+                        -a "Wallpaper switcher" \
+                        -c "im.error" \
+                        -A "install_arch=Install (Arch)" \
+                        "Can't switch to video wallpaper" \
+                        "Missing dependency: ffmpeg (needed for thumbnail generation)")
+                    if [[ "$action" == "install_arch" ]]; then
+                        kitty -1 sudo pacman -S ffmpeg
+                    fi
+                else
+                    notify-send \
+                        -a "Wallpaper switcher" \
+                        -c "im.error" \
+                        "Can't switch to video wallpaper" \
+                        "Install ffmpeg with your package manager." >/dev/null
+                fi
+                if command -v ffmpeg &>/dev/null; then
+                    notify-send 'Wallpaper switcher' 'Alright, try again!' -a "Wallpaper switcher"
                 fi
                 exit 0
             fi

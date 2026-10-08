@@ -40,6 +40,7 @@ ShellRoot {
     // releases XDG autostart applications. The systemd unit uses Type=dbus.
     property var _trayService: TrayService
     property var _globalActionsService
+    property var _packageSearchService
 
     // Deferred singletons — initialized after first frame to reduce boot contention
     // Tier 3: T+500ms (display/interaction services)
@@ -127,6 +128,8 @@ ShellRoot {
         // scripts and keybinds got "Target not found" until then. Tier 0 also
         // keeps the gap after a config reload as short as every other handler's.
         root._globalActionsService = GlobalActions;
+        // Public packageSearch IPC must exist before any package UI is opened.
+        root._packageSearchService = PackageSearch;
         DevNavigation.registerSettingsPages(SettingsPageRegistry.pages);
         
         // Reset shell entry state (hot-reload may preserve singletons)
@@ -846,14 +849,15 @@ ShellRoot {
     }
 
     LazyLoader {
-        loading: Config.ready && (Config.options?.panelFamily ?? "ii") === "ii"
-        activeAsync: Config.ready && (Config.options?.panelFamily ?? "ii") === "ii"
+        loading: Config.ready && !root._familyPanelsSuspended && (Config.options?.panelFamily ?? "ii") === "ii"
+        activeAsync: Config.ready && !root._familyPanelsSuspended && (Config.options?.panelFamily ?? "ii") === "ii"
         source: "modules/ii/critical/ShellIiCriticalPanels.qml"
     }
 
     LazyLoader {
         readonly property bool enabled: Config.ready
             && GlobalStates.deferredPanelsReady
+            && !root._familyPanelsSuspended
             && (Config.options?.panelFamily ?? "ii") === "ii"
         loading: enabled
         activeAsync: enabled
@@ -861,14 +865,15 @@ ShellRoot {
     }
 
     LazyLoader {
-        loading: Config.ready && (Config.options?.panelFamily ?? "ii") === "waffle"
-        activeAsync: Config.ready && (Config.options?.panelFamily ?? "ii") === "waffle"
+        loading: Config.ready && !root._familyPanelsSuspended && (Config.options?.panelFamily ?? "ii") === "waffle"
+        activeAsync: Config.ready && !root._familyPanelsSuspended && (Config.options?.panelFamily ?? "ii") === "waffle"
         source: "modules/waffle/critical/ShellWaffleCriticalPanels.qml"
     }
 
     LazyLoader {
         readonly property bool enabled: Config.ready
             && GlobalStates.deferredPanelsReady
+            && !root._familyPanelsSuspended
             && (Config.options?.panelFamily ?? "ii") === "waffle"
         loading: enabled
         activeAsync: enabled
@@ -876,14 +881,15 @@ ShellRoot {
     }
 
     LazyLoader {
-        loading: Config.ready && (Config.options?.panelFamily ?? "ii") === "iris"
-        activeAsync: Config.ready && (Config.options?.panelFamily ?? "ii") === "iris"
+        loading: Config.ready && !root._familyPanelsSuspended && (Config.options?.panelFamily ?? "ii") === "iris"
+        activeAsync: Config.ready && !root._familyPanelsSuspended && (Config.options?.panelFamily ?? "ii") === "iris"
         source: "modules/iris/critical/ShellIrisCriticalPanels.qml"
     }
 
     LazyLoader {
         readonly property bool enabled: Config.ready
             && GlobalStates.deferredPanelsReady
+            && !root._familyPanelsSuspended
             && (Config.options?.panelFamily ?? "ii") === "iris"
         loading: enabled
         activeAsync: enabled
@@ -929,6 +935,10 @@ ShellRoot {
     // === Panel Family Transition ===
     property string _pendingFamily: ""
     property bool _transitionInProgress: false
+    property bool _transitionUsesOverlay: false
+    property bool _familyPanelsSuspended: false
+    property string _familySwapTarget: ""
+    property bool _familyRestartPending: false
 
     function _ensureFamilyPanels(family: string): void {
         const basePanels = root.panelFamilies[family] ?? []
@@ -989,46 +999,141 @@ ShellRoot {
         // the guard stayed true, so this returned silently, and because the
         // overlay was never armed its own watchdog could not run either. If the
         // overlay is not actually up, the flag is stale — clear it and proceed.
-        if (_transitionInProgress && !GlobalStates.familyTransitionActive) {
+        if (_transitionInProgress && _transitionUsesOverlay && !GlobalStates.familyTransitionActive) {
             console.warn("[FamilyTransition] stale in-progress flag cleared")
             _transitionInProgress = false
+            _transitionUsesOverlay = false
         }
         if (_transitionInProgress) return
-        if ((Config.options?.panelFamily ?? "ii") === "iris")
+        const currentFamily = Config.options?.panelFamily ?? "ii"
+        if (currentFamily === "iris")
             GlobalStates.endIrisEditing()
 
-        // If animation is disabled, switch instantly
+        // Qt 6.11 can segfault during layer-shell teardown; restart the supervised shell.
+        const qt611LayerShellRisk = Quickshell.hasQtVersion(6, 11)
+            && !Quickshell.hasQtVersion(6, 12)
+        if (qt611LayerShellRisk) {
+            _transitionInProgress = true
+            _transitionUsesOverlay = false
+            root._restartIntoFamily(targetFamily)
+            return
+        }
+
+        // Keep old and new layer-shell trees out of the same Wayland dispatch.
         if (!(Config.options?.familyTransitionAnimation ?? true)) {
-            Config.setNestedValue("panelFamily", targetFamily)
-            root._ensureFamilyPanels(targetFamily)
+            _transitionInProgress = true
+            _transitionUsesOverlay = false
+            root.beginSerializedFamilySwap(targetFamily)
             return
         }
 
         _transitionInProgress = true
+        _transitionUsesOverlay = true
         _pendingFamily = targetFamily
         GlobalStates.familyTransitionTarget = targetFamily
         GlobalStates.familyTransitionDirection = direction
         GlobalStates.familyTransitionActive = true
     }
 
-    function applyPendingFamily() {
-        if (_pendingFamily && families.includes(_pendingFamily)) {
-            Config.setNestedValue("panelFamily", _pendingFamily)
-            root._ensureFamilyPanels(_pendingFamily)
+    function _restartIntoFamily(targetFamily: string): void {
+        if (root._familyRestartPending) return
+        const basePanels = Array.from(root.panelFamilies[targetFamily] ?? [])
+        if (basePanels.length === 0) {
+            root._transitionInProgress = false
+            return
         }
+
+        root._familyRestartPending = true
+        Quickshell.execDetached([
+            Quickshell.shellPath("scripts/switch-family-restart.py"),
+            targetFamily,
+            JSON.stringify(basePanels)
+        ])
+        familyRestartFallbackTimer.restart()
+    }
+
+    Timer {
+        id: familyRestartFallbackTimer
+        interval: 8000
+        repeat: false
+        onTriggered: {
+            root._familyRestartPending = false
+            root._transitionInProgress = false
+            root._transitionUsesOverlay = false
+        }
+    }
+
+    function beginSerializedFamilySwap(targetFamily: string): void {
+        if (root._familyPanelsSuspended) return
+        if (!targetFamily || !families.includes(targetFamily)) return
+
+        root._familySwapTarget = targetFamily
+        root._familyPanelsSuspended = true
+        familyUnloadSettleTimer.restart()
+    }
+
+    function applyPendingFamily() {
+        if (!_pendingFamily || !families.includes(_pendingFamily)) return
+        if (root._familyPanelsSuspended) return
+
+        const targetFamily = _pendingFamily
         _pendingFamily = ""
+        root.beginSerializedFamilySwap(targetFamily)
+    }
+
+    Timer {
+        id: familyUnloadSettleTimer
+        interval: 120
+        repeat: false
+        onTriggered: {
+            if (!root._familySwapTarget || !root.families.includes(root._familySwapTarget)) {
+                root._familyPanelsSuspended = false
+                return
+            }
+            Config.setNestedValue("panelFamily", root._familySwapTarget)
+            root._ensureFamilyPanels(root._familySwapTarget)
+            familyLoadSettleTimer.restart()
+        }
+    }
+
+    Timer {
+        id: familyLoadSettleTimer
+        interval: 120
+        repeat: false
+        onTriggered: {
+            const directSwap = !root._transitionUsesOverlay
+            root._familyPanelsSuspended = false
+            root._familySwapTarget = ""
+            if (directSwap) {
+                root._transitionInProgress = false
+                root._transitionUsesOverlay = false
+            }
+        }
+    }
+
+    Timer {
+        id: familyFinishSettleTimer
+        interval: 50
+        repeat: false
+        onTriggered: root.finishFamilyTransition()
     }
 
     function finishFamilyTransition() {
+        // Keep the transition cover until the serialized family swap finishes.
+        if (root._familyPanelsSuspended) {
+            familyFinishSettleTimer.restart()
+            return
+        }
         _transitionInProgress = false
+        _transitionUsesOverlay = false
         GlobalStates.familyTransitionActive = false
         GlobalStates.familyTransitionTarget = ""
     }
 
-    // Family transition overlay stays absent outside a real family switch, so
-    // the inactive family's visual tree and font/token imports are not retained.
+    // Do not retain the inactive family's visual imports outside a transition.
     Loader {
         active: Config.ready
+            && root._transitionUsesOverlay
             && (GlobalStates.familyTransitionActive || root._transitionInProgress)
         source: "FamilyTransitionOverlay.qml"
         onLoaded: {

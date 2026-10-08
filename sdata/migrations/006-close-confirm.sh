@@ -36,7 +36,7 @@ with open(config_path, 'r') as f:
     content = f.read()
 
 pattern = r'Mod\+Q[^}]*close-window[^}]*\}'
-replacement = 'Mod+Q repeat=false { spawn "inir" "close-window"; }'
+replacement = 'Mod+Q repeat=false allow-inhibiting=false { spawn "inir" "close-window"; }'
 content = re.sub(pattern, replacement, content)
 
 with open(config_path, 'w') as f:

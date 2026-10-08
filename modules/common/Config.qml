@@ -1269,7 +1269,6 @@ Singleton {
                 property bool disableVisualizers: true
                 property bool disableNiriAnimations: true
                 property bool disableReloadToasts: true
-                property bool disableDiscoverOverlay: true
                 property bool suppressNotifications: true // Hide notification popups during GameMode
                 property bool minimalMode: true // Make panels transparent/minimal during GameMode
                 // Throttle Niri window list updates - 100ms = 10 FPS, sufficient for smooth UI
@@ -1305,7 +1304,7 @@ Singleton {
                 property string browser: "firefox" // Used by launcher-backed browser shortcuts
                 property string volumeMixer: "pavucontrol"
                 property string discord: "discord" // Shell command to launch Discord client
-                property string update: "kitty -e sudo pacman -Syu" // Command to run system updates
+                property string update: "" // Empty uses the package-manager-aware update backend
                 property string manageUser: "kcmshell6 kcm_users" // User account management
             }
 
@@ -3006,7 +3005,7 @@ Singleton {
 
             property JsonObject hotspot: JsonObject {
                 property string ssid: "iNiR Hotspot"
-                property string password: "inirhotspot"
+                property string password: ""
                 property string band: "bg" // "bg" = 2.4GHz, "a" = 5GHz
             }
 

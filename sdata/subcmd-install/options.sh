@@ -39,6 +39,7 @@ Examples:
 # Default values (preserve globals already set by top-level parser)
 ask=${ask:-true}
 quiet=${quiet:-false}
+assume_yes=${assume_yes:-false}
 INSTALL_FIRSTRUN=""
 RESET_DOLPHIN_LAYOUT=false
 SKIP_ALLDEPS=${SKIP_ALLDEPS:-false}
@@ -61,6 +62,7 @@ while [[ $# -gt 0 ]]; do
   case $1 in
     -y|--yes)
       ask=false
+      assume_yes=true
       shift
       ;;
     -q|--quiet)

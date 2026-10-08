@@ -10,12 +10,22 @@ config_path="${INIR_CONFIG_PATH:-$HOME/.config/inir/config.json}"
 output_dir="${ORBIT_AUDIT_DIR:-/tmp/inir-orbit-audit}"
 mkdir -p "$output_dir"
 
-for command in jq grim magick python3 systemctl journalctl niri inir; do
+for command in jq grim magick python3 systemctl journalctl timeout niri inir; do
     command -v "$command" >/dev/null || {
         printf 'FAIL: missing command: %s\n' "$command" >&2
         exit 1
     }
 done
+
+has_usable_systemd_user_manager() {
+    [[ -S "${XDG_RUNTIME_DIR:-}/systemd/private" ]] &&
+        timeout 3s systemctl --user show-environment >/dev/null 2>&1
+}
+
+if ! has_usable_systemd_user_manager; then
+    printf 'FAIL: Orbit visual audit requires a usable systemd user manager\n' >&2
+    exit 1
+fi
 
 [[ -f "$config_path" ]] || {
     printf 'FAIL: config not found: %s\n' "$config_path" >&2

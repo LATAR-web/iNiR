@@ -8,9 +8,16 @@ check_conflicts() {
     local conflict_services=()
     local critical_conflicts=()
     local package_manager=""
+    local usable_systemd_user_manager=false
+    if declare -F has_usable_systemd_user_manager >/dev/null 2>&1 \
+            && has_usable_systemd_user_manager; then
+        usable_systemd_user_manager=true
+    fi
     
     if command -v pacman &>/dev/null; then
         package_manager="pacman"
+    elif command -v xbps-query &>/dev/null; then
+        package_manager="xbps"
     elif command -v rpm &>/dev/null; then
         package_manager="rpm"
     elif command -v dpkg &>/dev/null; then
@@ -20,8 +27,9 @@ check_conflicts() {
     # Define conflict groups
     declare -A conflict_map
     
-    # Notifications (Quickshell has built-in notifications)
-    conflict_map["dunst"]="Notification Daemon"
+    # Notifications (Quickshell has built-in notifications). The dunst package
+    # is intentionally allowed because iNiR uses its dunstify client; a running
+    # dunst daemon is handled at runtime by ConflictKiller/Doctor instead.
     conflict_map["mako"]="Notification Daemon"
     conflict_map["swaync"]="Notification Daemon"
     
@@ -81,6 +89,9 @@ check_conflicts() {
                     [[ -n "$real" ]] || real="$pkg"
                 fi
                 ;;
+            xbps)
+                if xbps-query -p pkgver "$pkg" &>/dev/null; then installed=true; fi
+                ;;
             rpm)
                 if rpm -q "$pkg" &>/dev/null; then installed=true; fi
                 ;;
@@ -103,7 +114,8 @@ check_conflicts() {
                 critical_conflicts+=("$pkg")
             fi
             # Check if it's a systemd service
-            if systemctl --user list-unit-files "${pkg}.service" &>/dev/null 2>&1; then
+            if $usable_systemd_user_manager \
+                    && systemctl --user list-unit-files "${pkg}.service" &>/dev/null 2>&1; then
                 conflict_services+=("${pkg}.service")
             fi
         fi
@@ -121,8 +133,9 @@ check_conflicts() {
             echo -e "These packages ship their own Quickshell runtime or configs that directly conflict."
             echo ""
 
-            if [[ "$package_manager" == "pacman" ]]; then
-                # On Arch, offer to remove critical conflicts now.
+            if [[ "$package_manager" == "pacman" || "$package_manager" == "xbps" ]]; then
+                # On supported native package managers, offer to remove critical
+                # conflicts now rather than continuing with a known-broken shell.
                 # Removal order matters: meta-packages first, then shells, then runtimes.
                 local ordered_remove=()
                 for pkg in cachyos-niri-noctalia noctalia-shell noctalia-qs noctalia-qs-git \
@@ -214,23 +227,44 @@ check_conflicts() {
 _remove_critical_conflicts() {
     local pkg
     for pkg in "$@"; do
-        if ! pacman -Qi "$pkg" &>/dev/null 2>&1; then
-            continue  # already gone (removed as dependency of a previous one)
-        fi
+        case "$package_manager" in
+            pacman)
+                pacman -Qi "$pkg" &>/dev/null 2>&1 || continue
+                ;;
+            xbps)
+                xbps-query -p pkgver "$pkg" &>/dev/null 2>&1 || continue
+                ;;
+            *)
+                continue
+                ;;
+        esac
 
         # Stop related services before removal
         local svc_name="${pkg}.service"
-        systemctl --user stop "$svc_name" 2>/dev/null || true
-        systemctl --user disable "$svc_name" 2>/dev/null || true
+        if declare -F has_usable_systemd_user_manager >/dev/null 2>&1 \
+                && has_usable_systemd_user_manager; then
+            systemctl --user stop "$svc_name" 2>/dev/null || true
+            systemctl --user disable "$svc_name" 2>/dev/null || true
+        fi
 
         log_info "Removing $pkg..."
-        pkg_sudo pacman -Rdd --noconfirm "$pkg" 2>/dev/null \
-            || pkg_sudo pacman -R --noconfirm "$pkg" 2>/dev/null \
-            || log_warning "Could not remove $pkg — install may fail"
+        case "$package_manager" in
+            pacman)
+                pkg_sudo pacman -Rdd --noconfirm "$pkg" 2>/dev/null \
+                    || pkg_sudo pacman -R --noconfirm "$pkg" 2>/dev/null \
+                    || log_warning "Could not remove $pkg — install may fail"
+                ;;
+            xbps)
+                pkg_sudo xbps-remove -R -- "$pkg" 2>/dev/null \
+                    || log_warning "Could not remove $pkg — install may fail"
+                ;;
+        esac
     done
 
-    # After removing noctalia-qs (or its -git variant), quickshell is gone.
-    # The dependency installer will pick it up, but reload the package db
-    # so pacman knows the slot is free.
-    pkg_sudo pacman -Sy 2>/dev/null || true
+    if [[ "$package_manager" == "pacman" ]]; then
+        # After removing noctalia-qs (or its -git variant), quickshell is gone.
+        # The dependency installer will pick it up, but reload the package db
+        # so pacman knows the slot is free.
+        pkg_sudo pacman -Sy 2>/dev/null || true
+    fi
 }

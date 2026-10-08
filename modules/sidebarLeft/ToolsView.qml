@@ -315,12 +315,12 @@ Item {
                 ActionButton {
                     btnIcon: "system_update"
                     label: Translation.tr("Check for updates")
-                    onClicked: ShellExec.execDetachedArgs([Config.options?.apps?.terminal ?? "/usr/bin/kitty", "-e", "fish", "-c", "yay -Syu; read -P 'Press Enter to close...'"], "Check for updates")
+                    onClicked: PackageSearch.updateSystem()
                 }
                 ActionButton {
                     btnIcon: "cleaning_services"
                     label: Translation.tr("Clean package cache")
-                    onClicked: ShellExec.execDetachedArgs([Config.options?.apps?.terminal ?? "/usr/bin/kitty", "-e", "fish", "-c", "sudo paccache -rk1; read -P 'Press Enter to close...'"], "Clean package cache")
+                    onClicked: PackageSearch.cleanPackageCache()
                 }
                 ActionButton {
                     btnIcon: "info"

@@ -484,15 +484,19 @@ urls={colors.get("term4", "#458588")[1:]}
     with open(output_path, "w") as f:
         f.write(config)
 
-    # Auto-integrate into foot.ini (add at the top to avoid section issues)
+    # Auto-integrate into foot.ini. Keep one canonical managed include and
+    # migrate the old colors.ini name left by earlier installs.
     home = os.path.expanduser("~")
     foot_conf = f"{home}/.config/foot/foot.ini"
-    if ensure_line_in_file(
-        foot_conf,
-        "include=~/.config/foot/colors.ini",
-        r"include\s*=.*colors\.ini",
-        at_top=True,
-    ):
+    foot_path = Path(foot_conf)
+    foot_path.parent.mkdir(parents=True, exist_ok=True)
+    canonical_include = "include=~/.config/foot/inir-colors.ini"
+    content = foot_path.read_text() if foot_path.exists() else ""
+    include_pattern = r"(?m)^include\s*=.*(?:/|^)(?:inir-)?colors\.ini\s*$"
+    stripped = re.sub(include_pattern, "", content).lstrip("\n")
+    updated = canonical_include + "\n" + stripped
+    if updated != content:
+        foot_path.write_text(updated)
         print(f"✓ Generated Foot config and auto-integrated")
     else:
         print(f"✓ Generated Foot config (already integrated)")
@@ -1416,7 +1420,7 @@ def main():
         generate_alacritty_config(colors, f"{home}/.config/alacritty/colors.toml")
 
     if "foot" in terminals:
-        generate_foot_config(colors, f"{home}/.config/foot/colors.ini")
+        generate_foot_config(colors, f"{home}/.config/foot/inir-colors.ini")
 
     if "wezterm" in terminals:
         generate_wezterm_config(colors, f"{home}/.config/wezterm/colors.lua")

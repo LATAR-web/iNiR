@@ -238,6 +238,23 @@ cd inir
 
 The installer handles dependencies, system config and theming. After install, run `inir run` to start the shell, or log out and back in.
 
+### Void Linux
+
+iNiR supports **Void Linux glibc + runit + XBPS** through the same setup entry
+point instead of a separate installer. From the checkout created above, run
+`./setup install` normally.
+
+For a first Void install, the interactive path is recommended. Setup shows the
+detected system and install plan, installs the XBPS dependency profiles, builds
+the few providers that are not packaged by Void, configures the non-systemd
+session path, and only then offers disruptive system changes such as migrating
+from `dhcpcd`/standalone `wpa_supplicant` to NetworkManager or enabling SDDM.
+`./setup install -y` deliberately does not make those two ownership changes for
+you.
+
+See [iNiR on Void Linux](docs/VOID.md), [Void capabilities](docs/VOID_CAPABILITIES.md)
+and the [installation guide](docs/INSTALL.md) for the exact support scope.
+
 ```bash
 inir run                        # launch the shell
 inir settings                   # open settings GUI
@@ -254,7 +271,12 @@ sudo make install       # system-wide instead of your home
 ./setup rollback        # undo the last update
 ```
 
-**Distros:** Arch is the primary target. Fedora and Debian/Ubuntu also have automated dependency paths with distro-repository-first fallbacks; other distributions use the generic guidance in the [package list](https://github.com/snowarch/inir/wiki/PACKAGES). iNiR needs Qt 6.9 or newer: Ubuntu 25.10, Fedora 43 and Debian testing or later.
+**Distros:** Arch remains the upstream primary target. Void Linux glibc/runit
+is also supported through XBPS. Fedora and Debian/Ubuntu
+retain their automated dependency paths with distro-repository-first fallbacks;
+other distributions use the generic guidance in the
+[package list](https://github.com/snowarch/inir/wiki/PACKAGES). iNiR needs Qt
+6.9 or newer: Ubuntu 25.10, Fedora 43 and Debian testing or later.
 
 ---
 
@@ -292,6 +314,7 @@ Everything user-facing lives in the [Wiki](https://github.com/snowarch/inir/wiki
 | [IPC](https://github.com/snowarch/inir/wiki/IPC) | Targets you can bind or script |
 | [Packages](https://github.com/snowarch/inir/wiki/PACKAGES) | Every dependency and why it's there |
 | [Limitations](https://github.com/snowarch/inir/wiki/LIMITATIONS) | What's known broken, and workarounds |
+| [Void Linux](docs/VOID.md) | XBPS, runit/Turnstile, providers, validation and gotchas |
 | [Architecture](ARCHITECTURE.md) | How the code is put together |
 
 ---

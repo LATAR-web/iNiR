@@ -50,7 +50,7 @@ YTCOOKIE_PATH = os.path.join(_CFG_DIR, "yt-cookies.txt")
 # client ytmusicapi shipped by default; it lets users sign in by entering a code at
 # youtube.com/activate with no Google Cloud project — InnerTune-style frictionless login.
 TV_CLIENT_ID = "861556708454-d6dlm3lh05idd8npek18k6be8ba3oc68.apps.googleusercontent.com"
-TV_CLIENT_SECRET = "SboVhoG9s0rNafixCSGGKXAT"
+TV_CLIENT_KEY = "SboVhoG9s0rNafixCSGGKXAT"
 
 
 def _fail(msg, detail=""):
@@ -63,7 +63,7 @@ def _fail(msg, detail=""):
 
 def _tv_creds():
     from ytmusicapi.auth.oauth import OAuthCredentials
-    return OAuthCredentials(TV_CLIENT_ID, TV_CLIENT_SECRET)
+    return OAuthCredentials(TV_CLIENT_ID, TV_CLIENT_KEY)
 
 
 # Only these cookies belong in the YTM API `Cookie:` header. Sending the WHOLE google.com jar

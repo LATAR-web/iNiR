@@ -57,11 +57,11 @@ Singleton {
             # session. Quickshell intentionally carries shell-only Qt scaling,
             # rendering and optional GPU policy that must not leak into apps.
             manager_env=""
-            if [ -x /usr/bin/systemctl ]; then
-                if [ -x /usr/bin/timeout ]; then
-                    manager_env="$(/usr/bin/timeout 1s /usr/bin/systemctl --user show-environment 2>/dev/null || true)"
-                else
-                    manager_env="$(/usr/bin/systemctl --user show-environment 2>/dev/null || true)"
+            systemd_user_manager_usable=false
+            if [ -S "\${XDG_RUNTIME_DIR:-}/systemd/private" ] &&
+               [ -x /usr/bin/systemctl ] && [ -x /usr/bin/timeout ]; then
+                if manager_env="$(/usr/bin/timeout 3s /usr/bin/systemctl --user show-environment 2>/dev/null)"; then
+                    systemd_user_manager_usable=true
                 fi
             fi
 
@@ -165,7 +165,7 @@ Singleton {
                 cd -- "$workdir" || true
             fi
 
-            if [ -x "$systemd_run" ] && [ -S "$XDG_RUNTIME_DIR/systemd/private" ]; then
+            if [ -x "$systemd_run" ] && [ "$systemd_user_manager_usable" = true ]; then
                 if [ -n "$desc" ]; then
                     exec "$systemd_run" --user --quiet --collect --same-dir --scope \
                         --description="$desc" -- "$@"

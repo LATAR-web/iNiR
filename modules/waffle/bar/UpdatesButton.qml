@@ -3,6 +3,7 @@ import QtQuick.Layouts
 import Quickshell
 import qs
 import qs.services
+import qs.services.deferred
 import qs.modules.common
 import qs.modules.common.functions
 import qs.modules.waffle.looks
@@ -19,7 +20,12 @@ BarIconButton {
     tooltipText: Translation.tr("Updates available: %1 packages").arg(Updates.count)
 
     function runUpdate(): void {
-        const cmd = Config.options?.apps?.update ?? "kitty -e sudo pacman -Syu"
+        const cmd = (Config.options?.apps?.update ?? "").trim()
+        const legacyDefault = cmd === "kitty -e arch-update" || cmd === "kitty -e sudo pacman -Syu"
+        if (cmd.length === 0 || legacyDefault) {
+            PackageSearch.updateSystem()
+            return
+        }
         ShellExec.execCmd(cmd)
     }
 

@@ -107,7 +107,7 @@ get_repo_version() {
 
 # Get current git commit hash
 get_repo_commit() {
-    if command -v git &>/dev/null && [[ -d "${REPO_ROOT}/.git" ]]; then
+    if command -v git &>/dev/null && [[ -e "${REPO_ROOT}/.git" ]]; then
         git -C "$REPO_ROOT" rev-parse --short HEAD 2>/dev/null || echo "unknown"
     else
         echo "unknown"
@@ -188,10 +188,10 @@ get_installed_commit() {
     if [[ "$(get_installed_install_mode)" == "repo-link" ]]; then
         local runtime_dir
         runtime_dir="$(get_runtime_shell_dir)"
-        if [[ -n "$runtime_dir" && -d "$runtime_dir/.git" ]]; then
+        if [[ -n "$runtime_dir" && -e "$runtime_dir/.git" ]]; then
             git -C "$runtime_dir" rev-parse --short HEAD 2>/dev/null || echo "unknown"
             return
-        elif [[ -d "${REPO_ROOT}/.git" ]]; then
+        elif [[ -e "${REPO_ROOT}/.git" ]]; then
             get_repo_commit
             return
         fi
@@ -410,7 +410,7 @@ get_install_mode() {
         return
     fi
 
-    if [[ -d "${REPO_ROOT:-}/.git" && -f "${REPO_ROOT:-}/setup" && -f "${REPO_ROOT:-}/shell.qml" ]]; then
+    if [[ -e "${REPO_ROOT:-}/.git" && -f "${REPO_ROOT:-}/setup" && -f "${REPO_ROOT:-}/shell.qml" ]]; then
         echo "repo-copy"
         return
     fi
@@ -591,7 +591,7 @@ get_remote_version() {
     fi
     
     # Fallback: check git remote
-    if command -v git &>/dev/null && [[ -d "${REPO_ROOT}/.git" ]]; then
+    if command -v git &>/dev/null && [[ -e "${REPO_ROOT}/.git" ]]; then
         git -C "$REPO_ROOT" fetch --tags --quiet 2>/dev/null
         local latest_tag=$(git -C "$REPO_ROOT" describe --tags --abbrev=0 2>/dev/null | sed 's/^v//')
         if [[ -n "$latest_tag" ]]; then
@@ -606,7 +606,7 @@ get_remote_version() {
 
 # Get latest commit from remote
 get_remote_commit() {
-    if ! command -v git &>/dev/null || [[ ! -d "${REPO_ROOT}/.git" ]]; then
+    if ! command -v git &>/dev/null || [[ ! -e "${REPO_ROOT}/.git" ]]; then
         echo "unknown"
         return 1
     fi

@@ -9003,5 +9003,7 @@
   "Login screen": "شاشة تسجيل الدخول",
   "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "حيث تسجّل الدخول بعد تشغيل الحاسوب. «تلقائي» يُلبسها قفل iRiS ما دمت تستخدم iRiS.",
   "Opening %1…": "جارٍ فتح %1…",
-  "%1 didn't open": "لم يُفتح %1"
+  "%1 didn't open": "لم يُفتح %1",
+  "Generated during installation": "Generated during installation",
+  "The WARP daemon is stopped. Start warp-svc with your system service manager, then retry.": "The WARP daemon is stopped. Start warp-svc with your system service manager, then retry."
 }

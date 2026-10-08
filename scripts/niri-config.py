@@ -33,6 +33,7 @@ import glob
 import json
 import os
 import re
+import shutil
 import subprocess
 import sys
 from pathlib import Path
@@ -2024,17 +2025,28 @@ def _sync_cursor_env(theme=None, size=None):
             capture_output=True,
         )
 
-    # Update running session env so new processes pick it up immediately
+    # Update the activation environment so newly launched D-Bus apps see it.
     env_vars = []
     if theme is not None:
         env_vars.append(f"XCURSOR_THEME={theme}")
     if size is not None:
         env_vars.append(f"XCURSOR_SIZE={size}")
     if env_vars:
-        subprocess.run(
-            ["systemctl", "--user", "set-environment"] + env_vars,
-            capture_output=True,
+        runtime_dir = os.environ.get("XDG_RUNTIME_DIR", "")
+        systemd_socket = Path(runtime_dir) / "systemd" / "private"
+        probe = ["systemctl", "--user", "show-environment"]
+        if shutil.which("timeout"):
+            probe = ["timeout", "3s"] + probe
+        systemd_usable = (
+            systemd_socket.is_socket()
+            and shutil.which("systemctl")
+            and shutil.which("timeout")
+            and subprocess.run(probe, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL).returncode == 0
         )
+        if systemd_usable:
+            subprocess.run(["systemctl", "--user", "set-environment"] + env_vars, capture_output=True)
+        elif shutil.which("dbus-update-activation-environment"):
+            subprocess.run(["dbus-update-activation-environment"] + env_vars, capture_output=True)
 
     # Materialize the libXcursor "default" fallback. XWayland apps (Spotify and
     # other X11/Electron clients) that request the X "core" cursor never read

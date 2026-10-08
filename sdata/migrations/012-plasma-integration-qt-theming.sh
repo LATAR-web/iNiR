@@ -54,6 +54,15 @@ migration_apply() {
         return 1
       }
     fi
+  elif command -v xbps-install &>/dev/null; then
+    if ! xbps-query -p pkgver plasma-integration >/dev/null 2>&1; then
+      echo "Installing plasma-integration..."
+      pkg_sudo xbps-install -S -y plasma-integration 2>/dev/null || {
+        echo -e "${STY_YELLOW}Could not auto-install plasma-integration.${STY_RST}"
+        echo -e "${STY_YELLOW}Install manually: sudo xbps-install -S plasma-integration${STY_RST}"
+        return 1
+      }
+    fi
   elif command -v apt &>/dev/null; then
     if ! dpkg -l plasma-integration 2>/dev/null | grep -q '^ii'; then
       echo "Installing plasma-integration..."

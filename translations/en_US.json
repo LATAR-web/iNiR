@@ -9003,5 +9003,7 @@
   "Login screen": "Login screen",
   "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.",
   "Opening %1…": "Opening %1…",
-  "%1 didn't open": "%1 didn't open"
+  "%1 didn't open": "%1 didn't open",
+  "Generated during installation": "Generated during installation",
+  "The WARP daemon is stopped. Start warp-svc with your system service manager, then retry.": "The WARP daemon is stopped. Start warp-svc with your system service manager, then retry."
 }

@@ -44,7 +44,7 @@ declare -A AUR_HELPER_CMD=(
 # Quickshell - the shell framework itself. Fedora's distro package is currently
 # below iNiR's 0.3 requirement, so its installer selects the release COPR until
 # the official package catches up. Debian resolves this from stable backports.
-DEPS_CRITICAL_QUICKSHELL="arch:quickshell fedora:quickshell debian:quickshell ubuntu:COMPILE:https://github.com/quickshell-mirror/quickshell opensuse:COMPILE:https://github.com/quickshell-mirror/quickshell void:COMPILE:https://github.com/quickshell-mirror/quickshell"
+DEPS_CRITICAL_QUICKSHELL="arch:quickshell fedora:quickshell debian:quickshell ubuntu:COMPILE:https://github.com/quickshell-mirror/quickshell opensuse:COMPILE:https://github.com/quickshell-mirror/quickshell void:quickshell"
 
 # Niri compositor
 DEPS_CRITICAL_NIRI="arch:niri fedora:niri debian:COMPILE:https://github.com/YaLTeR/niri opensuse:COMPILE:https://github.com/YaLTeR/niri void:niri"
@@ -56,7 +56,7 @@ DEPS_QT6_BASE="arch:qt6-base fedora:qt6-qtbase debian:qt6-base-dev ubuntu:qt6-ba
 DEPS_QT6_DECLARATIVE="arch:qt6-declarative fedora:qt6-qtdeclarative debian:qt6-declarative-dev ubuntu:qt6-declarative-dev opensuse:qt6-declarative-devel void:qt6-declarative"
 DEPS_QT6_SVG="arch:qt6-svg fedora:qt6-qtsvg debian:libqt6svg6-dev ubuntu:libqt6svg6-dev opensuse:qt6-svg-devel void:qt6-svg"
 DEPS_QT6_WAYLAND="arch:qt6-wayland fedora:qt6-qtwayland debian:qt6-wayland-dev ubuntu:qt6-wayland-dev opensuse:qt6-wayland-devel void:qt6-wayland"
-DEPS_QT6_5COMPAT="arch:qt6-5compat fedora:qt6-qt5compat debian:qt6-5compat-dev ubuntu:qt6-5compat-dev opensuse:qt6-5compat-devel void:qt6-5compat"
+DEPS_QT6_5COMPAT="arch:qt6-5compat fedora:qt6-qt5compat debian:qt6-5compat-dev ubuntu:qt6-5compat-dev opensuse:qt6-5compat-devel void:qt6-qt5compat"
 DEPS_QT6_MULTIMEDIA="arch:qt6-multimedia fedora:qt6-qtmultimedia debian:qt6-multimedia-dev ubuntu:qt6-multimedia-dev opensuse:qt6-multimedia-devel void:qt6-multimedia"
 DEPS_QT6_IMAGEFORMATS="arch:qt6-imageformats fedora:qt6-qtimageformats debian:qt6-image-formats-plugins ubuntu:qt6-image-formats-plugins opensuse:qt6-imageformats void:qt6-imageformats"
 
@@ -89,7 +89,7 @@ DEPS_WAYLAND_XWAYLANDSATELLITE="arch:xwayland-satellite fedora:xwayland-satellit
 # Audio stack
 ###############################################################################
 DEPS_AUDIO_PIPEWIRE="arch:pipewire fedora:pipewire debian:pipewire ubuntu:pipewire opensuse:pipewire void:pipewire"
-DEPS_AUDIO_PIPEWIRE_PULSE="arch:pipewire-pulse fedora:pipewire-pulseaudio debian:pipewire-pulse ubuntu:pipewire-pulse opensuse:pipewire-pulseaudio void:pipewire-pulse"
+DEPS_AUDIO_PIPEWIRE_PULSE="arch:pipewire-pulse fedora:pipewire-pulseaudio debian:pipewire-pulse ubuntu:pipewire-pulse opensuse:pipewire-pulseaudio void:pipewire"
 DEPS_AUDIO_WIREPLUMBER="arch:wireplumber fedora:wireplumber debian:wireplumber ubuntu:wireplumber opensuse:wireplumber void:wireplumber"
 DEPS_AUDIO_PLAYERCTL="arch:playerctl fedora:playerctl debian:playerctl ubuntu:playerctl opensuse:playerctl void:playerctl"
 DEPS_AUDIO_PLASMA_BROWSER_INTEGRATION="arch:plasma-browser-integration fedora:plasma-browser-integration debian:plasma-browser-integration ubuntu:plasma-browser-integration opensuse:plasma-browser-integration void:plasma-browser-integration"
@@ -121,14 +121,14 @@ DEPS_THEME_QT6CT="arch:qt6ct fedora:qt6ct debian:qt6ct ubuntu:qt6ct opensuse:qt6
 DEPS_THEME_KVANTUM="arch:kvantum fedora:kvantum debian:qt6-style-kvantum ubuntu:qt6-style-kvantum opensuse:kvantum-qt6 void:kvantum"
 DEPS_THEME_BREEZE="arch:breeze fedora:breeze-gtk debian:breeze-gtk-theme ubuntu:breeze-gtk-theme opensuse:metatheme-breeze-common void:breeze"
 DEPS_THEME_PLASMA_INTEGRATION="arch:plasma-integration fedora:plasma-integration debian:plasma-integration ubuntu:plasma-integration opensuse:plasma6-integration void:plasma-integration"
-DEPS_THEME_DARKLY="arch:AUR:darkly-bin fedora:COMPILE:https://github.com/AlessioC31/darkly debian:COMPILE:https://github.com/AlessioC31/darkly ubuntu:COMPILE:https://github.com/AlessioC31/darkly opensuse:COMPILE:https://github.com/AlessioC31/darkly void:COMPILE:https://github.com/AlessioC31/darkly"
+DEPS_THEME_DARKLY="arch:AUR:darkly-bin fedora:COMPILE:https://github.com/AlessioC31/darkly debian:COMPILE:https://github.com/AlessioC31/darkly ubuntu:COMPILE:https://github.com/AlessioC31/darkly opensuse:COMPILE:https://github.com/AlessioC31/darkly void:COMPILE:https://github.com/Bali10050/Darkly"
 DEPS_THEME_KDE_CLI_TOOLS="arch:kde-cli-tools fedora:kde-cli-tools debian:kde-cli-tools ubuntu:kde-cli-tools opensuse:kde-cli-tools6 void:kde-cli-tools"
 
 ###############################################################################
 # Fonts (critical for UI)
 ###############################################################################
 DEPS_FONT_MATERIAL_SYMBOLS="arch:ttf-material-symbols-variable fedora:COMPILE:google-material-symbols debian:COMPILE:google-material-symbols ubuntu:COMPILE:google-material-symbols opensuse:COMPILE:google-material-symbols void:COMPILE:google-material-symbols"
-DEPS_FONT_JETBRAINS_MONO="arch:ttf-jetbrains-mono-nerd fedora:jetbrains-mono-fonts-all debian:fonts-jetbrains-mono ubuntu:fonts-jetbrains-mono opensuse:jetbrains-mono-fonts void:font-jetbrains-mono-nerd"
+DEPS_FONT_JETBRAINS_MONO="arch:ttf-jetbrains-mono-nerd fedora:jetbrains-mono-fonts-all debian:fonts-jetbrains-mono ubuntu:fonts-jetbrains-mono opensuse:jetbrains-mono-fonts void:nerd-fonts-ttf"
 DEPS_FONT_DEJAVU="arch:ttf-dejavu fedora:dejavu-fonts-all debian:fonts-dejavu ubuntu:fonts-dejavu opensuse:dejavu-fonts void:dejavu-fonts-ttf"
 DEPS_FONT_TWEMOJI="arch:AUR:ttf-twemoji fedora:twitter-twemoji-fonts debian:fonts-twemoji ubuntu:fonts-twemoji opensuse:twemoji-color-font void:twemoji"
 
@@ -145,23 +145,23 @@ DEPS_BUILD_CARGO="arch:rust fedora:cargo debian:cargo ubuntu:cargo opensuse:carg
 ###############################################################################
 # Miscellaneous tools
 ###############################################################################
-DEPS_MISC_FISH="arch:fish fedora:fish debian:fish ubuntu:fish opensuse:fish void:fish"
+DEPS_MISC_FISH="arch:fish fedora:fish debian:fish ubuntu:fish opensuse:fish void:fish-shell"
 DEPS_MISC_GUM="arch:gum fedora:gum debian:GITHUB:charmbracelet/gum ubuntu:GITHUB:charmbracelet/gum opensuse:gum void:gum"
 DEPS_MISC_STARSHIP="arch:starship fedora:GITHUB:starship/starship debian:starship ubuntu:GITHUB:starship/starship opensuse:starship void:starship"
 DEPS_MISC_LIBNOTIFY="arch:libnotify fedora:libnotify debian:libnotify-bin ubuntu:libnotify-bin opensuse:libnotify-tools void:libnotify"
 DEPS_MISC_IMAGEMAGICK="arch:imagemagick fedora:ImageMagick debian:imagemagick ubuntu:imagemagick opensuse:ImageMagick void:ImageMagick"
 DEPS_MISC_FFMPEG="arch:ffmpeg fedora:ffmpeg debian:ffmpeg ubuntu:ffmpeg opensuse:ffmpeg void:ffmpeg"
 DEPS_MISC_TESSERACT="arch:tesseract fedora:tesseract debian:tesseract-ocr ubuntu:tesseract-ocr opensuse:tesseract-ocr void:tesseract-ocr"
-DEPS_MISC_LIBQALCULATE="arch:libqalculate fedora:qalculate debian:qalc ubuntu:qalc opensuse:libqalculate void:libqalculate"
+DEPS_MISC_LIBQALCULATE="arch:libqalculate fedora:qalculate debian:qalc ubuntu:qalc opensuse:libqalculate void:qalculate"
 DEPS_MISC_BRIGHTNESSCTL="arch:brightnessctl fedora:brightnessctl debian:brightnessctl ubuntu:brightnessctl opensuse:brightnessctl void:brightnessctl"
 DEPS_MISC_NAUTILUS="arch:nautilus fedora:nautilus debian:nautilus ubuntu:nautilus opensuse:nautilus void:nautilus"
 DEPS_MISC_FOOT="arch:foot fedora:foot debian:foot ubuntu:foot opensuse:foot void:foot"
 DEPS_MISC_KITTY="arch:kitty fedora:kitty debian:kitty ubuntu:kitty opensuse:kitty void:kitty"
 DEPS_MISC_POLKIT="arch:polkit fedora:polkit debian:polkitd ubuntu:policykit-1 opensuse:polkit void:polkit"
-DEPS_MISC_UV="arch:uv fedora:uv debian:CARGO:uv ubuntu:CARGO:uv opensuse:CARGO:uv void:CARGO:uv"
+DEPS_MISC_UV="arch:uv fedora:uv debian:CARGO:uv ubuntu:CARGO:uv opensuse:CARGO:uv void:uv"
 DEPS_MISC_GOWALL="arch:AUR:gowall-bin fedora:gowall debian:COMPILE:https://github.com/Achno/gowall ubuntu:COMPILE:https://github.com/Achno/gowall opensuse:COMPILE:https://github.com/Achno/gowall void:gowall"
 DEPS_MISC_MISSIONCENTER="arch:mission-center fedora:FLATPAK:io.missioncenter.MissionCenter debian:FLATPAK:io.missioncenter.MissionCenter ubuntu:FLATPAK:io.missioncenter.MissionCenter opensuse:FLATPAK:io.missioncenter.MissionCenter void:FLATPAK:io.missioncenter.MissionCenter"
-DEPS_MISC_KCONFIG="arch:kconfig fedora:kf6-kconfig debian:libkf6config-bin ubuntu:libkf6config-bin opensuse:kconfig void:kconfig"
+DEPS_MISC_KCONFIG="arch:kconfig fedora:kf6-kconfig debian:libkf6config-bin ubuntu:libkf6config-bin opensuse:kconfig void:kf6-kconfig"
 
 ###############################################################################
 # XDG Portals

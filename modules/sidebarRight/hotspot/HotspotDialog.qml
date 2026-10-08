@@ -53,7 +53,7 @@ WindowDialog {
                 rightMargin: 4
             }
             placeholderText: Translation.tr("Password")
-            text: Config.options?.hotspot?.password ?? "inirhotspot"
+            text: Config.options?.hotspot?.password ?? ""
             echoMode: TextInput.Password
             onTextEdited: Config.setNestedValue("hotspot.password", text)
         }

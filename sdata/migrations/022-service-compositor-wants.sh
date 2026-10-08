@@ -6,6 +6,11 @@ MIGRATION_DESCRIPTION="Moves the inir.service wants link from graphical-session.
 MIGRATION_TARGET_FILE="~/.config/systemd/user/*.wants/inir.service"
 MIGRATION_REQUIRED=true
 
+# Source the predicate helper when migrations run outside the installer.
+_migration_repo_root="${REPO_ROOT:-$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)}"
+# shellcheck source=/dev/null
+source "${_migration_repo_root}/sdata/lib/functions.sh" 2>/dev/null || true
+
 _systemd_user_dir="${XDG_CONFIG_HOME:-$HOME/.config}/systemd/user"
 
 _detect_compositor_for_migration() {
@@ -26,6 +31,10 @@ _detect_compositor_for_migration() {
 }
 
 migration_check() {
+  # No-op if usable systemd user manager is not available (ADR-0002).
+  # Without the predicate, systemctl --user can block for 10-30s.
+  has_usable_systemd_user_manager || return 1
+
   # Needs migration if a graphical-session.target.wants link exists.
   local old_link="${_systemd_user_dir}/graphical-session.target.wants/inir.service"
 
@@ -50,6 +59,10 @@ migration_preview() {
 }
 
 migration_apply() {
+  # No-op if usable systemd user manager is not available (ADR-0002).
+  # Without the predicate, systemctl --user can block for 10-30s.
+  has_usable_systemd_user_manager || return 0
+
   local old_link="${_systemd_user_dir}/graphical-session.target.wants/inir.service"
   local service_file="${_systemd_user_dir}/inir.service"
 
@@ -64,7 +77,5 @@ migration_apply() {
     ln -sf "$service_file" "$new_wants_dir/inir.service"
   fi
 
-  if command -v systemctl >/dev/null 2>&1; then
-    systemctl --user daemon-reload >/dev/null 2>&1 || true
-  fi
+  systemctl --user daemon-reload >/dev/null 2>&1 || true
 }

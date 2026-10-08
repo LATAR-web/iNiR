@@ -284,7 +284,7 @@ Item {
                 StyledText {
                     Layout.fillWidth: true
                     horizontalAlignment: Text.AlignHCenter
-                    text: Translation.tr("Install pacman, apt, or dnf")
+                    text: Translation.tr("Install pacman, apt, or dnf") + " / xbps"
                     font.pixelSize: Appearance.font.pixelSize.smaller
                     color: root.colTextSecondary
                 }
@@ -373,6 +373,7 @@ Item {
                 if (AppCatalog.hasFlatpak) label += " + flatpak"
                 return label
             }
+            case "xbps": return AppCatalog.hasFlatpak ? "xbps + flatpak" : "xbps"
             case "apt": return AppCatalog.hasFlatpak ? "apt + flatpak" : "apt"
             case "dnf": return AppCatalog.hasFlatpak ? "dnf + flatpak" : "dnf"
             case "unknown": return Translation.tr("Detecting...")

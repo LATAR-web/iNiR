@@ -31,7 +31,7 @@ AndroidQuickToggleButton {
             stopProc.running = true
         } else {
             const ssid = Config.options?.hotspot?.ssid ?? "iNiR Hotspot"
-            const password = Config.options?.hotspot?.password ?? "inirhotspot"
+            const password = Config.options?.hotspot?.password ?? ""
             const band = Config.options?.hotspot?.band ?? "bg"
             startProc.exec(["/bin/sh", "-c",
                 'nmcli connection delete id Hotspot 2>/dev/null; exec nmcli dev wifi hotspot con-name Hotspot ssid "$1" band "$2" password "$3"',

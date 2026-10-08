@@ -5,6 +5,8 @@ inir_resolve_niri_service_environment() {
     INIR_RESOLVED_WAYLAND_DISPLAY=""
 
     command -v systemctl >/dev/null 2>&1 || return 1
+    [[ -S "${XDG_RUNTIME_DIR:-}/systemd/private" ]] || return 1
+    timeout 3s systemctl --user show-environment >/dev/null 2>&1 || return 1
     systemctl --user is-active --quiet niri.service >/dev/null 2>&1 || return 1
 
     local main_pid runtime_dir candidate basename wayland_display found=0

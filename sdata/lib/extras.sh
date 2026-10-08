@@ -211,6 +211,217 @@ extras_refresh_yamis_icons_on_update() {
   fi
 }
 
+# Void has no Cloudflare XBPS package; official APT metadata supplies the version,
+# artifact path and SHA-256 without executing Debian maintainer scripts.
+INIR_WARP_PACKAGES_URL="${INIR_WARP_PACKAGES_URL:-https://pkg.cloudflareclient.com/dists/bookworm/main/binary-amd64/Packages}"
+INIR_WARP_REPO_BASE_URL="${INIR_WARP_REPO_BASE_URL:-https://pkg.cloudflareclient.com/}"
+INIR_WARP_FALLBACK_VERSION="${INIR_WARP_FALLBACK_VERSION:-2026.7.1377.0}"
+INIR_WARP_FALLBACK_FILENAME="${INIR_WARP_FALLBACK_FILENAME:-pool/bookworm/main/c/cloudflare-warp/cloudflare-warp_2026.7.1377.0_amd64.deb}"
+INIR_WARP_FALLBACK_SHA256="${INIR_WARP_FALLBACK_SHA256:-95d33c2b4fc42f21c204981c51470a6a679d618fb0b78ee64bdd0db142230c55}"
+
+extras_void_warp_state_file() {
+  printf '%s\n' "${XDG_STATE_HOME:-$HOME/.local/state}/inir/warp-provider.json"
+}
+
+extras_void_warp_release_info() {
+  local packages="" parsed=""
+  if [[ -n "${INIR_WARP_PACKAGES_FILE:-}" && -f "${INIR_WARP_PACKAGES_FILE}" ]]; then
+    packages="$(cat "$INIR_WARP_PACKAGES_FILE")"
+  elif command -v curl >/dev/null 2>&1; then
+    packages="$(curl -fsSL --max-time 15 "$INIR_WARP_PACKAGES_URL" 2>/dev/null || true)"
+  fi
+
+  if [[ -n "$packages" ]]; then
+    parsed="$(awk '
+      BEGIN { RS=""; FS="\n" }
+      {
+        pkg=""; version=""; filename=""; sha=""
+        for (i=1; i<=NF; i++) {
+          line=$i
+          if (line ~ /^Package: /)  { sub(/^Package: /, "", line); pkg=line }
+          if (line ~ /^Version: /)  { sub(/^Version: /, "", line); version=line }
+          if (line ~ /^Filename: /) { sub(/^Filename: /, "", line); filename=line }
+          if (line ~ /^SHA256: /)   { sub(/^SHA256: /, "", line); sha=line }
+        }
+        if (pkg == "cloudflare-warp" && version != "" && filename != "" && sha ~ /^[0-9a-fA-F]{64}$/) {
+          printf "%s\t%s\t%s\n", version, filename, sha
+          exit
+        }
+      }
+    ' <<<"$packages")"
+  fi
+
+  if [[ -n "$parsed" ]]; then
+    printf '%s\n' "$parsed"
+  else
+    printf '%s\t%s\t%s\n' \
+      "$INIR_WARP_FALLBACK_VERSION" "$INIR_WARP_FALLBACK_FILENAME" "$INIR_WARP_FALLBACK_SHA256"
+  fi
+}
+
+extras_void_warp_installed_version() {
+  command -v warp-cli >/dev/null 2>&1 || return 0
+  warp-cli --version 2>/dev/null | grep -oE '[0-9]+([.][0-9]+)+' | head -n1 || true
+}
+
+extras_version_ge() {
+  local left="$1" right="$2"
+  [[ -n "$left" && -n "$right" ]] || return 1
+  [[ "$left" == "$right" ]] && return 0
+  [[ "$(printf '%s\n%s\n' "$left" "$right" | sort -V | tail -n1)" == "$left" ]]
+}
+
+extras_void_warp_owned() {
+  local state_file
+  state_file="$(extras_void_warp_state_file)"
+  [[ -f "$state_file" ]] && return 0
+  [[ -x /usr/local/bin/warp-cli && -f /etc/sv/warp-svc/run ]] \
+    && grep -Fq '# Managed by iNiR.' /etc/sv/warp-svc/run 2>/dev/null
+}
+
+extras_void_warp_write_state() {
+  local version="$1" filename="$2" sha256="$3"
+  local state_file state_dir
+  state_file="$(extras_void_warp_state_file)"
+  state_dir="$(dirname "$state_file")"
+  mkdir -p "$state_dir"
+  python3 - "$state_file" "$version" "$filename" "$sha256" <<'PY'
+import json, pathlib, sys
+path, version, filename, sha256 = sys.argv[1:]
+payload = {
+    "schema": 1,
+    "provider": "cloudflare-apt-metadata",
+    "version": version,
+    "filename": filename,
+    "sha256": sha256,
+}
+p = pathlib.Path(path)
+tmp = p.with_suffix(p.suffix + ".tmp")
+tmp.write_text(json.dumps(payload, indent=2) + "\n")
+tmp.replace(p)
+PY
+}
+
+extras_void_warp_install_prereqs() {
+  # warp-svc requires nft(8); Cloudflare declares nftables as a runtime dependency.
+  local required=(binutils dbus-libs libpcap nftables nss tpm2-tss)
+  local pending=() pkg
+  for pkg in "${required[@]}"; do
+    xbps-query -p pkgver "$pkg" >/dev/null 2>&1 || pending+=("$pkg")
+  done
+  (( ${#pending[@]} == 0 )) && return 0
+
+  local flags=(-S)
+  [[ "${ask:-true}" == true ]] || flags+=(-y)
+  tui_info "Installing Cloudflare WARP runtime prerequisites: ${pending[*]}"
+  pkg_sudo xbps-install "${flags[@]}" "${pending[@]}"
+}
+
+extras_void_warp_extract_payload() {
+  local archive="$1" payload_dir="$2" data_archive=""
+  data_archive="$(ar t "$archive" 2>/dev/null | grep '^data[.]tar[.]' | head -n1 || true)"
+  [[ -n "$data_archive" ]] || return 1
+  mkdir -p "$payload_dir" || return 1
+
+  local -a tar_flags=(-x)
+  case "$data_archive" in
+    *.tar.gz)  tar_flags=(-xz) ;;
+    *.tar.xz)  tar_flags=(-xJ) ;;
+    *.tar.bz2) tar_flags=(-xj) ;;
+    *.tar.zst) tar_flags=(--zstd -x) ;;
+    *.tar)     tar_flags=(-x) ;;
+    *) return 1 ;;
+  esac
+
+  ar p "$archive" "$data_archive" | tar "${tar_flags[@]}" -C "$payload_dir"
+}
+
+extras_install_void_warp() {
+  if [[ -z "${OS_GROUP_ID:-}" ]] && declare -F detect_distro >/dev/null 2>&1; then
+    detect_distro
+  fi
+  if [[ "${OS_GROUP_ID:-}" != void ]]; then
+    log_warning "Cloudflare WARP extra is only provided by iNiR on Void Linux"
+    return 1
+  fi
+  if [[ "$(uname -m)" != x86_64 ]]; then
+    log_warning "Cloudflare WARP extra currently supports Void x86_64 only"
+    return 1
+  fi
+  if ldd --version 2>&1 | grep -qi musl; then
+    log_warning "Cloudflare WARP's official Linux binary is glibc-only; Void musl is not supported"
+    return 1
+  fi
+
+  local version filename sha256
+  IFS=$'\t' read -r version filename sha256 < <(extras_void_warp_release_info)
+  if [[ -z "$version" || -z "$filename" || ! "$sha256" =~ ^[0-9a-fA-F]{64}$ ]]; then
+    log_warning "Could not resolve a verified Cloudflare WARP release"
+    return 1
+  fi
+
+  local installed_version
+  installed_version="$(extras_void_warp_installed_version)"
+  extras_void_warp_install_prereqs || return 1
+
+  if [[ -n "$installed_version" ]] && extras_version_ge "$installed_version" "$version"; then
+    if [[ "$installed_version" == "$version" ]]; then
+      log_success "Cloudflare WARP v${version} already installed"
+      if declare -F configure_void_warp_service >/dev/null 2>&1; then
+        configure_void_warp_service || return 1
+      fi
+      extras_void_warp_write_state "$installed_version" "$filename" "$sha256"
+    else
+      log_info "Installed Cloudflare WARP v${installed_version} is newer than provider metadata v${version}; keeping it"
+    fi
+    return 0
+  fi
+
+  local temp_dir archive payload_dir warp_cli warp_svc
+  temp_dir="$(mktemp -d)" || return 1
+  archive="$temp_dir/cloudflare-warp.deb"
+  payload_dir="$temp_dir/payload"
+  local url="${INIR_WARP_REPO_BASE_URL%/}/${filename#/}"
+
+  tui_info "Installing Cloudflare WARP v${version} from Cloudflare's verified upstream package..."
+  if ! curl -fsSL --retry 2 --max-time 120 -o "$archive" "$url" \
+      || ! printf '%s  %s\n' "$sha256" "$archive" | sha256sum -c - >/dev/null \
+      || ! extras_void_warp_extract_payload "$archive" "$payload_dir" \
+      || ! warp_cli="$(find "$payload_dir" -type f -name warp-cli -print -quit)" \
+      || ! warp_svc="$(find "$payload_dir" -type f -name warp-svc -print -quit)" \
+      || [[ -z "$warp_cli" || -z "$warp_svc" ]] \
+      || ! pkg_sudo install -Dm755 "$warp_cli" /usr/local/bin/warp-cli \
+      || ! pkg_sudo install -Dm755 "$warp_svc" /usr/local/bin/warp-svc \
+      || ! /usr/local/bin/warp-cli --version 2>/dev/null | grep -Fq "$version"; then
+    rm -rf "$temp_dir"
+    log_warning "Cloudflare WARP v${version} installation failed; existing installation was left untouched where possible"
+    return 1
+  fi
+  rm -rf "$temp_dir"
+
+  if declare -F configure_void_warp_service >/dev/null 2>&1; then
+    configure_void_warp_service || return 1
+  fi
+  if command -v sv >/dev/null 2>&1 && [[ -L /var/service/warp-svc ]]; then
+    elevate sv restart /var/service/warp-svc >/dev/null 2>&1 || {
+      log_warning "Cloudflare WARP updated, but warp-svc could not be restarted automatically"
+      return 1
+    }
+  fi
+  extras_void_warp_write_state "$version" "$filename" "$sha256"
+  log_success "Cloudflare WARP v${version} installed"
+}
+
+extras_refresh_void_warp_on_update() {
+  [[ "${INIR_SKIP_WARP_REFRESH:-false}" == true ]] && return 0
+  if [[ -z "${OS_GROUP_ID:-}" ]] && declare -F detect_distro >/dev/null 2>&1; then
+    detect_distro
+  fi
+  [[ "${OS_GROUP_ID:-}" == void ]] || return 0
+  extras_void_warp_owned || return 0
+  extras_install_void_warp
+}
+
 # Resolve the latest inir-mascot release tag from the GitHub redirect
 # (no API quota involved). Tests and local mirrors can provide an explicit tag.
 extras_mascot_latest_tag() {
@@ -218,8 +429,11 @@ extras_mascot_latest_tag() {
     printf '%s\n' "$INIR_MASCOT_RELEASE_TAG"
     return 0
   fi
-  curl -fsI --max-time 10 "https://github.com/snowarch/inir-mascot/releases/latest" 2>/dev/null \
-    | tr -d '\r' | awk -F/ 'tolower($0) ~ /^location:/ { print $NF; exit }'
+  local final_url
+  final_url="$(curl -fsIL --max-time 10 -o /dev/null -w '%{url_effective}' \
+    "https://github.com/snowarch/inir-mascot/releases/latest" 2>/dev/null || true)"
+  [[ "$final_url" == */releases/tag/* ]] || return 0
+  printf '%s\n' "${final_url##*/}"
 }
 
 extras_mascot_release_base_url() {
@@ -245,7 +459,7 @@ extras_refresh_mascot_pack_on_update() {
   local helper
   helper="$(extras_mascot_helper)"
 
-  [[ -d "${shell_dir}/.git" ]] && return 0
+  [[ -e "${shell_dir}/.git" ]] && return 0
   [[ -x "$helper" || -f "$helper" ]] || return 0
 
   local count

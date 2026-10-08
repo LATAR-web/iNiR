@@ -11,7 +11,8 @@
       "pacman": "firefox",
       "apt": "firefox",
       "dnf": "firefox",
-      "flatpak": "org.mozilla.firefox"
+      "flatpak": "org.mozilla.firefox",
+      "xbps": "firefox"
     }
   },
   {
@@ -26,7 +27,8 @@
       "pacman": "chromium",
       "apt": "chromium-browser",
       "dnf": "chromium",
-      "flatpak": "org.chromium.Chromium"
+      "flatpak": "org.chromium.Chromium",
+      "xbps": "chromium"
     }
   },
   {
@@ -66,7 +68,8 @@
     "targets": {
       "pacman": "kitty",
       "apt": "kitty",
-      "dnf": "kitty"
+      "dnf": "kitty",
+      "xbps": "kitty"
     }
   },
   {
@@ -80,7 +83,8 @@
     "targets": {
       "pacman": "foot",
       "apt": "foot",
-      "dnf": "foot"
+      "dnf": "foot",
+      "xbps": "foot"
     }
   },
   {
@@ -93,7 +97,8 @@
     "tags": ["terminal", "multiplexer", "lua", "gpu"],
     "targets": {
       "pacman": "wezterm",
-      "flatpak": "org.wezfurlong.wezterm"
+      "flatpak": "org.wezfurlong.wezterm",
+      "xbps": "wezterm"
     }
   },
   {
@@ -108,7 +113,8 @@
       "pacman": "alacritty",
       "apt": "alacritty",
       "dnf": "alacritty",
-      "flatpak": "org.alacritty.Alacritty"
+      "flatpak": "org.alacritty.Alacritty",
+      "xbps": "alacritty"
     }
   },
   {
@@ -135,7 +141,8 @@
     "targets": {
       "pacman": "neovim",
       "apt": "neovim",
-      "dnf": "neovim"
+      "dnf": "neovim",
+      "xbps": "neovim"
     }
   },
   {
@@ -150,7 +157,8 @@
       "pacman": "kate",
       "apt": "kate",
       "dnf": "kate",
-      "flatpak": "org.kde.kate"
+      "flatpak": "org.kde.kate",
+      "xbps": "kate"
     }
   },
   {
@@ -178,7 +186,8 @@
       "pacman": "vlc",
       "apt": "vlc",
       "dnf": "vlc",
-      "flatpak": "org.videolan.VLC"
+      "flatpak": "org.videolan.VLC",
+      "xbps": "vlc"
     }
   },
   {
@@ -193,7 +202,8 @@
       "pacman": "mpv",
       "apt": "mpv",
       "dnf": "mpv",
-      "flatpak": "io.mpv.Mpv"
+      "flatpak": "io.mpv.Mpv",
+      "xbps": "mpv"
     }
   },
   {
@@ -236,7 +246,8 @@
       "pacman": "easyeffects",
       "apt": "easyeffects",
       "dnf": "easyeffects",
-      "flatpak": "com.github.wwmm.easyeffects"
+      "flatpak": "com.github.wwmm.easyeffects",
+      "xbps": "easyeffects"
     }
   },
   {
@@ -250,7 +261,8 @@
     "targets": {
       "pacman": "cava",
       "apt": "cava",
-      "dnf": "cava"
+      "dnf": "cava",
+      "xbps": "cava"
     }
   },
   {
@@ -278,7 +290,8 @@
       "pacman": "telegram-desktop",
       "apt": "telegram-desktop",
       "dnf": "telegram-desktop",
-      "flatpak": "org.telegram.desktop"
+      "flatpak": "org.telegram.desktop",
+      "xbps": "telegram-desktop"
     }
   },
   {
@@ -291,7 +304,8 @@
     "tags": ["messaging", "chat", "encrypted", "privacy", "signal"],
     "targets": {
       "aur": "signal-desktop",
-      "flatpak": "org.signal.Signal"
+      "flatpak": "org.signal.Signal",
+      "xbps": "Signal-Desktop"
     }
   },
   {
@@ -305,7 +319,8 @@
     "targets": {
       "pacman": "btop",
       "apt": "btop",
-      "dnf": "btop"
+      "dnf": "btop",
+      "xbps": "btop"
     }
   },
   {
@@ -319,7 +334,8 @@
     "targets": {
       "pacman": "fastfetch",
       "apt": "fastfetch",
-      "dnf": "fastfetch"
+      "dnf": "fastfetch",
+      "xbps": "fastfetch"
     }
   },
   {
@@ -333,7 +349,8 @@
     "targets": {
       "pacman": "timeshift",
       "apt": "timeshift",
-      "dnf": "timeshift"
+      "dnf": "timeshift",
+      "xbps": "timeshift"
     }
   },
   {
@@ -347,7 +364,8 @@
     "targets": {
       "pacman": "gnome-disk-utility",
       "apt": "gnome-disk-utility",
-      "dnf": "gnome-disk-utility"
+      "dnf": "gnome-disk-utility",
+      "xbps": "gnome-disk-utility"
     }
   },
   {
@@ -362,7 +380,8 @@
       "pacman": "filelight",
       "apt": "filelight",
       "dnf": "filelight",
-      "flatpak": "org.kde.filelight"
+      "flatpak": "org.kde.filelight",
+      "xbps": "filelight"
     }
   },
   {
@@ -376,7 +395,8 @@
     "targets": {
       "pacman": "docker",
       "apt": "docker.io",
-      "dnf": "docker"
+      "dnf": "docker",
+      "xbps": "docker"
     }
   },
   {
@@ -390,7 +410,8 @@
     "targets": {
       "pacman": "nodejs",
       "apt": "nodejs",
-      "dnf": "nodejs"
+      "dnf": "nodejs",
+      "xbps": "nodejs"
     }
   },
   {
@@ -428,7 +449,8 @@
     "tags": ["gtk", "theme", "appearance", "wayland"],
     "targets": {
       "pacman": "nwg-look",
-      "aur": "nwg-look"
+      "aur": "nwg-look",
+      "xbps": "nwg-look"
     }
   },
   {
@@ -442,7 +464,8 @@
     "targets": {
       "pacman": "qt6ct",
       "apt": "qt6ct",
-      "dnf": "qt6ct"
+      "dnf": "qt6ct",
+      "xbps": "qt6ct"
     }
   },
   {
@@ -456,7 +479,8 @@
     "targets": {
       "pacman": "kvantum",
       "apt": "qt6-style-kvantum",
-      "dnf": "kvantum"
+      "dnf": "kvantum",
+      "xbps": "kvantum"
     }
   },
   {
@@ -468,7 +492,8 @@
     "category": "theming",
     "tags": ["wallpaper", "color", "palette", "theme", "gowall"],
     "targets": {
-      "aur": "gowall-bin"
+      "aur": "gowall-bin",
+      "xbps": "gowall"
     }
   },
   {
@@ -532,7 +557,8 @@
       "pacman": "lutris",
       "apt": "lutris",
       "dnf": "lutris",
-      "flatpak": "net.lutris.Lutris"
+      "flatpak": "net.lutris.Lutris",
+      "xbps": "lutris"
     }
   },
   {
@@ -559,7 +585,8 @@
       "pacman": "mangohud",
       "apt": "mangohud",
       "dnf": "mangohud",
-      "flatpak": "org.freedesktop.Platform.VulkanLayer.MangoHud"
+      "flatpak": "org.freedesktop.Platform.VulkanLayer.MangoHud",
+      "xbps": "MangoHud"
     }
   },
   {
@@ -573,7 +600,8 @@
     "targets": {
       "pacman": "gamemode",
       "apt": "gamemode",
-      "dnf": "gamemode"
+      "dnf": "gamemode",
+      "xbps": "gamemode"
     }
   },
   {
@@ -587,7 +615,8 @@
     "targets": {
       "pacman": "thunar",
       "apt": "thunar",
-      "dnf": "thunar"
+      "dnf": "thunar",
+      "xbps": "Thunar"
     }
   },
   {
@@ -602,7 +631,8 @@
       "pacman": "nautilus",
       "apt": "nautilus",
       "dnf": "nautilus",
-      "flatpak": "org.gnome.Nautilus"
+      "flatpak": "org.gnome.Nautilus",
+      "xbps": "nautilus"
     }
   },
   {
@@ -617,7 +647,8 @@
       "pacman": "dolphin",
       "apt": "dolphin",
       "dnf": "dolphin",
-      "flatpak": "org.kde.dolphin"
+      "flatpak": "org.kde.dolphin",
+      "xbps": "dolphin"
     }
   },
   {
@@ -632,7 +663,8 @@
       "pacman": "gimp",
       "apt": "gimp",
       "dnf": "gimp",
-      "flatpak": "org.gimp.GIMP"
+      "flatpak": "org.gimp.GIMP",
+      "xbps": "gimp"
     }
   },
   {
@@ -647,7 +679,8 @@
       "pacman": "inkscape",
       "apt": "inkscape",
       "dnf": "inkscape",
-      "flatpak": "org.inkscape.Inkscape"
+      "flatpak": "org.inkscape.Inkscape",
+      "xbps": "inkscape"
     }
   },
   {
@@ -662,7 +695,8 @@
       "pacman": "kdenlive",
       "apt": "kdenlive",
       "dnf": "kdenlive",
-      "flatpak": "org.kde.kdenlive"
+      "flatpak": "org.kde.kdenlive",
+      "xbps": "kdenlive"
     }
   }
 ]

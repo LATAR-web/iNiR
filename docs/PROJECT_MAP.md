@@ -224,7 +224,11 @@ A translation change affects interface language coverage, not core runtime logic
 
 This directory supports installation, packaging, migrations, updates, rollback, and distro-specific behavior.
 
-The `setup` script sources libraries from `sdata/lib/` and uses distribution data under directories such as `sdata/dist-arch/`.
+The `setup` script sources libraries from `sdata/lib/` and uses distribution
+data under directories such as `sdata/dist-arch/` and `sdata/dist-void/`.
+The Void path is not a package-name alias layer: it owns XBPS dependency
+profiles plus provider logic for runit/Turnstile and capabilities that need a
+pinned or Flatpak fallback.
 
 If you change `sdata/`, you are usually changing how iNiR installs, updates, or maintains itself on user machines.
 
@@ -787,6 +791,7 @@ For setup and distribution:
 - `setup`
 - `docs/SETUP.md`
 - `docs/PACKAGES.md`
+- `docs/VOID.md` and `docs/VOID_CAPABILITIES.md` for the supported Void port
 
 For user automation and scripting:
 

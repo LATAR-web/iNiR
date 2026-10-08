@@ -9003,5 +9003,7 @@
   "Login screen": "ログイン画面",
   "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "コンピューターの起動後にサインインする画面です。「自動」では iRiS を使っている間、iRiS のロック画面の見た目になります。",
   "Opening %1…": "%1を開いています…",
-  "%1 didn't open": "%1を開けませんでした"
+  "%1 didn't open": "%1を開けませんでした",
+  "Generated during installation": "Generated during installation",
+  "The WARP daemon is stopped. Start warp-svc with your system service manager, then retry.": "The WARP daemon is stopped. Start warp-svc with your system service manager, then retry."
 }

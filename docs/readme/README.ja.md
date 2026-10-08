@@ -250,6 +250,8 @@ inir doctor                     # auto-diagnose and fix
 inir update                     # pull + migrate + restart
 ```
 
+**対応ディストリビューション：** Arch。この fork では XBPS を使う Void Linux glibc + runit の自動・検証済みインストール経路も追加されています。Void は [VOID.md](../VOID.md)、パッケージ詳細は [PACKAGES.md](../PACKAGES.md) を参照してください。
+
 `./setup install` 以外の方法がよければ：
 
 ```bash

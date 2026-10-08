@@ -45,17 +45,9 @@ ContentPage {
         title: Translation.tr("Mascot")
 
         SettingsGroup {
-            // The art pack is an optional download (setup › Extras); probe one
-            // pack asset and surface install instructions when it's missing
-            Image {
-                id: packProbe
-                visible: false
-                source: Quickshell.shellPath("assets/images/mascot/inir-mascot-edge-peek.png")
-                asynchronous: true
-            }
             Rectangle {
                 Layout.fillWidth: true
-                visible: packProbe.status === Image.Error
+                visible: !MascotCatalog.packAvailable
                 implicitHeight: packMissingText.implicitHeight + 20
                 radius: Appearance.rounding.small
                 color: Appearance.colors.colSecondaryContainer
@@ -73,6 +65,7 @@ ContentPage {
             SettingsSwitch {
                 buttonIcon: "pets"
                 text: Translation.tr("Show mascot illustration")
+                enabled: MascotCatalog.packAvailable
                 checked: Config.options?.mascot?.enable ?? false
                 onCheckedChanged: Config.setNestedValue("mascot.enable", checked)
                 StyledToolTip {
@@ -488,10 +481,15 @@ ContentPage {
             property var poseOptions: [{ displayName: Translation.tr("Auto (rotate pool)"), value: "" }]
 
             FileView {
+                id: mascotManifestFile
                 path: Quickshell.shellPath("assets/images/mascot/manifest.json")
                 watchChanges: true
                 onLoadedChanged: {
                     if (!loaded) return
+                    if (!MascotCatalog.packAvailable) {
+                        mascotReactionsGroup.poseOptions = [{ displayName: Translation.tr("Auto (rotate pool)"), value: "", image: "" }]
+                        return
+                    }
                     try {
                         const m = JSON.parse(text())
                         const anim = m.animatedPoses ?? []
@@ -506,6 +504,17 @@ ContentPage {
                     } catch (e) {
                         console.warn("[QuickConfig] mascot manifest load failed:", e)
                     }
+                }
+            }
+
+            Connections {
+                target: MascotCatalog
+                function onPackAvailableChanged() {
+                    if (!MascotCatalog.packAvailable) {
+                        mascotReactionsGroup.poseOptions = [{ displayName: Translation.tr("Auto (rotate pool)"), value: "", image: "" }]
+                        return
+                    }
+                    mascotManifestFile.reload()
                 }
             }
 

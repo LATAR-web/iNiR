@@ -81,7 +81,7 @@ binds {
     // ═══════════════════════════════════════════════════════════════════════
 
     // Close window (iNiR's close with confirmation dialog for unsaved work).
-    Mod+Q repeat=false { spawn "inir" "close-window"; }
+    Mod+Q repeat=false allow-inhibiting=false { spawn "inir" "close-window"; }
 
     // Maximize column (fills screen width, keeps gaps/bar).
     Mod+D { maximize-column; }

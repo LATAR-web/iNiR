@@ -9003,5 +9003,7 @@
   "Login screen": "Pantalla de inicio de sesión",
   "Where you sign in after starting the computer. Automatic wears the iRiS lock while you use iRiS.": "Donde inicias sesión al encender la computadora. Automático lleva el bloqueo de iRiS mientras usas iRiS.",
   "Opening %1…": "Abriendo %1…",
-  "%1 didn't open": "%1 no se abrió"
+  "%1 didn't open": "%1 no se abrió",
+  "Generated during installation": "Generada durante la instalación",
+  "The WARP daemon is stopped. Start warp-svc with your system service manager, then retry.": "El demonio de WARP está detenido. Inicia warp-svc con el gestor de servicios de tu sistema y vuelve a intentarlo."
 }

@@ -74,10 +74,7 @@ Singleton {
         }
     }
 
-    // External process control (optional)
-    readonly property bool disableDiscoverOverlay: Config.options?.gameMode?.disableDiscoverOverlay ?? true
     readonly property bool suppressNotifications: Config.options?.gameMode?.suppressNotifications ?? true
-    readonly property string _discoverOverlayServiceName: "discover-overlay.service"
 
     // State file path
     readonly property string _stateFile: Quickshell.env("HOME") + "/.local/state/quickshell/user/gamemode_active"
@@ -323,63 +320,6 @@ Singleton {
         if (CompositorService.isNiri && controlNiriAnimations) {
             root.suppressNiriToast = true
             niriAnimDebounce.restart()
-        }
-
-        // External processes control
-        if (root.disableDiscoverOverlay) {
-            discoverOverlayDebounce.restart()
-        }
-    }
-
-    // Track last applied state for discover-overlay control
-    property bool _lastDiscoverOverlayGameState: false
-
-    Timer {
-        id: discoverOverlayDebounce
-        interval: 800
-        repeat: false
-        onTriggered: {
-            if (!root.disableDiscoverOverlay)
-                return
-
-            const shouldStop = root.active
-            if (shouldStop === root._lastDiscoverOverlayGameState)
-                return
-            root._lastDiscoverOverlayGameState = shouldStop
-
-            if (shouldStop) {
-                root._log("[GameMode] Stopping", root._discoverOverlayServiceName)
-                discoverOverlayStopProc.running = true
-            } else {
-                root._log("[GameMode] Starting", root._discoverOverlayServiceName)
-                discoverOverlayStartProc.running = true
-            }
-        }
-    }
-
-    Process {
-        id: discoverOverlayStopProc
-        command: [
-            "/usr/bin/bash",
-            "-c",
-            "systemctl --user stop " + root._discoverOverlayServiceName + " 2>/dev/null; " +
-            "pkill -x discover-overlay 2>/dev/null; true"
-        ]
-        onExited: (code, status) => {
-            root._log("[GameMode] discover-overlay stop exited:", code)
-        }
-    }
-
-    Process {
-        id: discoverOverlayStartProc
-        command: [
-            "/usr/bin/systemctl",
-            "--user",
-            "start",
-            root._discoverOverlayServiceName
-        ]
-        onExited: (code, status) => {
-            root._log("[GameMode] systemctl start exited:", code)
         }
     }
 }

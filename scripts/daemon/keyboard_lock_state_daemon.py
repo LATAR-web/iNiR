@@ -2,14 +2,80 @@
 
 import argparse
 import asyncio
+import atexit
+import fcntl
 import json
+import os
+from pathlib import Path
+import signal
 import sys
+import time
 
 from evdev import InputDevice, ecodes, list_devices
 
 IGNORED_NAME_PARTS = ("ydotool", "virtual")
 RELEVANT_KEY_CODES = {ecodes.KEY_CAPSLOCK, ecodes.KEY_NUMLOCK}
 RELEVANT_LED_CODES = {ecodes.LED_CAPSL, ecodes.LED_NUML}
+
+
+def _monitor_paths():
+    runtime_dir = Path(os.environ.get("XDG_RUNTIME_DIR") or "/tmp")
+    prefix = "inir-keyboard-lock-state" if runtime_dir != Path("/tmp") else f"inir-{os.getuid()}-keyboard-lock-state"
+    return runtime_dir / f"{prefix}.pid", runtime_dir / f"{prefix}.lock"
+
+
+def _is_owned_monitor(pid):
+    if pid <= 1 or pid == os.getpid():
+        return False
+
+    try:
+        cmdline = Path(f"/proc/{pid}/cmdline").read_bytes().replace(b"\0", b" ").decode("utf-8", "replace")
+    except OSError:
+        return False
+
+    return "keyboard_lock_state_daemon.py" in cmdline and "--once" not in cmdline
+
+
+def claim_monitor_process():
+    """Ensure only the newest persistent monitor for this user stays alive."""
+    pid_path, lock_path = _monitor_paths()
+    lock_path.parent.mkdir(parents=True, exist_ok=True)
+
+    with lock_path.open("a+") as lock_file:
+        fcntl.flock(lock_file.fileno(), fcntl.LOCK_EX)
+
+        old_pid = 0
+        try:
+            old_pid = int(pid_path.read_text().strip())
+        except (OSError, ValueError):
+            pass
+
+        if _is_owned_monitor(old_pid):
+            try:
+                os.kill(old_pid, signal.SIGTERM)
+            except ProcessLookupError:
+                pass
+
+            deadline = time.monotonic() + 1.0
+            while _is_owned_monitor(old_pid) and time.monotonic() < deadline:
+                time.sleep(0.05)
+
+            if _is_owned_monitor(old_pid):
+                try:
+                    os.kill(old_pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+
+        pid_path.write_text(f"{os.getpid()}\n")
+
+    def cleanup_pid_file():
+        try:
+            if pid_path.read_text().strip() == str(os.getpid()):
+                pid_path.unlink()
+        except OSError:
+            pass
+
+    atexit.register(cleanup_pid_file)
 
 
 class KeyboardLockMonitor:
@@ -173,6 +239,9 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--once", action="store_true")
     args = parser.parse_args()
+
+    if not args.once:
+        claim_monitor_process()
 
     try:
         code = asyncio.run(async_main(args.once))

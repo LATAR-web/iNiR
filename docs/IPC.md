@@ -348,7 +348,7 @@ Close window confirmation dialog. Shows a prompt before closing the focused wind
 | `close` | Dismiss the dialog without closing |
 
 ```kdl
-Mod+Q repeat=false { spawn "inir" "close-window"; }
+Mod+Q repeat=false allow-inhibiting=false { spawn "inir" "close-window"; }
 ```
 
 By default, confirmation is disabled (closes immediately). Enable it in settings or config:
@@ -748,7 +748,7 @@ Shared multi-provider AI service. It supports Gemini, OpenAI-compatible chat and
 
 ### packageSearch
 
-Package search service. Searches pacman repos and installed packages.
+Package search service. Searches pacman/AUR or XBPS repositories and installed packages.
 
 | Function | Description |
 |----------|-------------|

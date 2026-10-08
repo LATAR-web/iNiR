@@ -4,9 +4,14 @@ How iNiR starts, how apps autostart, and how sessions end.
 
 ## Shell startup
 
-iNiR itself runs as a systemd user service. It does not start via niri's `spawn-at-startup`. This gives it crash recovery, proper lifecycle management, and journal logging.
+iNiR is started by the session supervisor selected for the current machine. On
+a normal Arch/systemd-user session that is `inir.service`; on the supported
+Void runit path it is a Turnstile-managed user service or the guarded runsvdir
+fallback. The goal is the same in every tier: exactly one shell, tied to the
+Niri session, with the compositor's authoritative environment and crash
+recovery owned by a supervisor.
 
-The service connects to your compositor via a wants link:
+On the systemd tier, the service connects to the compositor via a wants link:
 
 ```
 ~/.config/systemd/user/niri.service.wants/inir.service
@@ -19,6 +24,13 @@ inir service enable     # create wants link
 inir service disable    # remove it
 inir service status     # check state
 ```
+
+On Void without a usable systemd user manager, setup renders
+`~/.config/service/inir/run`. Turnstile provides the user-session lifecycle and
+environment directory when available; otherwise Niri owns a single runsvdir
+fallback. Do not add a second handwritten `spawn-at-startup` shell entry on top
+of that. `inir restart`, `inir logs`, `inir doctor` and the other normal CLI
+operations select the active supervisor for you.
 
 For the full boot sequence, see [Runtime and Boot Pipeline](RUNTIME.md).
 
@@ -42,7 +54,7 @@ iNiR has its own autostart manager that handles:
 
 - **Desktop entries**: standard `.desktop` files in `~/.config/autostart/`
 - **Custom commands**: user-defined commands configured through Settings
-- **Systemd units**: user-level systemd services
+- **Systemd units**: user-level systemd services when that user manager exists
 
 Manage autostart entries from Settings > System > Autostart (there is no CLI for this, it is managed through the settings UI, backed by `services/Autostart.qml`).
 
@@ -90,6 +102,15 @@ iNiR is your PolicyKit authentication agent. When a privileged operation needs a
 If you run an agent of your own, iNiR sees it at start and steps aside. Turn the shell's agent off with `QS_DISABLE_POLKIT=1`.
 
 While the shell is restarting, nothing answers graphical prompts and they fail as not authorized; try again once it is back (systemd restarts it on its own). `pkexec` and `run0` in a terminal ask there instead.
+
+On the supported Void Turnstile tier the shell starts with `QS_DISABLE_POLKIT=1`.
+Turnstile's per-user service manager belongs to an elogind background session, so
+a Quickshell listener registered from that service is not the same subject as the
+seat0 graphical session and polkit rejects it. Because the shell runs outside the
+session there, Niri starts `polkit-gnome` (installed by the Void dependency
+profile) from the Turnstile block of the startup file; setup writes that line only
+for this tier and removes it if the tier changes. The systemd and runsvdir tiers
+run the shell inside the session, where it stays the only agent.
 
 ## Idle management
 

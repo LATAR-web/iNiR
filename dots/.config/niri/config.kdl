@@ -266,7 +266,7 @@ binds {
     Super+W { spawn "bash" "-c" "xdg-open https://"; }
     
     // Window management
-    Mod+Q repeat=false { spawn "bash" "-c" "$HOME/.config/quickshell/inir/scripts/close-window.sh"; }
+    Mod+Q repeat=false allow-inhibiting=false { spawn "bash" "-c" "$HOME/.config/quickshell/inir/scripts/close-window.sh"; }
     Mod+D { maximize-column; }
     Mod+F { fullscreen-window; }
     Mod+A { toggle-window-floating; }

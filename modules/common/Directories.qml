@@ -50,17 +50,42 @@ Singleton {
     property string userAvatarPathRicersAndWeirdSystems: `${Directories.homePath}/.face`
     property string userAvatarPathRicersAndWeirdSystems2: `${Directories.homePath}/.face.icon`
     property int userAvatarRevision: 0
+
+    FileView {
+        id: avatarAccountsProbe
+        path: root.userAvatarPathAccountsService
+        watchChanges: true
+        printErrors: false
+        onFileChanged: root.userAvatarRevision++
+    }
+
+    FileView {
+        id: avatarFaceProbe
+        path: root.userAvatarPathRicersAndWeirdSystems
+        watchChanges: true
+        printErrors: false
+        onFileChanged: root.userAvatarRevision++
+    }
+
+    FileView {
+        id: avatarFaceIconProbe
+        path: root.userAvatarPathRicersAndWeirdSystems2
+        watchChanges: true
+        printErrors: false
+        onFileChanged: root.userAvatarRevision++
+    }
+
     readonly property var userAvatarPaths: [
-        userAvatarPathAccountsService,
-        userAvatarPathRicersAndWeirdSystems,
-        userAvatarPathRicersAndWeirdSystems2
+        avatarAccountsProbe.loaded ? userAvatarPathAccountsService : "",
+        avatarFaceProbe.loaded ? userAvatarPathRicersAndWeirdSystems : "",
+        avatarFaceIconProbe.loaded ? userAvatarPathRicersAndWeirdSystems2 : ""
     ].filter(path => String(path ?? "").trim().length > 0)
     readonly property string userAvatarSourcePrimary: avatarSourceAt(0)
 
-    FileView {
-        path: root.userAvatarPathAccountsService
-        watchChanges: true
-        onFileChanged: root.userAvatarRevision++
+    onUserAvatarRevisionChanged: {
+        avatarAccountsProbe.reload()
+        avatarFaceProbe.reload()
+        avatarFaceIconProbe.reload()
     }
     property string coverArt: `${Directories.cachePath}/media/coverart`
     property string tempImages: "/tmp/quickshell/media/images"

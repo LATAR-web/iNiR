@@ -11,9 +11,14 @@ Window {
     readonly property bool interactive: args.indexOf("--interactive") >= 0
     readonly property int screenArg: args.indexOf("--screen")
     readonly property string screenName: screenArg >= 0 && screenArg + 1 < args.length
-        ? args[screenArg + 1] : ""
-    readonly property string sourceArg: args.length > 1 ? String(args[args.length - 1]).trim() : ""
+        ? args[screenArg + 1]
+        : ""
+    readonly property string sourceArg: probeMode || args.length <= 1
+        ? ""
+        : String(args[args.length - 1]).trim()
     readonly property url sourceUrl: {
+        if (sourceArg.length === 0)
+            return "about:blank"
         if (/^[a-zA-Z][a-zA-Z0-9+.-]*:\/\//.test(sourceArg))
             return sourceArg
         const localPath = sourceArg.endsWith("/") ? sourceArg + "index.html" : sourceArg

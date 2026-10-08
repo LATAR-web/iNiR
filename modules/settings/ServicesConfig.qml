@@ -251,7 +251,7 @@ ContentPage {
             MaterialTextArea {
                 Layout.fillWidth: true
                 placeholderText: Translation.tr("Password")
-                text: Config.options?.hotspot?.password ?? "inirhotspot"
+                text: Config.options?.hotspot?.password ?? ""
                 wrapMode: TextEdit.Wrap
                 onTextChanged: Config.setNestedValue("hotspot.password", text)
                 StyledToolTip {

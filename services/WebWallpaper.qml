@@ -32,7 +32,10 @@ Singleton {
 
     Process {
         id: runnerProbeProc
-        command: ["/usr/bin/bash", "-lc", "command -v qml6 || command -v qml"]
+        command: [
+            "/usr/bin/bash", "-lc",
+            "command -v qml6 || command -v qml || { [ -x /usr/lib/qt6/bin/qml ] && printf '%s\\n' /usr/lib/qt6/bin/qml; }"
+        ]
         stdout: StdioCollector { id: probeOut }
         stderr: StdioCollector { id: probeErr }
         onExited: exitCode => {

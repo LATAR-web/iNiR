@@ -55,6 +55,18 @@ log_success() { :; }
 # shellcheck source=../sdata/lib/extras.sh
 source "$repo_root/sdata/lib/extras.sh"
 
+# The live resolver must work safely under this script's `set -o pipefail`.
+# Mock curl at the public seam: the helper now consumes curl's effective URL
+# rather than parsing a redirect pipeline that can SIGPIPE when the reader exits.
+saved_tag="$INIR_MASCOT_RELEASE_TAG"
+unset INIR_MASCOT_RELEASE_TAG
+curl() {
+  printf '%s\n' 'https://github.com/snowarch/inir-mascot/releases/tag/v-pipefail-test'
+}
+[[ "$(extras_mascot_latest_tag)" == "v-pipefail-test" ]]
+unset -f curl
+export INIR_MASCOT_RELEASE_TAG="$saved_tag"
+
 extras_install_mascot_pack
 [[ "$(find "$asset_dir" -maxdepth 1 -type f \( -name 'inir-mascot-*.png' -o -name 'inir-mascot-*.gif' \) | wc -l)" -eq 12 ]]
 grep -Fq '"owner":"inir"' "$asset_dir/manifest.json"

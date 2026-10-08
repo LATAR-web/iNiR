@@ -100,8 +100,8 @@ Item {
                             }
                             WTextField {
                                 Layout.fillWidth: true
-                                placeholderText: "inirhotspot"
-                                text: Config.options?.hotspot?.password ?? "inirhotspot"
+                                placeholderText: Translation.tr("Generated during installation")
+                                text: Config.options?.hotspot?.password ?? ""
                                 echoMode: TextInput.Password
                                 onTextEdited: Config.setNestedValue("hotspot.password", text)
                             }

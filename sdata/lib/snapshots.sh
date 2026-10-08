@@ -153,9 +153,18 @@ restore_snapshot() {
     
     echo -e "${STY_CYAN}Restoring snapshot: ${snapshot_id}${STY_RST}"
     
-    # Stop shell
+    # Stop through the runtime launcher so a supervisor cannot respawn the shell
+    # while the snapshot files are being restored.
     local runtime_target="${XDG_CONFIG_HOME}/quickshell/inir"
-    qs -p "$runtime_target" kill &>/dev/null || true
+    local runtime_launcher="${runtime_target}/scripts/inir"
+    if [[ ! -f "$runtime_launcher" ]]; then
+        log_error "Runtime launcher not found: ${runtime_launcher}"
+        return 1
+    fi
+    if ! bash "$runtime_launcher" stop -c "$runtime_target"; then
+        log_error "Could not stop the shell before restoring the snapshot"
+        return 1
+    fi
     
     # Restore QML code
     if [[ -d "${snapshot_dir}/inir" ]]; then
@@ -211,10 +220,16 @@ restore_snapshot() {
     
     # Restart shell (only if we have access to the session)
     if [[ -n "$NIRI_SOCKET" ]] || [[ -n "$WAYLAND_DISPLAY" ]]; then
-        log_info "Starting shell..."
-        nohup qs -p "$runtime_target" >/dev/null 2>&1 &
-        disown
-        tui_success "Snapshot restored and shell restarted"
+        log_info "Restarting shell..."
+        if [[ ! -f "$runtime_launcher" ]]; then
+            tui_warn "Snapshot restored, but its runtime launcher is missing"
+            tui_info "Run: inir doctor"
+        elif bash "$runtime_launcher" restart -c "$runtime_target"; then
+            tui_success "Snapshot restored and shell restarted"
+        else
+            tui_warn "Snapshot restored, but the shell did not restart cleanly"
+            tui_info "Run: inir logs"
+        fi
     else
         tui_warn "Not in graphical session - shell restart skipped"
         tui_info "Run: inir start (in your Niri session)"
@@ -340,7 +355,7 @@ get_update_tracking_branch() {
 }
 
 repo_worktree_is_clean() {
-    [[ -d "${REPO_ROOT}/.git" ]] || return 1
+    [[ -e "${REPO_ROOT}/.git" ]] || return 1
     [[ -z "$(git -C "$REPO_ROOT" status --porcelain --untracked-files=normal 2>/dev/null)" ]]
 }
 
@@ -417,7 +432,7 @@ check_remote_updates() {
     #   2 = error (offline/no git/no tracked remote branch)
     #   3 = local ahead of remote
     #   4 = diverged
-    if [[ ! -d "${REPO_ROOT}/.git" ]]; then
+    if [[ ! -e "${REPO_ROOT}/.git" ]]; then
         return 2
     fi
 

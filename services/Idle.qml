@@ -89,7 +89,7 @@ Singleton {
         }
 
         if (suspendTimeout > 0) {
-            cmd.push("timeout", suspendTimeout.toString(), "/usr/bin/systemctl suspend -i")
+            cmd.push("timeout", suspendTimeout.toString(), "/usr/bin/loginctl --ignore-inhibitors suspend")
         }
 
         if (lockBeforeSleep) {

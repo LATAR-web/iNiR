@@ -43,7 +43,7 @@ Singleton {
         ])
         // Small delay so notification shows
         Qt.callLater(() => {
-            Quickshell.execDetached(["systemctl", "--user", "restart", "inir.service"])
+            Quickshell.execDetached([Quickshell.shellPath("scripts/inir"), "service", "restart"])
         })
     }
 

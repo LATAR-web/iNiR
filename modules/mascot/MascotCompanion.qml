@@ -18,7 +18,8 @@ import Quickshell.Wayland
 Scope {
     id: root
 
-    readonly property bool companionEnabled: (Config.options?.mascot?.enable ?? false)
+    readonly property bool companionEnabled: MascotCatalog.packAvailable
+        && (Config.options?.mascot?.enable ?? false)
         && (Config.options?.mascot?.companion?.enable ?? true)
     readonly property int intervalMinutes: Config.options?.mascot?.companion?.intervalMinutes ?? 25
     readonly property int spriteSize: Config.options?.mascot?.companion?.size ?? 150

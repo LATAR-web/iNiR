@@ -133,7 +133,7 @@ echo ""
 # Debian/Ubuntu are first-class automated paths now; do not scare those users
 # with the old Arch-only warning.
 case "${OS_GROUP_ID:-unknown}" in
-    arch|fedora|debian|ubuntu)
+    arch|fedora|debian|ubuntu|void)
         tui_success "${DETECTED_DISTRO} has an automated dependency path."
         ;;
     nixos)

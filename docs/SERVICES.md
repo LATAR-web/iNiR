@@ -107,14 +107,14 @@
 | **Booru** | Multi-booru image board API (yande.re, konachan, danbooru, etc.). |
 | **VoiceSearch** | Voice recording + Gemini transcription + web search. IPC target: `voiceSearch`. |
 | **Emojis** | Emoji picker data. |
-| **PackageSearch** | Async package manager search (pacman + AUR). IPC target: `packageSearch`. |
+| **PackageSearch** | Async package manager search (pacman + AUR or XBPS). IPC target: `packageSearch`. |
 
 ## Utilities
 
 | Service | What it does |
 |---------|-------------|
 | **TimerService** | Pomodoro timer with persistent state. |
-| **Updates** | System update checker (Arch only, uses `checkupdates`). |
+| **Updates** | System update checker (`checkupdates` on Arch, `xbps-install -nu` on Void). |
 | **ShellUpdates** | iNiR update checker. Git-based, tracks commits behind remote. IPC target: `shellUpdate`. |
 | **Ydotool** | Virtual keyboard input for on-screen keyboard. |
 | **LatexRenderer** | LaTeX math rendering via MicroTeX. |

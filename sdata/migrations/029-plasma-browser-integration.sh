@@ -40,6 +40,13 @@ migration_apply() {
       echo -e "${STY_YELLOW}Install manually: sudo pacman -S plasma-browser-integration${STY_RST}"
       return 1
     }
+  elif command -v xbps-install >/dev/null 2>&1; then
+    echo "Installing plasma-browser-integration..."
+    pkg_sudo xbps-install -S -y plasma-browser-integration 2>/dev/null || {
+      echo -e "${STY_YELLOW}Could not auto-install plasma-browser-integration.${STY_RST}"
+      echo -e "${STY_YELLOW}Install manually: sudo xbps-install -S plasma-browser-integration${STY_RST}"
+      return 1
+    }
   elif command -v apt >/dev/null 2>&1; then
     echo "Installing plasma-browser-integration..."
     pkg_sudo apt install -y plasma-browser-integration 2>/dev/null || {

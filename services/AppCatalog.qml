@@ -100,6 +100,7 @@ Singleton {
         command: ["/usr/bin/bash", "-c",
             "pm=unknown; " +
             "command -v pacman &>/dev/null && pm=pacman; " +
+            "[ \"$pm\" = unknown ] && command -v xbps-query &>/dev/null && command -v xbps-install &>/dev/null && command -v xbps-remove &>/dev/null && pm=xbps; " +
             "[ \"$pm\" = unknown ] && command -v apt &>/dev/null && pm=apt; " +
             "[ \"$pm\" = unknown ] && command -v dnf &>/dev/null && pm=dnf; " +
             "echo \"$pm\"; " +
@@ -134,6 +135,9 @@ Singleton {
         switch (root._detectedPm) {
             case "pacman":
                 cmd = "pacman -Qq 2>/dev/null"
+                break
+            case "xbps":
+                cmd = "xbps-query -l 2>/dev/null | awk '$1 == \"ii\" {print $2}' | while IFS= read -r pkgver; do xbps-uhelper getpkgname \"$pkgver\"; done"
                 break
             case "apt":
                 cmd = "dpkg --get-selections 2>/dev/null | grep -v deinstall | awk '{print $1}'"
@@ -187,6 +191,7 @@ Singleton {
                 // Check native package
                 if (targets.pacman && installedSet.has(targets.pacman)) found = true
                 if (targets.aur && installedSet.has(targets.aur)) found = true
+                if (targets.xbps && installedSet.has(targets.xbps)) found = true
                 if (targets.apt && installedSet.has(targets.apt)) found = true
                 if (targets.dnf && installedSet.has(targets.dnf)) found = true
                 if (targets.flatpak && installedSet.has(targets.flatpak)) found = true
@@ -223,6 +228,7 @@ Singleton {
         // Try native package manager first
         if (pm === "pacman" && targets.pacman) return { pm: "pacman", pkg: targets.pacman }
         if (pm === "pacman" && targets.aur && root._aurHelperAvailable) return { pm: root._detectedAurHelper, pkg: targets.aur }
+        if (pm === "xbps" && targets.xbps) return { pm: "xbps", pkg: targets.xbps }
         if (pm === "apt" && targets.apt) return { pm: "apt", pkg: targets.apt }
         if (pm === "dnf" && targets.dnf) return { pm: "dnf", pkg: targets.dnf }
 
@@ -252,6 +258,9 @@ Singleton {
         switch (target.pm) {
             case "pacman":
                 script = 'sudo pacman -S -- "$1"'
+                break
+            case "xbps":
+                script = 'sudo xbps-install -S -- "$1"'
                 break
             case "yay":
                 script = 'yay -S -- "$1"'
@@ -300,6 +309,17 @@ Singleton {
                 if (pkg.length === 0) return false
                 script = 'sudo pacman -Rns -- "$1"'
                 break
+            case "xbps":
+                pkg = targets.xbps ?? ""
+                if (pkg.length > 0) {
+                    script = 'sudo xbps-remove -R -- "$1"'
+                } else if (root._flatpakAvailable && targets.flatpak) {
+                    pkg = targets.flatpak
+                    script = 'flatpak uninstall -y "$1"'
+                } else {
+                    return false
+                }
+                break
             case "apt":
                 pkg = targets.apt ?? ""
                 if (pkg.length === 0) return false
@@ -339,6 +359,7 @@ Singleton {
         const pm = target.pm ?? ""
         switch (pm) {
             case "pacman": return "pacman"
+            case "xbps": return "xbps"
             case "yay": return "aur"
             case "paru": return "aur"
             case "apt": return "apt"
@@ -354,6 +375,11 @@ Singleton {
     }
 
     function refresh(): void {
+        if (root._detectedPm === "unknown") {
+            root._detectPmRaw = ""
+            _detectPmProc.running = true
+            return
+        }
         root._refreshInstalled()
     }
 

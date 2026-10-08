@@ -18,12 +18,35 @@ function setup_user_groups(){
   
   # Add user to required groups
   local groups_before=" $(id -nG) "
-  x pkg_sudo usermod -aG video,i2c,input "$(whoami)"
-  if [[ "$groups_before" != *" video "* || "$groups_before" != *" i2c "* || "$groups_before" != *" input "* ]]; then
-    INIR_REBOOT_REASONS+=("Your user joined video, i2c and input: brightness, keyboard lights and the on-screen keyboard need it")
+  local required_groups="video,i2c,input"
+
+  # Void requires network and bluetooth group membership for their providers.
+  if [[ "${OS_GROUP_ID:-}" == void ]]; then
+    required_groups="video,i2c,input,network"
+    if ${INSTALL_TOOLKIT:-true} && getent group bluetooth >/dev/null; then
+      required_groups+=",bluetooth"
+    fi
   fi
-  
-  log_success "User added to video, i2c, input groups"
+
+  x pkg_sudo usermod -aG "$required_groups" "$(whoami)"
+
+  local group group_changed=false
+  for group in ${required_groups//,/ }; do
+    if [[ "$groups_before" != *" $group "* ]]; then
+      group_changed=true
+      break
+    fi
+  done
+
+  if [[ "$group_changed" == true ]]; then
+    if [[ "${OS_GROUP_ID:-}" == void ]]; then
+      INIR_REBOOT_REASONS+=("Your user joined ${required_groups//,/, }: Void session, network, Bluetooth and input access need the new group membership")
+    else
+      INIR_REBOOT_REASONS+=("Your user joined video, i2c and input: brightness, keyboard lights and the on-screen keyboard need it")
+    fi
+  fi
+
+  log_success "User added to ${required_groups//,/, } groups"
   log_warning "Group changes require logout/login to take effect"
 }
 
@@ -32,6 +55,76 @@ function setup_user_groups(){
 #####################################################################################
 function setup_systemd_services(){
   tui_info "Setting up systemd services..."
+
+  if [[ "${OS_GROUP_ID:-}" == void ]]; then
+    tui_info "Setting up Void runit session services..."
+    if ! command -v sv >/dev/null 2>&1; then
+      log_warning "runit 'sv' not found, skipping Void service setup"
+      return 0
+    fi
+    if [[ "${assume_yes:-false}" == true ]] \
+        || { [[ "${ask:-true}" == true ]] && tui_confirm "Enable Void session services (dbus, elogind, polkitd, turnstiled)?" "yes"; }; then
+      if elevate sh -c 'ln -sfn /etc/sv/dbus /var/service/dbus && ln -sfn /etc/sv/elogind /var/service/elogind && ln -sfn /etc/sv/polkitd /var/service/polkitd && ln -sfn /etc/sv/turnstiled /var/service/turnstiled'; then
+        log_success "Void session services enabled"
+      else
+        log_warning "Could not enable all Void session services"
+        return 1
+      fi
+    else
+      log_info "Enable Void session services with: sudo ln -s /etc/sv/{dbus,elogind,polkitd,turnstiled} /var/service/"
+    fi
+    if [[ -f /etc/turnstile/turnstiled.conf ]]; then
+      if [[ "${assume_yes:-false}" == true ]] \
+          || { [[ "${ask:-true}" == true ]] && tui_confirm "Set turnstile manage_rundir=no for elogind?" "yes"; }; then
+        if elevate sh -c 'if grep -q "^[[:space:]]*manage_rundir[[:space:]]*=" /etc/turnstile/turnstiled.conf; then sed -i -E "s/^[[:space:]]*manage_rundir[[:space:]]*=.*/manage_rundir = no/" /etc/turnstile/turnstiled.conf; else printf "\nmanage_rundir = no\n" >> /etc/turnstile/turnstiled.conf; fi'; then
+          log_success "Turnstile configured to use elogind's runtime directory"
+        else
+          log_warning "Could not configure turnstile for elogind"
+          return 1
+        fi
+      else
+        log_warning "Turnstile still manages /run/user; set manage_rundir = no for elogind"
+      fi
+    fi
+    # NetworkManager activation is intentionally deferred until the installer
+    # has finished. Replacing Void's base dhcpcd/wpa_supplicant services can
+    # briefly interrupt the connection that is still needed during setup.
+    # Power Profiles is a base UI capability; Quickshell talks to its system
+    # D-Bus service directly, so Void needs the packaged runit service active.
+    if [[ ! -d /etc/sv/power-profiles-daemon ]]; then
+      log_warning "Power Profiles service directory missing (/etc/sv/power-profiles-daemon); reinstall power-profiles-daemon"
+    elif [[ "${assume_yes:-false}" == true ]] \
+        || { [[ "${ask:-true}" == true ]] && tui_confirm "Enable power-profiles-daemon system service?" "yes"; }; then
+      if elevate sh -c 'ln -sfn /etc/sv/power-profiles-daemon /var/service/power-profiles-daemon'; then
+        log_success "Power Profiles service enabled"
+      else
+        log_warning "Could not enable power-profiles-daemon"
+        return 1
+      fi
+    else
+      log_info "Enable Power Profiles with: sudo ln -s /etc/sv/power-profiles-daemon /var/service/"
+    fi
+    # Bluetooth toolkit provider: enable bluetoothd via runit with confirmation.
+    if ${INSTALL_TOOLKIT:-true}; then
+      if [[ -d /etc/sv/bluetoothd ]]; then
+        if [[ "${assume_yes:-false}" == true ]] \
+            || { [[ "${ask:-true}" == true ]] && tui_confirm "Enable Bluetooth (bluetoothd) system service?" "yes"; }; then
+          if elevate sh -c 'ln -sfn /etc/sv/bluetoothd /var/service/bluetoothd'; then
+            log_success "Bluetooth service enabled"
+          else
+            log_warning "Could not enable Bluetooth service"
+            return 1
+          fi
+        else
+          log_info "Enable Bluetooth with: sudo ln -s /etc/sv/bluetoothd /var/service/"
+        fi
+      else
+        log_warning "Bluetooth service directory missing (/etc/sv/bluetoothd); reinstall the bluez package"
+      fi
+      configure_void_ydotool_uinput || return 1
+    fi
+    return 0
+  fi
   
   # Check if systemd is available
   if ! command -v systemctl &>/dev/null || [[ ! -d /run/systemd/system ]]; then
@@ -73,11 +166,11 @@ function setup_systemd_services(){
   fi
   
   # Enable ydotool only if service exists
-  if $ydotool_service_found && [[ -n "${DBUS_SESSION_BUS_ADDRESS}" ]]; then
+  if $ydotool_service_found && has_usable_systemd_user_manager; then
     v systemctl --user daemon-reload
     v systemctl --user enable ydotool --now 2>/dev/null || log_warning "Could not enable ydotool service"
   elif $ydotool_service_found; then
-    log_info "ydotool service found. Enable after login: systemctl --user enable ydotool --now"
+    log_info "ydotool service found, but no usable systemd user manager is active"
   fi
   
   # Bluetooth (optional)
@@ -129,7 +222,12 @@ function setup_super_daemon(){
   local daemon_src="${REPO_ROOT}/scripts/daemon/inir_super_overview_daemon.py"
   local service_src="${REPO_ROOT}/scripts/systemd/inir-super-overview.service"
   local daemon_dst="${HOME}/.local/bin/inir_super_overview_daemon.py"
-  local service_dst="${XDG_CONFIG_HOME}/systemd/user/inir-super-overview.service"
+  local config_dir="${XDG_CONFIG_HOME:-${HOME}/.config}"
+  local service_dst="${config_dir}/systemd/user/inir-super-overview.service"
+  local service_wants="${config_dir}/systemd/user/default.target.wants/inir-super-overview.service"
+  local runit_dir="${config_dir}/service/inir-super-overview"
+  local runit_run="${runit_dir}/run"
+  local supervisor
   
   if [[ ! -f "$daemon_src" ]]; then
     log_warning "Super-tap daemon not found in repo, skipping"
@@ -141,47 +239,59 @@ function setup_super_daemon(){
   x cp "$daemon_src" "$daemon_dst"
   x chmod +x "$daemon_dst"
   
-  # Install systemd service
-  x mkdir -p "$(dirname "$service_dst")"
-  x cp "$service_src" "$service_dst"
-  
-  # Enable service if in graphical session
-  if [[ -n "${DBUS_SESSION_BUS_ADDRESS}" ]]; then
+  supervisor="$(inir_supervisor)"
+  if [[ "$supervisor" == systemd ]]; then
+    if [[ -f "$runit_run" ]] && grep -q '^# Managed by iNiR\.' "$runit_run"; then
+      command -v sv >/dev/null 2>&1 && sv down "$runit_dir" >/dev/null 2>&1 || true
+      rm -rf "$runit_dir"
+    fi
+    x mkdir -p "$(dirname "$service_dst")"
+    x cp "$service_src" "$service_dst"
     v systemctl --user daemon-reload
     v systemctl --user enable inir-super-overview.service --now
   else
-    log_warning "Not in graphical session. Enable later with:"
-    echo "  systemctl --user enable inir-super-overview.service --now"
+    rm -f "$service_dst" "$service_wants"
+    x mkdir -p "$runit_dir"
+    local daemon_quoted
+    daemon_quoted="$(printf '%s' "$daemon_dst" | sed "s/'/'\\\\''/g")"
+    if [[ "$supervisor" == turnstile ]]; then
+      printf '#!/bin/sh\n# Managed by iNiR.\nexec chpst -e "$TURNSTILE_ENV_DIR" /usr/bin/env python3 '\''%s'\''\n' "$daemon_quoted" > "$runit_run"
+    else
+      printf '#!/bin/sh\n# Managed by iNiR.\nexec /usr/bin/env python3 '\''%s'\''\n' "$daemon_quoted" > "$runit_run"
+    fi
+    chmod +x "$runit_run"
+    if command -v sv >/dev/null 2>&1 && sv status "$runit_dir" 2>/dev/null | grep -q '^run:'; then
+      sv restart "$runit_dir" >/dev/null 2>&1 || return 1
+    fi
   fi
   
-  log_success "Super-tap daemon installed"
+  log_success "Super-tap daemon installed (${supervisor})"
 }
 
 function disable_super_daemon_if_present(){
   tui_info "Cleaning up legacy Super-tap daemon..."
 
-  local daemon_dst="${HOME}/.local/bin/ii_super_overview_daemon.py"
   local config_dir="${XDG_CONFIG_HOME:-${HOME}/.config}"
   local systemd_user_dir="${config_dir}/systemd/user"
-  local service_dst="${systemd_user_dir}/ii-super-overview.service"
+  local runit_dir="${config_dir}/service/inir-super-overview"
+  local service_name service_dst
 
-  # Best-effort stop/disable user service if we appear to be in a graphical session
-  if [[ -n "${DBUS_SESSION_BUS_ADDRESS}" && -f "${service_dst}" ]]; then
-    systemctl --user disable --now ii-super-overview.service 2>/dev/null || true
-    systemctl --user daemon-reload 2>/dev/null || true
-  elif [[ -f "${service_dst}" ]]; then
-    log_warning "Legacy Super-tap daemon service file detected but user systemd may not be reachable. Disable it later with:"
-    echo "  systemctl --user disable --now ii-super-overview.service"
+  for service_name in ii-super-overview inir-super-overview; do
+    service_dst="${systemd_user_dir}/${service_name}.service"
+    if has_usable_systemd_user_manager && [[ -f "$service_dst" ]]; then
+      systemctl --user disable --now "${service_name}.service" 2>/dev/null || true
+    fi
+    rm -f "$service_dst" "${systemd_user_dir}/default.target.wants/${service_name}.service"
+  done
+  has_usable_systemd_user_manager && systemctl --user daemon-reload 2>/dev/null || true
+
+  if [[ -f "${runit_dir}/run" ]] && grep -q '^# Managed by iNiR\.' "${runit_dir}/run"; then
+    command -v sv >/dev/null 2>&1 && sv down "$runit_dir" >/dev/null 2>&1 || true
+    rm -rf "$runit_dir"
   fi
 
-  # Remove service definition and helper script if they exist
-  if [[ -f "${service_dst}" ]]; then
-    rm -f "${service_dst}"
-  fi
-
-  if [[ -f "${daemon_dst}" ]]; then
-    rm -f "${daemon_dst}"
-  fi
+  rm -f "${HOME}/.local/bin/ii_super_overview_daemon.py"
+  rm -f "${HOME}/.local/bin/inir_super_overview_daemon.py"
 
   log_success "Legacy Super-tap daemon disabled/removed (if it was installed)"
 }
@@ -197,6 +307,16 @@ function setup_desktop_settings(){
   if [[ ! -d "$HOME/.local/share/icons/$preferred_icon_theme" ]] && [[ ! -d "/usr/share/icons/$preferred_icon_theme" ]]; then
     icon_theme="Adwaita"
   fi
+  local preferred_gtk_theme="adw-gtk3-dark"
+  local gtk_theme="$preferred_gtk_theme"
+  if [[ ! -d "$HOME/.local/share/themes/$preferred_gtk_theme" ]] && [[ ! -d "/usr/share/themes/$preferred_gtk_theme" ]]; then
+    gtk_theme="Adwaita"
+  fi
+  local preferred_cursor_theme="capitaine-cursors-light"
+  local cursor_theme="$preferred_cursor_theme"
+  if [[ ! -d "$HOME/.local/share/icons/$preferred_cursor_theme" ]] && [[ ! -d "/usr/share/icons/$preferred_cursor_theme" ]]; then
+    cursor_theme="Adwaita"
+  fi
   
   # gsettings for GNOME/GTK apps (Nautilus, etc.)
   # Keep default icon theme aligned with iNiR defaults/config and installer payload.
@@ -204,9 +324,9 @@ function setup_desktop_settings(){
   # If user later changes icon theme in Settings, IconThemeService persists and syncs it.
   if command -v gsettings &>/dev/null; then
     try gsettings set org.gnome.desktop.interface color-scheme 'prefer-dark'
-    try gsettings set org.gnome.desktop.interface gtk-theme 'adw-gtk3-dark'
+    try gsettings set org.gnome.desktop.interface gtk-theme "$gtk_theme"
     try gsettings set org.gnome.desktop.interface icon-theme "$icon_theme"
-    try gsettings set org.gnome.desktop.interface cursor-theme 'capitaine-cursors-light'
+    try gsettings set org.gnome.desktop.interface cursor-theme "$cursor_theme"
     try gsettings set org.gnome.desktop.interface cursor-size 24
     try gsettings set org.gnome.desktop.interface font-name 'Rubik 11'
   fi
@@ -293,7 +413,8 @@ else
   v disable_super_daemon_if_present
 fi
 
-# NOTE: SDDM service enablement happens above in setup_systemd_services().
 # NOTE: SDDM theme setup is in 3.files.sh AFTER the theming templates are deployed.
+# NOTE: On Void, SDDM activation is offered by run_install only after all install
+# tasks complete because linking a runit service starts it immediately.
 # NOTE: install-python-packages is called in 3.files.sh after requirements.txt
 # is deployed to the target. No need to call it here.

@@ -15,6 +15,7 @@ It provides the bar, dock, sidebars, notifications, settings, wallpapers, overvi
 - [Configuration](CONFIG_SYSTEM)
 - [Known limitations](LIMITATIONS)
 - [Managed desktop items](DESKTOP_ITEMS)
+- [Void Linux](VOID)
 
 ## Common commands
 
@@ -51,6 +52,7 @@ The shell is configurable through Settings and `config.json`. Persistent writes 
 | Area | Page |
 |---|---|
 | Installation and packages | [Install](INSTALL), [Packages](PACKAGES) |
+| Void Linux | [Void guide](VOID), [Capability matrix](VOID_CAPABILITIES) |
 | Runtime and architecture | [Runtime](RUNTIME), [Architecture](ARCHITECTURE_OVERVIEW) |
 | iRiS | [iRiS family guide](IRIS), [Panel families](PANEL_FAMILIES) |
 | Services and modules | [Services](SERVICES), [Modules](MODULES) |
