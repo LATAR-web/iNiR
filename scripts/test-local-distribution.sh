@@ -3335,6 +3335,29 @@ if grep -Fq 'yay -Syu' "$tools_view" || grep -Fq 'paccache -rk1' "$tools_view" \
     printf 'FAIL: Tools view still hardcodes Arch package actions\n' >&2
     exit 1
 fi
+# iRiS draws the battery one way (#292): the drawn mark wherever a level shows, a figure never inside a ring.
+iris_faces="$runtime_root/modules/iris/components/IrisBubbleFace.qml"
+if [[ ! -f "$runtime_root/modules/iris/components/IrisBatteryMark.qml" ]] \
+        || ! grep -Fq 'IrisBatteryMark {' "$iris_faces" \
+        || ! grep -Fq 'IrisBatteryMark {' "$runtime_root/modules/iris/bar/IrisIsland.qml" \
+        || ! grep -Fq 'IrisBatteryMark {' "$runtime_root/modules/iris/lock/IrisLockStage.qml" \
+        || ! grep -Fq 'IrisBatteryMark {' "$runtime_root/modules/iris/components/IrisNotificationIcon.qml" \
+        || grep -Eq 'id: (batteryRing|vitalsRing)' "$iris_faces" \
+        || ! grep -Fq 'readonly property bool compactCell' "$iris_faces"; then
+    printf 'FAIL: an iRiS battery surface draws a font glyph, or a bubble figure sits inside a ring\n' >&2
+    exit 1
+fi
+if ! grep -Fq 'function simulate(spec: string)' "$runtime_root/services/Battery.qml" \
+        || ! grep -Fq '!simulating && allowAutomaticSuspend' "$runtime_root/services/Battery.qml" \
+        || ! grep -Fq 'function simulateLink(spec: string)' "$runtime_root/services/Network.qml" \
+        || ! grep -Fq 'target: "bluetooth"' "$runtime_root/services/BluetoothStatus.qml"; then
+    printf 'FAIL: battery, network link and Bluetooth must be simulable, and a simulated battery never suspends\n' >&2
+    exit 1
+fi
+if ! grep -Fq 'could not check for updates' "$runtime_root/services/Updates.qml"; then
+    printf 'FAIL: a failed update check must keep the last count\n' >&2
+    exit 1
+fi
 if ! grep -Fq 'PackageSearch.runConfiguredUpdate()' "$waffle_updates" \
         || ! grep -Fq 'PackageSearch.runConfiguredUpdate()' "$runtime_root/modules/iris/stage/IrisCardContent.qml" \
         || ! grep -Fq 'root.updateSystem()' "$runtime_root/services/deferred/PackageSearch.qml"; then
