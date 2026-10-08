@@ -644,18 +644,43 @@ Item {
             id: shellUpdateFace
             visible: root.kind === "shellUpdate"
             anchors.fill: parent
-            IrisMark {
-                id: updateMark
-                anchors.centerIn: parent
-                implicitSize: Math.round(parent.width - (10 + 4 * root.absorb) * root.d)
-                color: root.highlight
-                orbiting: shellUpdateFace.visible
-                SequentialAnimation on anchors.verticalCenterOffset {
-                    running: shellUpdateFace.visible && IrisStyle.motionEnabled
-                    loops: Animation.Infinite
-                    NumberAnimation { to: -root.d; duration: 1900; easing.type: Easing.InOutSine }
-                    NumberAnimation { to: root.d; duration: 1900; easing.type: Easing.InOutSine }
-                    onRunningChanged: if (!running) updateMark.anchors.verticalCenterOffset = 0
+            // An update can wait for days, and drawn in place this orbit held the whole chassis at the display rate
+            // all that time, over a fullscreen game too (the chassis rises to Overlay there and the Island only
+            // fades). It goes through LiveLayer like IrisPulse, and both motions come from the wall clock so the
+            // copy in place and the one in its own surface stay in phase.
+            readonly property bool moving: shellUpdateFace.visible && IrisStyle.motionEnabled
+                && !(root.QsWindow.window?.canvasSuppressed ?? false)
+            LiveLayer {
+                anchors.fill: parent
+                // The orbiting dot reaches past the mark's box and the mark floats ±d.
+                pad: Math.ceil(shellUpdateFace.width * 0.06 + root.d * 2)
+                live: shellUpdateFace.moving
+                content: updateMarkFace
+            }
+            Component {
+                id: updateMarkFace
+                Item {
+                    id: markHost
+                    property bool drawing: false
+                    function place(): void {
+                        const t = Date.now()
+                        // The ring and the centre dot are round: turning the whole mark turns only its orbit.
+                        updateMark.rotation = 360 * (t % 9000) / 9000
+                        // Two InOutSine halves between +d and −d over 1.9 s each are exactly this cosine.
+                        updateMark.anchors.verticalCenterOffset = root.d * Math.cos(2 * Math.PI * (t % 3800) / 3800)
+                    }
+                    IrisMark {
+                        id: updateMark
+                        anchors.centerIn: parent
+                        implicitSize: Math.round(shellUpdateFace.width - (10 + 4 * root.absorb) * root.d)
+                        color: root.highlight
+                    }
+                    FrameAnimation {
+                        running: markHost.drawing && shellUpdateFace.moving
+                        onTriggered: markHost.place()
+                        onRunningChanged: if (running) markHost.place()
+                            else { updateMark.rotation = 0; updateMark.anchors.verticalCenterOffset = 0 }
+                    }
                 }
             }
         }

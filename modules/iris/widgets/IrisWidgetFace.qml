@@ -32,6 +32,9 @@ Item {
     readonly property real gap: root.dp(10)
     readonly property real contentWidth: root.width - root.padding * 2
     readonly property bool live: root.widget.powerActive && root.widget.visible
+    // Seen: the desktop under the face is showing. Seconds, positions and ticking data follow this, not `live`:
+    // behind windows each tick redraws the whole desktop window for nobody (rules/background.md).
+    readonly property bool moving: root.live && root.widget.motionActive
 
     readonly property string material: root.widget.irisMaterial
     readonly property bool glass: root.material === "glass"

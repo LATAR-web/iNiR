@@ -49,7 +49,7 @@ IrisWidgetFace {
     PlayerBase {
         id: media
         player: root.player
-        positionUpdatesActive: root.live && root.playing && !root.small
+        positionUpdatesActive: root.moving && root.playing && !root.small
     }
 
     component Transport: RowLayout {

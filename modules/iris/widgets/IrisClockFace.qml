@@ -31,7 +31,7 @@ IrisWidgetFace {
 
     SystemClock {
         id: clock
-        precision: root.analog && root.seconds && root.live ? SystemClock.Seconds : SystemClock.Minutes
+        precision: root.analog && root.seconds && root.moving ? SystemClock.Seconds : SystemClock.Minutes
     }
 
     FaceDial {
