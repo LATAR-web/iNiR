@@ -83,6 +83,7 @@ class KeyboardLockMonitor:
         self.devices = {}
         self.tasks = {}
         self.last_state = None
+        self.inspected = set()  # readable device nodes opened by the last refresh, keyboards or not
 
     def _is_candidate(self, dev):
         name = (dev.name or "").lower()
@@ -140,11 +141,13 @@ class KeyboardLockMonitor:
 
     async def refresh_devices(self):
         discovered = {}
+        inspected = set()
         for path in list_devices():
             try:
                 dev = InputDevice(path)
             except OSError:
                 continue
+            inspected.add(path)
 
             try:
                 if not self._is_candidate(dev):
@@ -174,6 +177,18 @@ class KeyboardLockMonitor:
 
             self.devices[path] = dev
             self.tasks[path] = asyncio.create_task(self.monitor_device(path))
+        self.inspected = inspected
+
+    def _forget(self, path):
+        """A keyboard that went away: the next refresh opens whatever takes its node."""
+        self.tasks.pop(path, None)
+        dev = self.devices.pop(path, None)
+        if dev is not None:
+            try:
+                dev.close()
+            except OSError:
+                pass
+        self.inspected.discard(path)
 
     async def monitor_device(self, path):
         dev = self.devices[path]
@@ -189,6 +204,7 @@ class KeyboardLockMonitor:
         except asyncio.CancelledError:
             return
         except OSError:
+            self._forget(path)
             return
 
     async def run(self):
@@ -200,7 +216,10 @@ class KeyboardLockMonitor:
 
         while True:
             await asyncio.sleep(5)
-            await self.refresh_devices()
+            # Opening every input device to read its capabilities is the costly part: only when the readable set
+            # changed (a hotplug, udev granting the seat's access after creating a node, a keyboard that left).
+            if set(list_devices()) != self.inspected:
+                await self.refresh_devices()
             if self.devices:
                 await self.emit_state()
 

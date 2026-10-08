@@ -21,6 +21,7 @@ import ctypes.util
 import hashlib
 import os
 import re
+import select
 import struct
 import subprocess
 import sys
@@ -132,15 +133,30 @@ def main():
 
     reach = scanner_reach()
     hashes = {p: digest(p) for p in reach}
+    try:
+        shell = os.pidfd_open(SHELL_PID)  # readable once the shell exits
+    except (AttributeError, OSError):
+        shell = None
     pending_since = 0.0
     watched_since = 0.0  # wall clock of the first change to a file Quickshell watches itself
     while True:
-        try:
-            os.kill(SHELL_PID, 0)
-        except ProcessLookupError:
+        # Sleep until a file changes, the shell exits or a pending reload falls due: no wakeups while idle.
+        if pending_since:
+            timeout = max(0.0, DEBOUNCE - (time.monotonic() - pending_since))
+        elif watched_since:
+            timeout = max(0.0, QS_GRACE - (time.time() - watched_since))
+        else:
+            timeout = None if shell is not None else 5.0
+        ready, _, _ = select.select([fd] if shell is None else [fd, shell], [], [], timeout)
+        if shell is not None and shell in ready:
             return
+        if shell is None:
+            try:
+                os.kill(SHELL_PID, 0)
+            except ProcessLookupError:
+                return
         try:
-            data = os.read(fd, 65536)
+            data = os.read(fd, 65536) if fd in ready else b""
         except BlockingIOError:
             data = b""
         offset = 0
@@ -176,7 +192,6 @@ def main():
                 time.sleep(2.5)  # Quickshell's reload; a fresh scan picks up new imports
             watched_since = 0.0
             reach = scanner_reach()
-        time.sleep(0.1)
 
 
 if __name__ == "__main__":
