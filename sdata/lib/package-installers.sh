@@ -1100,34 +1100,6 @@ EOF
 }
 
 #####################################################################################
-# Distro-specific Polkit Agent Detection
-#####################################################################################
-
-get-polkit-agent(){
-  # Returns the path to the polkit authentication agent for the current distro
-  local agents=(
-    "/usr/libexec/kf6/polkit-kde-authentication-agent-1"
-    "/usr/lib/polkit-kde-authentication-agent-1"
-    "/usr/libexec/polkit-kde-authentication-agent-1"
-    "/usr/lib/mate-polkit/polkit-mate-authentication-agent-1"
-    "/usr/lib/polkit-gnome/polkit-gnome-authentication-agent-1"
-    "/usr/libexec/polkit-gnome-authentication-agent-1"
-    "/usr/lib/lxpolkit/lxpolkit"
-  )
-
-  for agent in "${agents[@]}"; do
-    if [[ -x "$agent" ]]; then
-      echo "$agent"
-      return 0
-    fi
-  done
-
-  # Not found
-  echo ""
-  return 1
-}
-
-#####################################################################################
 # All-in-one Setup Functions
 #####################################################################################
 

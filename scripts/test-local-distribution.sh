@@ -790,8 +790,21 @@ fi
 debian_installer="$runtime_root/sdata/dist-debian/install-deps.sh"
 if ! grep -Fq 'ensure_debian_backports' "$debian_installer" \
         || ! grep -Fq 'ensure_debian_component "contrib"' "$debian_installer" \
-        || ! grep -Fq 'polkit-kde-agent-1' "$debian_installer"; then
+        || ! grep -Fq 'polkitd' "$debian_installer"; then
     printf 'FAIL: Debian installer lost backports/contrib/Trixie compatibility handling\n' >&2
+    exit 1
+fi
+# The shell is the only polkit agent: nothing installs or starts another one.
+if grep -rnE --exclude-dir=pkg --exclude-dir=src --exclude='*.pkg.tar*' \
+        'polkit-gnome|polkit-kde|policykit-1-gnome|mate-polkit|lxpolkit|lxqt-policykit' \
+        "$runtime_root/sdata/dist-arch" "$runtime_root/sdata/dist-fedora" "$runtime_root/sdata/dist-debian" \
+        "$runtime_root/sdata/dist-generic" "$runtime_root/sdata/lib/deps-map.sh" "$runtime_root/sdata/subcmd-install" \
+        "$runtime_root/defaults/niri" "$runtime_root/dots/.config/niri" "$runtime_root/distro/arch" "$runtime_root/nix" >&2; then
+    printf 'FAIL: an external polkit agent is installed or started beside the shell'"'"'s own\n' >&2
+    exit 1
+fi
+if ! grep -Fq 'libpolkit-agent-1-dev' "$debian_installer" || ! grep -Fq -- '-DSERVICE_POLKIT=ON' "$debian_installer"; then
+    printf 'FAIL: Debian builds Quickshell without its Polkit module\n' >&2
     exit 1
 fi
 if grep -Fq 'tui_info "Setting up Rust toolchain..."' "$debian_installer"; then

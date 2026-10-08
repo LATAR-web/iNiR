@@ -986,15 +986,6 @@ if ! rpm -q adw-gtk3-theme &>/dev/null; then
 fi
 
 #####################################################################################
-# Install polkit-e (for authentication dialogs)
-#####################################################################################
-tui_info "Installing polkit agent..."
-
-if ! rpm -q polkit-kde &>/dev/null; then
-  v sudo dnf install -y polkit-kde
-fi
-
-#####################################################################################
 # Setup configuration files
 #####################################################################################
 tui_info "Setting up configuration files..."
@@ -1051,12 +1042,4 @@ for cmd in qs niri fish gum cliphist xwayland-satellite starship eza; do
     log_error "$cmd not found"
   fi
 done
-echo ""
-
-# Detect and show polkit agent path
-POLKIT_AGENT=$(get-polkit-agent 2>/dev/null)
-if [[ -n "$POLKIT_AGENT" ]]; then
-  log_info "Polkit agent: $POLKIT_AGENT"
-  log_info "Update your niri config spawn-at-startup if this differs"
-fi
 echo ""
