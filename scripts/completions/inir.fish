@@ -474,7 +474,7 @@ complete -c inir -n '__inir_at_function osk' -a open -d 'Show on-screen keyboard
 complete -c inir -n '__inir_at_target' -a overlay -d 'Floating tools (Super+G): notes, images, crosshair, recorde…'
 complete -c inir -n '__inir_at_function overlay' -a toggle -d 'Open/close Floating tools'
 complete -c inir -n '__inir_at_function overlay' -a tool -d 'Show or hide one floating tool by id (crosshair, fpsLimiter…'
-complete -c inir -n '__inir_at_value 2 tool overlay' -a 'crosshair fpsLimiter floatingImage recorder resources notes discord volumeMixer notifications on off toggle'
+complete -c inir -n '__inir_at_value 2 tool overlay' -a 'crosshair fpsLimiter floatingImage recorder resources notes discord volumeMixer notifications gamePerformance on off toggle'
 complete -c inir -n '__inir_at_target' -a overview -d 'Toggle the workspace overview panel'
 complete -c inir -n '__inir_at_function overview' -a toggle -d 'Open/close overview'
 complete -c inir -n '__inir_at_function overview' -a close -d 'Close overview'

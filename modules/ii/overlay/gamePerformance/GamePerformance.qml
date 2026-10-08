@@ -442,7 +442,15 @@ StyledOverlayWidget {
                 columnSpacing: 6
                 rowSpacing: 6
 
-                CompactStat { label: Translation.tr("FPS"); value: root.fpsText(GamePerformanceService.fps); accent: Appearance.colors.colPrimary }
+                // FPS leads over two rows, frame stats beside it, the rig on one full row below.
+                CompactStat {
+                    hero: true
+                    Layout.columnSpan: 2
+                    Layout.rowSpan: 2
+                    label: Translation.tr("FPS")
+                    value: root.fpsText(GamePerformanceService.fps)
+                    accent: Appearance.colors.colPrimary
+                }
                 CompactStat { label: Translation.tr("FRAME"); value: root.msText(GamePerformanceService.frametime); accent: Appearance.colors.colPrimary }
                 CompactStat { label: Translation.tr("AVG"); value: root.fpsText(GamePerformanceService.averageFps); accent: Appearance.colors.colSecondary }
                 CompactStat { label: Translation.tr("MIN"); value: root.fpsText(GamePerformanceService.minimumFps); accent: Appearance.colors.colSecondary }
@@ -937,8 +945,10 @@ StyledOverlayWidget {
         required property string label
         required property string value
         property color accent: Appearance.colors.colPrimary
+        property bool hero: false
 
         Layout.fillWidth: true
+        Layout.fillHeight: hero
         implicitHeight: 44
         radius: Appearance.rounding.small
         color: Appearance.colors.colSurfaceContainer
@@ -953,11 +963,15 @@ StyledOverlayWidget {
                 font.pixelSize: Appearance.font.pixelSize.smallest
                 font.weight: Font.Bold
             }
+            Item {
+                visible: parent.parent.hero
+                Layout.fillHeight: true
+            }
             StyledText {
                 text: parent.parent.value
                 color: parent.parent.accent
                 font.family: Appearance.font.family.numbers
-                font.pixelSize: Appearance.font.pixelSize.normal
+                font.pixelSize: parent.parent.hero ? Appearance.font.pixelSize.huge : Appearance.font.pixelSize.normal
                 font.weight: Font.Bold
             }
         }

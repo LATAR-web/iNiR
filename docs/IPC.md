@@ -153,7 +153,7 @@ Floating tools (Super+G): notes, images, crosshair, recorder, resources and othe
 | Function | Description |
 |----------|-------------|
 | `toggle` | Open/close Floating tools |
-| `tool` | Show or hide one floating tool by id (`crosshair`, `fpsLimiter`, `floatingImage`, `recorder`, `resources`, `notes`, `discord`, `volumeMixer`, `notifications`): `on`, `off` or `toggle` |
+| `tool` | Show or hide one floating tool by id (`crosshair`, `fpsLimiter`, `floatingImage`, `recorder`, `resources`, `notes`, `discord`, `volumeMixer`, `notifications`, `gamePerformance`): `on`, `off` or `toggle` |
 
 ```kdl
 Super+G { spawn "inir" "overlay" "toggle"; }

@@ -2,7 +2,7 @@
 # Auto-generated from QML IpcHandler declarations + docs/IPC.md metadata.
 # Do not edit manually.
 # Regenerate: python3 scripts/lib/generate-ipc-registry.py
-# IPC.md hash: 925c44f3e7433009
+# IPC.md hash: 2180dce5e9f82e3c
 # Targets: 71
 
 declare -gA IPC_TARGET_DESC=(
@@ -493,7 +493,7 @@ declare -gA IPC_FUNCTION_DESC=(
   ["osk:close"]="Hide on-screen keyboard"
   ["osk:open"]="Show on-screen keyboard"
   ["overlay:toggle"]="Open/close Floating tools"
-  ["overlay:tool"]="Show or hide one floating tool by id (\`crosshair\`, \`fpsLimiter\`, \`floatingImage\`, \`recorder\`, \`resources\`, \`notes\`, \`discord\`, \`volumeMixer\`, \`notifications\`): \`on\`, \`off\` or \`toggle\`"
+  ["overlay:tool"]="Show or hide one floating tool by id (\`crosshair\`, \`fpsLimiter\`, \`floatingImage\`, \`recorder\`, \`resources\`, \`notes\`, \`discord\`, \`volumeMixer\`, \`notifications\`, \`gamePerformance\`): \`on\`, \`off\` or \`toggle\`"
   ["overview:toggle"]="Open/close overview"
   ["overview:close"]="Close overview"
   ["overview:open"]="Open overview"
@@ -866,7 +866,7 @@ declare -gA IPC_FUNCTION_VALUES=(
   ["network:simulate"]="none limited portal full"
   ["niriAnimations:apply"]="snappy niri material bouncy gentle instant"
   ["osd:media"]="play pause next previous"
-  ["overlay:tool"]="crosshair fpsLimiter floatingImage recorder resources notes discord volumeMixer notifications on off toggle"
+  ["overlay:tool"]="crosshair fpsLimiter floatingImage recorder resources notes discord volumeMixer notifications gamePerformance on off toggle"
   ["settings:openOverlayAt"]="index"
   ["settings:openWindowAt"]="index"
   ["settings:setOverlayStyle"]="index"
