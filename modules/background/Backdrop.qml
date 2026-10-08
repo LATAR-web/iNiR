@@ -327,7 +327,9 @@ Variants {
                 anchors.fill: parent
                 anchors.margins: parent.mediaMargin
                 fillMode: backdropWindow.imageFillMode
-                source: backdropWindow.wallpaperIsGif ? gifWallpaper.source : wallpaper.source
+                // Decoded only when it can show: off, it held a hidden half-size copy of the wallpaper per output.
+                source: backdropWindow.useAuroraStyle && !backdropWindow.wallpaperIsGif && !backdropWindow.wallpaperIsVideo
+                    ? wallpaper.source : ""
                 asynchronous: true
                 cache: false
                 smooth: true
@@ -361,7 +363,7 @@ Variants {
                 anchors.fill: parent
                 anchors.margins: parent.mediaMargin
                 fillMode: backdropWindow.imageFillMode
-                source: backdropWindow.wallpaperIsGif ? gifWallpaper.source : ""
+                source: backdropWindow.useAuroraStyle && backdropWindow.wallpaperIsGif ? gifWallpaper.source : ""
                 asynchronous: true
                 cache: false
                 smooth: true

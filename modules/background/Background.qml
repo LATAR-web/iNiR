@@ -1763,6 +1763,9 @@ Scope {
                         radius: bgRoot.effectsOptions.blurRadius ?? 32
                         // See #159 — cap samples to bound fragment shader cost
                         samples: Math.min(33, radius * 2 + 1)
+                        // A still wallpaper blurs once: any shell animation repaints this window, and without the
+                        // cache every repaint re-ran the full-screen passes. A video or live grade still updates it.
+                        cached: true
                     }
                 }
             }
