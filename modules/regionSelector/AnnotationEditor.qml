@@ -50,7 +50,10 @@ PanelWindow {
         "#000000"
     ]
 
-    function setCurrent(s) { root.current = s; }
+    function setCurrent(s) {
+        root.current = s;
+        liveCanvas.requestPaint();
+    }
 
     function commitShape(s) {
         const arr = root.strokes.slice(); arr.push(s); root.strokes = arr;
