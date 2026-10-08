@@ -182,7 +182,9 @@ Singleton {
 
     function getSafeIcon(item): string {
         if (!item) return "";
-        if (item.icon) return item.icon;
+        // An XEmbed client without an icon of its own reaches us as the proxy's name, which no theme has.
+        if (item.icon && !/(^|[\/])xembedsniproxy(\?|$)/.test(String(item.icon))) return item.icon;
+        if (item.icon) return Quickshell.iconPath("application-x-executable", true);
         const app = getProblematicAppInfo(item);
         return app?.fixedIcon ? Quickshell.iconPath(app.fixedIcon, true) : "";
     }
