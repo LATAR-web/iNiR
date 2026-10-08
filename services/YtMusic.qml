@@ -13,10 +13,13 @@ Singleton {
     id: root
 
     property bool _resumeRestored: false
+    // What was last written: a paused or stopped track saves nothing new, and each write bumps the config
+    // revision, emits configChanged and rewrites the file.
+    property string _resumeSignature: ""
 
     function _persistResume(): void {
         if (!root.currentVideoId) return
-        Config.setNestedValues({
+        const resume = {
             'sidebar.ytmusic.resume.videoId': root.currentVideoId,
             'sidebar.ytmusic.resume.title': root.currentTitle,
             'sidebar.ytmusic.resume.artist': root.currentArtist,
@@ -27,10 +30,15 @@ Singleton {
             'sidebar.ytmusic.resume.activePlaylist': root.activePlaylist,
             'sidebar.ytmusic.resume.currentIndex': root.currentIndex,
             'sidebar.ytmusic.resume.activePlaylistSource': root.activePlaylistSource
-        })
+        }
+        const signature = JSON.stringify(resume)
+        if (signature === root._resumeSignature) return
+        root._resumeSignature = signature
+        Config.setNestedValues(resume)
     }
 
     function _clearResume(): void {
+        root._resumeSignature = ""
         Config.setNestedValues({
             'sidebar.ytmusic.resume.videoId': "",
             'sidebar.ytmusic.resume.title': "",
