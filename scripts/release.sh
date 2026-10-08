@@ -27,8 +27,9 @@ prepare  Turn [Unreleased] into the dated <version> section, write <version> int
 check    Everything publish needs, without changing anything: versions, changelog,
          branches, tag, hero image, and make test-local (skipped with --quick;
          --content checks only the files).
-publish  Run check, move main forward to this commit, tag it, push, create the GitHub
-         release and sync the Wiki. Each step is skipped when already done, so a
+publish  Run check (its tests only if check has not passed on this commit), move
+         main forward to this commit, tag it, push, create the GitHub release
+         and sync the Wiki. Each step is skipped when already done, so a
          publish that stopped halfway can be run again. The title defaults to the
          tag. Issues the notes list as fixed are closed with a pointer to it.
 notes    Print the release notes publish would use.
@@ -305,6 +306,7 @@ run_check() {
   if (( ${#failures[@]} > 0 )); then
     return 1
   fi
+  [[ -n "$quick" ]] || printf '%s %s\n' "$(git rev-parse HEAD)" "$v" >"$(git rev-parse --git-path inir-release-tested)"
   say "$v is ready to publish"
 }
 
@@ -474,7 +476,12 @@ cmd_publish() {
   local v="$1" title="${2:-}"
   local tag="v$v"
   [[ -n "$title" ]] || title="$tag"
-  run_check "$v" || die "not publishing"
+  # check already ran the tests on this exact commit (the tree is clean, check_git holds it): skip only them.
+  if [[ "$(cat "$(git rev-parse --git-path inir-release-tested)" 2>/dev/null)" == "$(git rev-parse HEAD) $v" ]]; then
+    run_check "$v" --quick || die "not publishing"
+  else
+    run_check "$v" || die "not publishing"
+  fi
 
   local head branch image
   head="$(git rev-parse HEAD)"
