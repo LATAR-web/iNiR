@@ -1310,6 +1310,35 @@ check_quickshell_abi() {
     return 1
 }
 
+check_polkit_agent() {
+    # Nothing else answers polkit: without Quickshell's Polkit module, app password prompts fail silently.
+    local config="${DOTS_CORE_CONFDIR}/config.json" qs_bin own_agent
+    own_agent="$(pidof -s polkit-gnome-authentication-agent-1 lxqt-policykit-agent polkit-kde-authentication-agent-1 \
+        polkit-mate-authentication-agent-1 lxpolkit 2>/dev/null || true)"
+    if [[ -n "$own_agent" ]]; then
+        doctor_pass "Password prompts: your own agent ($(ps -o comm= -p "$own_agent" 2>/dev/null))"
+        return 0
+    fi
+    if [[ -f "$config" ]] && [[ "$(jq -r '.modules.polkit == false' "$config" 2>/dev/null)" == "true" ]]; then
+        doctor_pass "Password prompts: the shell's agent is off (modules.polkit)"
+        return 0
+    fi
+
+    qs_bin="$(readlink -f "$(command -v qs 2>/dev/null)" 2>/dev/null || true)"
+    # ldd reads ELF binaries only; a wrapper script (Nix) proves nothing either way.
+    if [[ -z "$qs_bin" ]] || ! ldd "$qs_bin" >/dev/null 2>&1; then
+        return 0
+    fi
+    if ldd "$qs_bin" 2>/dev/null | grep -q 'libpolkit-agent-1'; then
+        doctor_pass "Password prompts: answered by the shell"
+        return 0
+    fi
+
+    doctor_fail "Quickshell was built without Polkit: apps asking for your password get no prompt"
+    echo -e "  ${STY_YELLOW}Install a Quickshell built with Polkit (your distribution's package has it), or run an agent of your own.${STY_RST}"
+    return 1
+}
+
 check_quickshell_loads() {
     local target
     local running_output
@@ -1820,7 +1849,7 @@ _doctor_run_step() {
 }
 
 run_doctor_with_fixes() {
-    local total_steps=23
+    local total_steps=24
     local doctor_started_at=$SECONDS
     doctor_passed=0
     doctor_failed=0
@@ -1930,14 +1959,15 @@ run_doctor_with_fixes() {
     fi
 
     _doctor_run_step 15 $total_steps "Checking Quickshell/Qt ABI"    check_quickshell_abi
-    _doctor_run_step 16 $total_steps "Checking Quickshell"           check_quickshell_loads
-    _doctor_run_step 17 $total_steps "Checking theme colors"         check_matugen_colors
-    _doctor_run_step 18 $total_steps "Checking Qt theming"           check_qt_theming
-    _doctor_run_step 19 $total_steps "Checking conflicting services" check_conflicting_services
-    _doctor_run_step 20 $total_steps "Checking conflicting shells"   check_conflicting_shells
-    _doctor_run_step 21 $total_steps "Checking wallpaper health"     check_wallpaper_health
-    _doctor_run_step 22 $total_steps "Checking environment variables" check_environment_vars
-    _doctor_run_step 23 $total_steps "Checking Niri config"          check_niri_config
+    _doctor_run_step 16 $total_steps "Checking password prompts"     check_polkit_agent
+    _doctor_run_step 17 $total_steps "Checking Quickshell"           check_quickshell_loads
+    _doctor_run_step 18 $total_steps "Checking theme colors"         check_matugen_colors
+    _doctor_run_step 19 $total_steps "Checking Qt theming"           check_qt_theming
+    _doctor_run_step 20 $total_steps "Checking conflicting services" check_conflicting_services
+    _doctor_run_step 21 $total_steps "Checking conflicting shells"   check_conflicting_shells
+    _doctor_run_step 22 $total_steps "Checking wallpaper health"     check_wallpaper_health
+    _doctor_run_step 23 $total_steps "Checking environment variables" check_environment_vars
+    _doctor_run_step 24 $total_steps "Checking Niri config"          check_niri_config
 
     echo ""
     tui_divider
