@@ -552,10 +552,14 @@ repair_legacy_quickshell_malloc_environment() {
   return 0
 }
 
-# A systemctl binary alone does not prove the user manager is usable.
+# A systemctl binary alone does not prove the user manager is usable. The socket exists only while the manager
+# runs: a probe that times out is a busy manager, still systemd. Reading it as runit would move a systemd host
+# to runsvdir and strip its import-environment line.
 function has_usable_systemd_user_manager() {
-  [[ -S "${XDG_RUNTIME_DIR:-}/systemd/private" ]] &&
-    timeout 3s systemctl --user show-environment >/dev/null 2>&1
+  [[ -S "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/systemd/private" ]] || return 1
+  timeout 3s systemctl --user show-environment >/dev/null 2>&1
+  local rc=$?
+  [[ $rc -eq 0 || $rc -eq 124 ]]
 }
 
 has_active_turnstile() {

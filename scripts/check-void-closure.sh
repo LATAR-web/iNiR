@@ -162,7 +162,8 @@ if grep -Fq 'yay -Syu' "$tools_view" || grep -Fq 'paccache -rk1' "$tools_view"; 
 else
   printf 'PASS: Tools view delegates package actions to PackageSearch\n'
 fi
-check grep -Fq 'PackageSearch.updateSystem()' "$waffle_updates"
+check grep -Fq 'PackageSearch.runConfiguredUpdate()' "$waffle_updates"
+check grep -Fq 'root.updateSystem()' "$repo_root/services/deferred/PackageSearch.qml"
 if grep -Fq '"update": "kitty -e arch-update"' "$default_config" \
     || grep -Fq 'property string update: "kitty -e sudo pacman -Syu"' "$config_qml"; then
   printf 'FAIL: fresh config still persists an Arch-only update command\n' >&2

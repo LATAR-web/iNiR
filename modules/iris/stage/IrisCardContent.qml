@@ -539,7 +539,7 @@ Item {
                 implicitHeight: Math.round(38 * root.d)
                 onClicked: {
                     root.close()
-                    ShellExec.execCmd(Config.options?.apps?.update ?? "kitty -e sudo pacman -Syu")
+                    PackageSearch.runConfiguredUpdate()
                 }
             }
         }

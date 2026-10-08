@@ -89,7 +89,7 @@ Singleton {
         }
 
         if (suspendTimeout > 0) {
-            cmd.push("timeout", suspendTimeout.toString(), "/usr/bin/loginctl --ignore-inhibitors suspend")
+            cmd.push("timeout", suspendTimeout.toString(), `/bin/sh -c '${StringUtils.shellSingleQuoteEscape(Session.powerActionScript)}' sh suspend`)
         }
 
         if (lockBeforeSleep) {

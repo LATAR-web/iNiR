@@ -56,13 +56,15 @@ Singleton {
             # Rebuild the application-facing environment from the live user
             # session. Quickshell intentionally carries shell-only Qt scaling,
             # rendering and optional GPU policy that must not leak into apps.
+            # The socket exists only while the user manager runs: a probe that
+            # times out means a busy manager, still systemd, and an app left out
+            # of its scope would die with the shell's own unit.
             manager_env=""
             systemd_user_manager_usable=false
-            if [ -S "\${XDG_RUNTIME_DIR:-}/systemd/private" ] &&
+            if [ -S "\${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/systemd/private" ] &&
                [ -x /usr/bin/systemctl ] && [ -x /usr/bin/timeout ]; then
-                if manager_env="$(/usr/bin/timeout 3s /usr/bin/systemctl --user show-environment 2>/dev/null)"; then
-                    systemd_user_manager_usable=true
-                fi
+                manager_env="$(/usr/bin/timeout 3s /usr/bin/systemctl --user show-environment 2>/dev/null)"
+                case $? in 0|124) systemd_user_manager_usable=true ;; esac
             fi
 
             manager_value() {

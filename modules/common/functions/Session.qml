@@ -32,7 +32,7 @@ Singleton {
         interval: 900
         repeat: false
         onTriggered: {
-            Quickshell.execDetached(["/usr/bin/loginctl", "--ignore-inhibitors", "hibernate"])
+            root.powerAction(["hibernate"])
         }
     }
 
@@ -41,8 +41,17 @@ Singleton {
         interval: 600
         repeat: false
         onTriggered: {
-            Quickshell.execDetached(["/usr/bin/loginctl", "--ignore-inhibitors", "suspend"])
+            root.powerAction(["suspend"])
         }
+    }
+
+    // systemd's loginctl has no power verbs; elogind's (Void) has them and spells -i as --ignore-inhibitors.
+    // /run/systemd/system exists only when systemd is init (sd_booted).
+    readonly property string powerActionScript:
+        'if [ -d /run/systemd/system ]; then exec systemctl "$@" -i; fi; exec loginctl --ignore-inhibitors "$@"'
+
+    function powerAction(args: var): void {
+        Quickshell.execDetached(["/bin/sh", "-c", root.powerActionScript, "sh"].concat(args))
     }
 
     function _parseLogin1Capability(text: string): string {
@@ -86,7 +95,7 @@ Singleton {
             lock()
             _suspendTimer.restart()
         } else {
-            Quickshell.execDetached(["/usr/bin/loginctl", "--ignore-inhibitors", "suspend"])
+            powerAction(["suspend"])
         }
     }
 
@@ -118,17 +127,17 @@ Singleton {
 
     function poweroff() {
         closeAllWindows();
-        Quickshell.execDetached(["/usr/bin/loginctl", "--ignore-inhibitors", "poweroff"])
+        powerAction(["poweroff"])
     }
 
     function reboot() {
         closeAllWindows();
-        Quickshell.execDetached(["/usr/bin/loginctl", "--ignore-inhibitors", "reboot"])
+        powerAction(["reboot"])
     }
 
     function rebootToFirmware() {
         closeAllWindows();
-        Quickshell.execDetached(["/usr/bin/loginctl", "--ignore-inhibitors", "reboot", "--firmware-setup"])
+        powerAction(["reboot", "--firmware-setup"])
     }
 
     Connections {

@@ -2365,13 +2365,34 @@ if ! grep -Fq 'service", "restart' "$memory_service" \
         || ! grep -Fq 'sv up' "$tray_service" \
         || ! grep -Fq 'xembed_service_dir' "$runtime_root/sdata/lib/functions.sh" \
         || ! grep -Fq 'exec chpst -e "$TURNSTILE_ENV_DIR" sh -c' "$runtime_root/sdata/lib/functions.sh" \
-        || ! grep -Fq -- '--ignore-inhibitors' "$session_service" \
-        || ! grep -Fq -- '--ignore-inhibitors suspend' "$idle_service" \
-        || grep -Fq 'systemctl", "suspend' "$session_service" \
-        || grep -Fq 'systemctl suspend' "$idle_service" \
         || ! grep -Fq 'dbus-update-activation-environment' "$cursor_helper" \
         || ! grep -Fq 'systemd/private' "$gtk_theme"; then
     printf 'FAIL: non-systemd runtime adapters are incomplete\n' >&2
+    exit 1
+fi
+# systemd's loginctl has no power verbs and elogind has no systemctl: every power action goes through
+# Session.powerActionScript, which picks the one that exists.
+if ! grep -Fq 'if [ -d /run/systemd/system ]; then exec systemctl "$@" -i; fi; exec loginctl --ignore-inhibitors "$@"' "$session_service" \
+        || ! grep -Fq 'Session.powerActionScript' "$idle_service" \
+        || grep -rEq --include='*.qml' '(loginctl|systemctl)[", ]+(--ignore-inhibitors[", ]+)?(poweroff|reboot|suspend|hibernate)' \
+            "$runtime_root/modules" "$runtime_root/services"; then
+    printf 'FAIL: a power action bypasses Session.powerAction (systemd or elogind would do nothing)\n' >&2
+    exit 1
+fi
+# A busy user manager times out the probe but is still systemd: the predicate must not hand the host to runit.
+busy_bin="$(mktemp -d)"
+printf '#!/bin/sh\nexec sleep 10\n' > "$busy_bin/systemctl"
+chmod +x "$busy_bin/systemctl"
+for predicate_owner in "$runtime_root/sdata/lib/functions.sh" "$runtime_root/scripts/inir"; do
+    if [[ -S "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/systemd/private" ]] \
+            && ! PATH="$busy_bin:$PATH" bash -c 'eval "$(sed -n "/has_usable_systemd_user_manager() {/,/^}/p" "$1")"; has_usable_systemd_user_manager' _ "$predicate_owner"; then
+        printf 'FAIL: %s reads a busy systemd user manager as no systemd\n' "$predicate_owner" >&2
+        exit 1
+    fi
+done
+rm -rf "$busy_bin"
+if ! grep -Fq 'case $? in 0|124) systemd_user_manager_usable=true ;; esac' "$shell_exec"; then
+    printf 'FAIL: apps launched while the user manager is busy leave their scope\n' >&2
     exit 1
 fi
 
@@ -2444,7 +2465,7 @@ if grep -Fq 'systemctl --user show-environment' "$tray_service" \
 fi
 if ! grep -Fq 'systemd_user_manager_usable' "$shell_exec" \
         || ! grep -Fq 'systemd_user_manager_usable" = true' "$shell_exec" \
-        || ! grep -Fq '\${XDG_RUNTIME_DIR:-}/systemd/private' "$shell_exec"; then
+        || ! grep -Fq '\${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/systemd/private' "$shell_exec"; then
     printf 'FAIL: application launcher can use systemd-run without a usable manager\n' >&2
     exit 1
 fi
@@ -3310,8 +3331,10 @@ if grep -Fq 'yay -Syu' "$tools_view" || grep -Fq 'paccache -rk1' "$tools_view" \
     printf 'FAIL: Tools view still hardcodes Arch package actions\n' >&2
     exit 1
 fi
-if ! grep -Fq 'PackageSearch.updateSystem()' "$waffle_updates"; then
-    printf 'FAIL: Waffle updates button has no package-manager-aware fallback\n' >&2
+if ! grep -Fq 'PackageSearch.runConfiguredUpdate()' "$waffle_updates" \
+        || ! grep -Fq 'PackageSearch.runConfiguredUpdate()' "$runtime_root/modules/iris/stage/IrisCardContent.qml" \
+        || ! grep -Fq 'root.updateSystem()' "$runtime_root/services/deferred/PackageSearch.qml"; then
+    printf 'FAIL: an Update now button has no package-manager-aware fallback\n' >&2
     exit 1
 fi
 if grep -Fq '"update": "kitty -e arch-update"' "$runtime_root/defaults/config.json" \

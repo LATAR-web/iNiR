@@ -19,17 +19,7 @@ BarIconButton {
     iconMonochrome: true
     tooltipText: Translation.tr("Updates available: %1 packages").arg(Updates.count)
 
-    function runUpdate(): void {
-        const cmd = (Config.options?.apps?.update ?? "").trim()
-        const legacyDefault = cmd === "kitty -e arch-update" || cmd === "kitty -e sudo pacman -Syu"
-        if (cmd.length === 0 || legacyDefault) {
-            PackageSearch.updateSystem()
-            return
-        }
-        ShellExec.execCmd(cmd)
-    }
-
-    onClicked: runUpdate()
+    onClicked: PackageSearch.runConfiguredUpdate()
 
     altAction: () => {
         menu.active = true
@@ -70,7 +60,7 @@ BarIconButton {
                 }
                 onClicked: {
                     menu.close()
-                    root.runUpdate()
+                    PackageSearch.runConfiguredUpdate()
                 }
             }
 

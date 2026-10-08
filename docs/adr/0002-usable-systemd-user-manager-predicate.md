@@ -4,9 +4,12 @@ Void can run systemd; an Arch box can lack a working user manager. Every
 systemd-sensitive path in iNiR is therefore gated by a predicate, not by
 `command -v systemctl` and not by distro name.
 
-The predicate: the socket `$XDG_RUNTIME_DIR/systemd/private` exists and a
-bounded probe of `systemctl --user` answers:
-`timeout 3s systemctl --user show-environment`.
+The predicate: the socket `$XDG_RUNTIME_DIR/systemd/private` exists
+(`/run/user/$UID` when the variable is unset) and a bounded probe of
+`systemctl --user` answers or times out:
+`timeout 3s systemctl --user show-environment`. The socket only exists while
+the manager runs, so a timeout is a busy manager, still systemd; reading it as
+runit would move a systemd host to `runsvdir`.
 
 Paths it gates:
 

@@ -53,8 +53,12 @@ QuickToggleModel {
             const band = Config.options?.hotspot?.band ?? "bg"
             // Delete any stale "Hotspot" profile first, then create fresh.
             // Uses sh positional params to safely pass user-configured values.
+            // Without a password (no installer ran) nmcli makes a strong one; it is kept for the next start.
             startProc.exec(["/bin/sh", "-c",
-                'nmcli connection delete id Hotspot 2>/dev/null; exec nmcli dev wifi hotspot con-name Hotspot ssid "$1" band "$2" password "$3"',
+                'nmcli connection delete id Hotspot 2>/dev/null; ' +
+                'if [ -n "$3" ]; then exec nmcli dev wifi hotspot con-name Hotspot ssid "$1" band "$2" password "$3"; fi; ' +
+                'nmcli dev wifi hotspot con-name Hotspot ssid "$1" band "$2" >/dev/null || exit; ' +
+                'printf "psk=%s\\n" "$(nmcli -s -g 802-11-wireless-security.psk connection show Hotspot)"',
                 "sh", ssid, band, password])
         }
     }
@@ -90,6 +94,16 @@ QuickToggleModel {
     Process {
         id: startProc
         running: false
+
+        stdout: StdioCollector {
+            id: startOutCollector
+            onStreamFinished: {
+                const line = (startOutCollector.text ?? "").split("\n").find(l => l.startsWith("psk="))
+                const psk = line ? line.slice(4).trim() : ""
+                if (psk.length > 0 && (Config.options?.hotspot?.password ?? "").length === 0)
+                    Config.setNestedValue("hotspot.password", psk)
+            }
+        }
 
         stderr: StdioCollector {
             id: startErrCollector

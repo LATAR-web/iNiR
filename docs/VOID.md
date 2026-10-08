@@ -50,9 +50,11 @@ Everything systemd-sensitive is gated by one predicate, never by distro name:
 
 ```
 usable systemd user manager =
-    -S $XDG_RUNTIME_DIR/systemd/private          (socket exists)
-    AND `timeout 3s systemctl --user show-environment` answers
+    -S $XDG_RUNTIME_DIR/systemd/private          (socket exists; /run/user/$UID when unset)
+    AND `timeout 3s systemctl --user show-environment` answers or times out
 ```
+
+A probe that times out with the socket present is a busy manager, still systemd.
 
 Void can run systemd; Arch can lack a user manager. See ADR-0002.
 

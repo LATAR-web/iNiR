@@ -102,6 +102,17 @@ Singleton {
         )
     }
 
+    // apps.update is a person's own command; empty or an old default means the system's package manager.
+    function runConfiguredUpdate(): void {
+        const cmd = (Config.options?.apps?.update ?? "").trim()
+        const legacyDefault = cmd === "kitty -e arch-update" || cmd === "kitty -e sudo pacman -Syu"
+        if (cmd.length === 0 || legacyDefault) {
+            root.updateSystem()
+            return
+        }
+        ShellExec.execCmd(cmd)
+    }
+
     function cleanPackageCache(): void {
         root._runTerminalScript(
             "if command -v pacman &>/dev/null; then " +

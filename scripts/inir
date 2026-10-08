@@ -1642,9 +1642,13 @@ _get_systemd_user_env() {
     printf '%s' "$_cached_systemd_env"
 }
 
+# The socket exists only while the user manager runs. A probe that times out is a busy manager, still systemd:
+# falling back to runit there would drive `sv` on a host that has none.
 has_usable_systemd_user_manager() {
-  [[ -S "${XDG_RUNTIME_DIR:-}/systemd/private" ]] &&
-    timeout 3s systemctl --user show-environment >/dev/null 2>&1
+  [[ -S "${XDG_RUNTIME_DIR:-/run/user/$(id -u)}/systemd/private" ]] || return 1
+  timeout 3s systemctl --user show-environment >/dev/null 2>&1
+  local rc=$?
+  [[ $rc -eq 0 || $rc -eq 124 ]]
 }
 
 is_using_runit_supervisor() {
