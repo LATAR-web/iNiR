@@ -364,6 +364,10 @@ Item {
     readonly property bool eventsEnabled: root.options?.events ?? true
     property var event: ({ icon: "", tint: IrisStyle.text, title: "", detail: "", value: -1 })
     readonly property bool eventShown: eventTimer.running && !root.expanded && !root.feedback
+    // A battery notice draws the battery itself, filled to its level, instead of a font glyph.
+    // Material's "lan" is a network diagram; a cable reads as the ethernet port, as the Network bubble shows it.
+    readonly property string eventGlyph: root.event.icon === "lan" ? "settings_ethernet" : root.event.icon
+    readonly property bool eventIsBattery: String(root.event.icon).startsWith("battery") && root.event.value >= 0
     function showEvent(icon: string, tint: color, title: string, detail: string, value: real): void {
         if (!root.eventsEnabled || !eventsWarm.ready || root.expanded || root.fullscreenCovered
             || root.targetScreen?.name !== GlobalStates.focusedScreen?.name) return
@@ -1951,10 +1955,19 @@ Item {
                     radius: width / 2
                     color: IrisStyle.tintFill(root.event.tint)
                     Glyph {
+                        visible: !root.eventIsBattery
                         anchors.centerIn: parent
-                        text: root.event.icon
+                        text: root.eventGlyph
                         iconSize: 16 * root.d
                         color: root.event.tint
+                    }
+                    IrisBatteryMark {
+                        visible: root.eventIsBattery
+                        anchors.centerIn: parent
+                        markHeight: Math.round(9 * root.d)
+                        level: Math.max(0, root.event.value)
+                        tint: root.event.tint
+                        frame: IrisStyle.trackOf(root.event.tint)
                     }
                 }
                 ColumnLayout {
@@ -2578,10 +2591,19 @@ Item {
                 radius: width / 2
                 color: IrisStyle.tintFill(root.event.tint)
                 Glyph {
+                    visible: !root.eventIsBattery
                     anchors.centerIn: parent
-                    text: root.event.icon
+                    text: root.eventGlyph
                     iconSize: 16 * root.d
                     color: root.event.tint
+                }
+                IrisBatteryMark {
+                    visible: root.eventIsBattery
+                    anchors.centerIn: parent
+                    markHeight: Math.round(9 * root.d)
+                    level: Math.max(0, root.event.value)
+                    tint: root.event.tint
+                    frame: IrisStyle.trackOf(root.event.tint)
                 }
             }
             ColumnLayout {

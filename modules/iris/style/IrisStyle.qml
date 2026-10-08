@@ -572,6 +572,8 @@ QtObject {
     readonly property color fillStrong: ColorUtils.applyAlpha(root.light ? root.text : root.fillInk, Math.min(0.9, (root.light ? 0.46 : 0.82) * root.preset.fill * root.tweak("fill", 0.3, 2)))
     // The palette solves the accent as text on this wash (washi.go): it stays within that, whatever Fills says.
     function tintFill(tint: color): color { return ColorUtils.applyAlpha(tint, Math.min(0.15, root.fillAlpha(0.13))) }
+    // The unread part of a reading (rings, gauges): the reading's own colour, faint but present on every material.
+    function trackOf(tint: color): color { return ColorUtils.applyAlpha(tint, root.fillAlpha(0.38)) }
     function tintFillHover(tint: color): color { return ColorUtils.applyAlpha(tint, root.fillAlpha(0.2)) }
     function tintBorder(tint: color): color { return ColorUtils.applyAlpha(tint, 0.7) }
 

@@ -120,12 +120,22 @@ Item {
         property string label: ""
         property real typeScale: 1
         property real unit: 1
+        property real battery: -1 // a level draws the battery instead of the glyph
         spacing: Math.round(5 * reading.unit)
         MaterialSymbol {
+            visible: reading.battery < 0 || reading.glyph === "bolt"
             anchors.verticalCenter: parent.verticalCenter
             text: reading.glyph
             iconSize: Math.round(17 * reading.unit)
             color: IrisStyle.onMediaSecondary
+        }
+        IrisBatteryMark {
+            visible: reading.battery >= 0
+            anchors.verticalCenter: parent.verticalCenter
+            markHeight: Math.round(10 * reading.unit)
+            level: reading.battery
+            tint: IrisStyle.onMediaSecondary
+            frame: IrisStyle.onMediaTertiary
         }
         IrisText {
             anchors.verticalCenter: parent.verticalCenter
@@ -512,6 +522,7 @@ Item {
         property string label: ""
         property string figure: ""
         property color tint: IrisStyle.onMedia
+        property real battery: -1 // a level draws the battery instead of the glyph
         implicitWidth: chipRow.implicitWidth + Math.round(30 * root.d)
         implicitHeight: Math.round(40 * root.d)
         Glass {
@@ -523,11 +534,20 @@ Item {
             anchors.centerIn: parent
             spacing: Math.round(7 * root.d)
             MaterialSymbol {
+                visible: chip.battery < 0 || chip.glyph === "bolt"
                 anchors.verticalCenter: parent.verticalCenter
                 text: chip.glyph
                 fill: 1
                 iconSize: Math.round(17 * root.d)
                 color: chip.tint
+            }
+            IrisBatteryMark {
+                visible: chip.battery >= 0
+                anchors.verticalCenter: parent.verticalCenter
+                markHeight: Math.round(11 * root.d)
+                level: chip.battery
+                tint: chip.tint
+                frame: IrisStyle.onMediaTertiary
             }
             IrisText {
 
@@ -588,7 +608,8 @@ Item {
             }
             Chip {
                 visible: Boolean(glance.entry?.battery ?? true) && Battery.available
-                glyph: Battery.isCharging ? "battery_charging_full" : Battery.percentage < 0.2 ? "battery_alert" : "battery_full"
+                glyph: Battery.isCharging ? "bolt" : ""
+                battery: Battery.percentage
                 tint: Battery.percentage < 0.2 && !Battery.isCharging ? IrisStyle.dangerOnMedia : IrisStyle.onMedia
                 figure: Math.round(Battery.percentage * 100) + "%"
             }
@@ -687,7 +708,8 @@ Item {
                 unit: root.d
                 typeScale: root.typeScale
                 visible: Boolean(status.entry?.battery ?? true) && Battery.available
-                glyph: Battery.isCharging ? "bolt" : "battery_full"
+                glyph: Battery.isCharging ? "bolt" : ""
+                battery: Battery.percentage
                 label: Math.round(Battery.percentage * 100) + "%"
             }
         }
