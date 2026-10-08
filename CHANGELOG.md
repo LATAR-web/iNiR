@@ -5,10 +5,40 @@ All notable changes to iNiR will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [2.33.0] - 2026-10-08
+
+**iRiS 0.3**
+
+Void Linux support, the iRiS lock on the login screen, and a washi palette for iRiS.
 
 ### Added
-- **Three iRiS login styles**: Cover shows your picture sharp with the clock in a corner, Frame hangs it in a mat, and Lens cuts the time out of it. Pick one under Login screen in Settings, or with `inir loginScreen style <cover|frame|lens>`.
+- **Void Linux**: install, update and repair with XBPS; iNiR runs under runit or Turnstile where there is no systemd user manager. The steps are in the Void guide on the Wiki.
+- **The iRiS lock on the login screen**: SDDM in three styles, Cover, Frame and Lens, under Login screen in Settings or with `inir loginScreen style <cover|frame|lens>`.
+- **Washi palette**: paper palettes and paper levels for iRiS and your apps, with an Afterglow texture, in Appearance.
+- **Wallpaper scaling**: fill, fit, center, or one picture across every screen.
+- **Game performance in Floating Tools**: your game's FPS in a floating overlay.
+- **Material**: choose which switcher Alt+Tab opens, and a design for one widget at a time.
+
+### Changed
+- iNiR answers every password prompt itself; other polkit agents are no longer started.
+- fuzzel and dunst are no longer installed.
+
+### Fixed
+- A config read during a save no longer resets your settings.
+- After a Qt update, `inir doctor --fix-abi` rebuilds Quickshell instead of leaving the shell broken.
+- Secured Wi-Fi asks for its password in iRiS.
+- Desktop widgets keep their places across scale changes.
+- Brightness no longer loses the monitor when the bus is busy at login.
+- Fedora installs work with dnf5.
+- The iRiS battery bubble draws the battery and its charge, and figures in bubbles no longer run into their ring or corners.
+- A failed update check no longer reports the system as up to date.
+
+### Issues / PRs
+- Fixed [#264](https://github.com/snowarch/iNiR/issues/264), [#268](https://github.com/snowarch/iNiR/issues/268), [#271](https://github.com/snowarch/iNiR/issues/271), [#275](https://github.com/snowarch/iNiR/issues/275), [#279](https://github.com/snowarch/iNiR/issues/279), [#284](https://github.com/snowarch/iNiR/issues/284) and [#292](https://github.com/snowarch/iNiR/issues/292).
+- Included contributions from [#248](https://github.com/snowarch/iNiR/pull/248), [#283](https://github.com/snowarch/iNiR/pull/283), [#285](https://github.com/snowarch/iNiR/pull/285), [#288](https://github.com/snowarch/iNiR/pull/288), [#290](https://github.com/snowarch/iNiR/pull/290) and [#291](https://github.com/snowarch/iNiR/pull/291).
+
+### Contributors
+Thanks to [@caml07](https://github.com/caml07) for Void Linux support and the recording indicator fixes, to [@yukazakiri](https://github.com/yukazakiri) for game performance in Floating Tools and the Spotify setup, to [@NVitschDEV](https://github.com/NVitschDEV) for keeping the Island on empty workspaces, to [@NsCrosu](https://github.com/NsCrosu) for the annotation and notification fixes, to [@xdvi](https://github.com/xdvi) for the network and idle fixes, to [@drpdishant](https://github.com/drpdishant) for faster Fedora package checks, to [@greedoftheendless](https://github.com/greedoftheendless) for Qatar in the world clock, to [@everyoneexe](https://github.com/everyoneexe) for the Niri output fix, and to [@artemKerimoff](https://github.com/artemKerimoff) for the report behind the battery bubble fix.
 
 ## [2.32.0] - 2026-09-29
 
