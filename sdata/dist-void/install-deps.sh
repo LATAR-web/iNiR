@@ -1048,8 +1048,8 @@ fi
 if command -v qs >/dev/null 2>&1; then
   qs_abi_output="$(timeout 5 env QT_QPA_PLATFORM=offscreen qs --version 2>&1 || true)"
   if echo "$qs_abi_output" | grep -qiE "built against Qt|Qt.*mismatch|incompatible Qt"; then
-    log_warning "Qt/Quickshell ABI mismatch detected!"
-    log_warning "Void rebuilds quickshell with Qt updates. Run 'sudo xbps-install -Sf quickshell' to force reinstall."
+    log_warning "Quickshell was built for another Qt version. Until it is rebuilt it can crash."
+    log_warning "Void rebuilds quickshell with Qt updates. To reinstall it now: inir doctor --fix-abi"
   fi
 fi
 

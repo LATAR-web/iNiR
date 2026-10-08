@@ -64,15 +64,11 @@ array_has_package() {
 for needle in \
   'void-xbps:quickshell' \
   'void-xbps)' \
-  'sudo xbps-install -Sf quickshell'; do
+  'sudo xbps-install -Sf'; do
   check grep -Fq "$needle" "$launcher"
 done
-for needle in \
-  'install_kind="void-xbps"; install_pkg="quickshell"' \
-  'void-xbps)' \
-  'sudo xbps-install -Sf quickshell'; do
-  check grep -Fq "$needle" "$doctor"
-done
+# Doctor hands the Quickshell rebuild to the launcher, which owns it for every distro.
+check grep -Fq 'doctor --fix-abi && _doctor_abi_detect' "$doctor"
 for needle in \
   'xbps) echo "sudo xbps-install -Su"' \
   'elif command -v xbps-install &>/dev/null' \
@@ -282,7 +278,7 @@ abi_noop() {
   output="$("$launcher" doctor --fix-abi --noninteractive 2>&1)"
   rc=$?
   printf '%s\n' "$output"
-  [[ $rc -eq 0 ]] && grep -Fq 'already compatible' <<<"$output"
+  [[ $rc -eq 0 ]] && grep -Fq 'matches the installed Qt' <<<"$output"
 }
 check abi_noop
 

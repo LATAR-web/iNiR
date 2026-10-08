@@ -1301,91 +1301,6 @@ _doctor_abi_detect() {
     return 0
 }
 
-# Pure rebuild command computation: echoes the command or nothing.
-_doctor_abi_rebuild_cmd() {
-    local install_kind="unknown" install_pkg="" rebuild_helper=""
-
-    if command -v pacman >/dev/null 2>&1; then
-        if pacman -Qi quickshell-bin &>/dev/null; then
-            install_kind="arch-aur-bin"; install_pkg="quickshell-bin"
-        elif pacman -Qi quickshell-git &>/dev/null; then
-            install_pkg="quickshell-git"
-            if pacman -Qm quickshell-git &>/dev/null; then
-                install_kind="arch-aur-foreign"
-            else
-                install_kind="arch-repo-binary"
-            fi
-        elif pacman -Qi quickshell &>/dev/null; then
-            install_pkg="quickshell"
-            if pacman -Qm quickshell &>/dev/null; then
-                install_kind="arch-aur-foreign"
-            else
-                install_kind="arch-repo-official"
-            fi
-        fi
-    elif command -v xbps-query >/dev/null 2>&1 \
-            && xbps-query -p pkgver quickshell >/dev/null 2>&1; then
-        install_kind="void-xbps"; install_pkg="quickshell"
-    elif command -v rpm >/dev/null 2>&1; then
-        local rpm_q
-        rpm_q="$(rpm -qa 2>/dev/null | grep -E '^quickshell(-git)?-[0-9]' | head -1)"
-        if [[ -n "$rpm_q" ]]; then
-            install_kind="fedora-pkg"
-            install_pkg="${rpm_q%%-[0-9]*}"
-        fi
-    elif [[ -d /etc/nixos ]] || [[ -L /run/current-system ]]; then
-        install_kind="nixos"; install_pkg="quickshell"
-    elif command -v dpkg >/dev/null 2>&1 && dpkg -s quickshell &>/dev/null; then
-        install_kind="debian"; install_pkg="quickshell"
-    elif [[ -x /usr/local/bin/quickshell || -x /usr/local/bin/qs ]]; then
-        install_kind="source"
-    fi
-
-    if [[ "$install_kind" == arch-* ]]; then
-        for h in paru yay; do
-            if command -v "$h" >/dev/null 2>&1; then
-                rebuild_helper="$h"; break
-            fi
-        done
-    fi
-
-    case "$install_kind" in
-        arch-aur-foreign)
-            if [[ -n "$rebuild_helper" ]]; then
-                printf '%s -S --rebuild --noconfirm %s' "$rebuild_helper" "$install_pkg"
-            fi
-            ;;
-        arch-repo-binary)
-            if [[ -n "$rebuild_helper" ]]; then
-                printf '%s -Sa --noconfirm --skipreview %s' "$rebuild_helper" "$install_pkg"
-            fi
-            ;;
-        arch-repo-official)
-            # pacman -Syu only works if the repo already has a fresh rebuild.
-            # Most of the time it doesn't — switch to AUR quickshell-git for immediate fix.
-            if [[ -n "$rebuild_helper" ]]; then
-                printf 'sudo pacman -Rdd --noconfirm quickshell && %s -S --noconfirm quickshell-git' "$rebuild_helper"
-            else
-                printf 'sudo pacman -Syu'
-            fi
-            ;;
-        arch-aur-bin)
-            if [[ -n "$rebuild_helper" ]]; then
-                printf '%s -Rdd --noconfirm quickshell-bin && %s -Sa --noconfirm --skipreview quickshell-git' "$rebuild_helper" "$rebuild_helper"
-            fi
-            ;;
-        void-xbps)
-            printf 'sudo xbps-install -Sf quickshell'
-            ;;
-        fedora-pkg)
-            printf 'sudo dnf upgrade --refresh %s' "$install_pkg"
-            ;;
-        nixos)
-            printf 'sudo nixos-rebuild switch --upgrade'
-            ;;
-    esac
-}
-
 check_quickshell_abi() {
     # Quickshell uses Qt private APIs — any Qt minor version bump (e.g. 6.10→6.11)
     # breaks ABI and requires rebuilding quickshell. This is the #1 cause of
@@ -1402,19 +1317,9 @@ check_quickshell_abi() {
         return 0
     fi
 
-    doctor_fail "Qt/Quickshell ABI mismatch: $_doctor_abi_msg"
-    echo -e "  ${STY_YELLOW}Quickshell uses Qt private APIs that break on every Qt update.${STY_RST}"
-    echo -e "  ${STY_YELLOW}The shell will crash on any UI interaction until quickshell is rebuilt.${STY_RST}"
-
-    local _rebuild_cmd
-    _rebuild_cmd="$(_doctor_abi_rebuild_cmd)"
-    if [[ -n "$_rebuild_cmd" ]]; then
-        echo -e "  ${STY_YELLOW}To fix: ${_rebuild_cmd//--noconfirm /}${STY_RST}"
-        echo -e "  ${STY_FAINT}Or run: inir doctor --fix-abi${STY_RST}"
-    else
-        echo -e "  ${STY_YELLOW}No automatic fix available for this install type.${STY_RST}"
-        echo -e "  ${STY_FAINT}See: https://quickshell.org/docs/master/guide/install-setup${STY_RST}"
-    fi
+    doctor_fail "Quickshell was built for another Qt version: $_doctor_abi_msg"
+    echo -e "  ${STY_YELLOW}Quickshell uses Qt internals and asks to be rebuilt after every Qt update. Until then it can crash.${STY_RST}"
+    echo -e "  ${STY_FAINT}Fix: inir doctor --fix-abi${STY_RST}"
     return 1
 }
 
@@ -1496,10 +1401,10 @@ check_quickshell_loads() {
             return 1
         fi
         
-        # Check for ABI mismatch in crash output
+        # The Qt warning prints on every start of a mismatched build, so it is a lead, not the cause.
         if echo "$output" | grep -qiE "built against Qt|Qt.*mismatch|incompatible Qt"; then
-            doctor_fail "Quickshell crashed due to Qt ABI mismatch"
-            echo -e "  ${STY_YELLOW}Run: inir doctor  (to auto-rebuild quickshell)${STY_RST}"
+            doctor_fail "Quickshell failed to load, and it was built for another Qt version"
+            echo -e "  ${STY_YELLOW}Rebuild it first (inir doctor --fix-abi), then run inir doctor again.${STY_RST}"
             return 1
         fi
         
@@ -2021,68 +1926,18 @@ run_doctor_with_fixes() {
     _doctor_run_step 13 $total_steps "Checking Python packages"      check_python_packages
     _doctor_run_step 14 $total_steps "Checking stale local quickshell" check_stale_local_quickshell
 
-    # Step 15 pre-check: detect ABI mismatch and offer a visible rebuild.
-    # We do this OUTSIDE _doctor_run_step so the rebuild gets live TTY feedback
-    # instead of being swallowed by the tempfile capture.
+    # Step 15 pre-check: the CLI owns the rebuild for every install kind (`inir doctor --fix-abi`).
+    # It runs outside _doctor_run_step so the build and its prompts show live in the terminal.
     if ! _doctor_abi_detect; then
         echo ""
-        tui_error "Qt/Quickshell ABI mismatch detected"
-        echo -e "  ${STY_YELLOW}$_doctor_abi_msg${STY_RST}"
-        echo -e "  ${STY_YELLOW}Quickshell will crash on any UI interaction until rebuilt.${STY_RST}"
-
-        local _rebuild_cmd
-        _rebuild_cmd="$(_doctor_abi_rebuild_cmd)"
-        if [[ -n "$_rebuild_cmd" ]] && $ask && [[ -t 0 && -t 1 ]]; then
+        echo -e "  ${STY_YELLOW}Quickshell was built for another Qt version: $_doctor_abi_msg${STY_RST}"
+        echo -e "  ${STY_FAINT}Quickshell uses Qt internals and asks to be rebuilt after every Qt update. Until then it can crash.${STY_RST}"
+        local _inir_cli
+        _inir_cli="$(doctor_repo_root)/scripts/inir"
+        if $ask && [[ -t 0 && -t 1 && -f "$_inir_cli" ]]; then
             echo ""
-            if tui_confirm "Rebuild quickshell to fix the ABI mismatch?"; then
-                echo ""
-                echo -e "  ${STY_FAINT}Rebuilding quickshell against the current Qt version...${STY_RST}"
-                echo -e "  ${STY_FAINT}(This may take 2-5 minutes. timeout: 15 minutes)${STY_RST}"
-                echo ""
-
-                # Cache sudo credentials so the rebuild doesn't hang on a hidden prompt
-                local _sudo_ok=true
-                if [[ "$_rebuild_cmd" == *"sudo"* ]] || [[ "$_rebuild_cmd" == *"pacman"* ]] || [[ "$_rebuild_cmd" == *"dnf"* ]]; then
-                    echo ""
-                    echo -e "  ${STY_YELLOW}The rebuild requires sudo privileges.${STY_RST}"
-                    echo -e "  ${STY_FAINT}If prompted, enter your sudo password below.${STY_RST}"
-                    echo -e "  ${STY_FAINT}(timeout: 60 seconds)${STY_RST}"
-                    echo ""
-                    if ! timeout 60 sudo -v; then
-                        echo -e "  ${STY_RED}Sudo authentication timed out or failed.${STY_RST}"
-                        echo -e "  ${STY_YELLOW}Skipping automatic rebuild.${STY_RST}"
-                        echo -e "  ${STY_FAINT}You can run manually: ${_rebuild_cmd//--noconfirm/}${STY_RST}"
-                        _sudo_ok=false
-                    fi
-                fi
-
-                if $_sudo_ok; then
-                    local _rebuild_rc=0
-                    if command -v timeout >/dev/null 2>&1; then
-                        timeout 15m bash -c "${_rebuild_cmd//--noconfirm/}" || _rebuild_rc=$?
-                    else
-                        eval "${_rebuild_cmd//--noconfirm/}" || _rebuild_rc=$?
-                    fi
-
-                    if [[ $_rebuild_rc -eq 124 ]]; then
-                        echo ""
-                        echo -e "  ${STY_RED}Rebuild timed out after 15 minutes.${STY_RST}"
-                    elif [[ $_rebuild_rc -ne 0 ]]; then
-                        echo ""
-                        echo -e "  ${STY_RED}Rebuild failed (exit $_rebuild_rc).${STY_RST}"
-                    else
-                        rm -f "${XDG_CACHE_HOME:-$HOME/.cache}/inir/abi-check" 2>/dev/null
-                        if _doctor_abi_detect; then
-                            echo ""
-                            echo -e "  ${STY_GREEN}Quickshell rebuilt successfully. ABI mismatch resolved.${STY_RST}"
-                            doctor_fixed=$((doctor_fixed + 1))
-                        else
-                            echo ""
-                            echo -e "  ${STY_YELLOW}Rebuild finished but mismatch persists.${STY_RST}"
-                            echo -e "  ${STY_FAINT}A stale local binary may be shadowing the system package.${STY_RST}"
-                        fi
-                    fi
-                fi
+            if bash "$_inir_cli" doctor --fix-abi && _doctor_abi_detect; then
+                doctor_fixed=$((doctor_fixed + 1))
             fi
         fi
         echo ""

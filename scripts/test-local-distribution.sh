@@ -3459,14 +3459,15 @@ inir_cli="$runtime_root/scripts/inir"
 doctor_lib="$runtime_root/sdata/lib/doctor.sh"
 if ! grep -Fq 'void-xbps:quickshell' "$inir_cli" \
         || ! grep -Fq "void-xbps)" "$inir_cli" \
-        || ! grep -Fq "sudo xbps-install -Sf quickshell" "$inir_cli"; then
+        || ! grep -Fq "sudo xbps-install -Sf" "$inir_cli"; then
     printf 'FAIL: inir doctor --fix-abi has no Void XBPS repair path\n' >&2
     exit 1
 fi
-if ! grep -Fq 'install_kind="void-xbps"; install_pkg="quickshell"' "$doctor_lib" \
-        || ! grep -Fq "void-xbps)" "$doctor_lib" \
-        || ! grep -Fq "sudo xbps-install -Sf quickshell" "$doctor_lib"; then
-    printf 'FAIL: setup Doctor has no Void XBPS Quickshell repair path\n' >&2
+# scripts/inir owns the rebuild; Doctor and the Arch installer hand it over instead of keeping recipes.
+if ! grep -Fq 'doctor --fix-abi && _doctor_abi_detect' "$doctor_lib" \
+        || grep -Fq '_doctor_abi_rebuild_cmd' "$doctor_lib" \
+        || ! grep -Fq 'bash ./scripts/inir "${qs_fix_args[@]}"' "$runtime_root/sdata/dist-arch/install-deps.sh"; then
+    printf 'FAIL: setup Doctor or the Arch installer keeps its own Quickshell rebuild instead of inir doctor --fix-abi\n' >&2
     exit 1
 fi
 
@@ -4228,6 +4229,9 @@ if command -v python3 &>/dev/null && [[ -f "$runtime_root/scripts/lib/generate-i
 
     step "QML components that parse and fail to load"
     python3 "$runtime_root/scripts/test-qml-pitfalls.py"
+
+    step "Terminal prompts stay in the foreground"
+    python3 "$runtime_root/scripts/test-tty-timeouts.py"
 
     step "iRiS style tokens"
     python3 "$runtime_root/scripts/test-iris-style-tokens.py"
