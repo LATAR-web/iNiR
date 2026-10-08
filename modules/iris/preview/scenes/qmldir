@@ -10,6 +10,7 @@ FrameScene 1.0 FrameScene.qml
 FusionScene 1.0 FusionScene.qml
 GalleryScene 1.0 GalleryScene.qml
 GlassScene 1.0 GlassScene.qml
+HighlightScene 1.0 HighlightScene.qml
 IslandEdgeScene 1.0 IslandEdgeScene.qml
 IslandInteractionScene 1.0 IslandInteractionScene.qml
 IslandPageScene 1.0 IslandPageScene.qml
@@ -17,6 +18,8 @@ IslandReserveScene 1.0 IslandReserveScene.qml
 JoiningScene 1.0 JoiningScene.qml
 LightScene 1.0 LightScene.qml
 LockScene 1.0 LockScene.qml
+LoginScene 1.0 LoginScene.qml
+MaterialScene 1.0 MaterialScene.qml
 MenusScene 1.0 MenusScene.qml
 MotionScene 1.0 MotionScene.qml
 PaletteScene 1.0 PaletteScene.qml
@@ -25,6 +28,8 @@ PlayerScene 1.0 PlayerScene.qml
 SettingsScene 1.0 SettingsScene.qml
 ShapesScene 1.0 ShapesScene.qml
 SpotlightScene 1.0 SpotlightScene.qml
+SurfacesScene 1.0 SurfacesScene.qml
+TextureScene 1.0 TextureScene.qml
 TrayScene 1.0 TrayScene.qml
 TypographyScene 1.0 TypographyScene.qml
 WidgetsScene 1.0 WidgetsScene.qml

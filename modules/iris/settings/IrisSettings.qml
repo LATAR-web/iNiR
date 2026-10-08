@@ -40,7 +40,7 @@ Item {
     readonly property real d: IrisStyle.density
     readonly property var sections: IrisOptions.sections
     // Sources and More Settings sit in a footer under the list, always in view.
-    readonly property int footerCluster: 5
+    readonly property int footerCluster: 6
     readonly property var specifications: IrisOptions.settings
     readonly property var currentSection: IrisOptions.sectionById(root.section)
     readonly property bool searching: root.query.length > 0
@@ -57,6 +57,10 @@ Item {
         : root.group.length > 0 ? root.group
         : root.groups.length === 1 ? root.groups[0].title : ""
     readonly property bool browsing: !root.searching && root.openGroup.length === 0 && root.advancedPage < 0
+    // The page's head stays in view while its rows scroll when it shows a scene, unless the window is so short that the
+    // rows would be left a sliver: then it scrolls with them.
+    readonly property bool heroPinned: pageHero.shown && pageHero.staged
+        && pageArea.height >= pageHero.implicitHeight + Math.round(260 * root.d)
     function shown(spec: var): bool { return IrisOptions.shown(spec) }
 
     readonly property int searchLimit: 24
@@ -216,9 +220,9 @@ Item {
         const entry = IrisOptions.morePages.find(candidate => candidate.key === page?.key)
         return entry ? Translation.tr(entry.label) : String(page?.name ?? page?.title ?? "")
     }
-    readonly property var editTargets: ({ bar: "island", player: "bodies", bubbles: "pieces", dock: "dock", appearance: "material",
+    readonly property var editTargets: ({ bar: "island", player: "bodies", bubbles: "pieces", dock: "dock", appearance: "material", colour: "colour",
         motion: "motion", desktop: "desktop", sidebars: "places", spotlight: "places", controlCenter: "bodies" })
-    readonly property var studioTargets: ({ bar: "island", bubbles: "pieces", dock: "dock", appearance: "material", motion: "motion",
+    readonly property var studioTargets: ({ bar: "island", bubbles: "pieces", dock: "dock", appearance: "material", colour: "colour", motion: "motion",
         desktop: "desktop", sidebars: "places", controlCenter: "bodies", spotlight: "places", sound: "transients", notifications: "transients", player: "bodies" })
 
     function here(): var { return { section: root.section, group: root.group, advancedPage: root.advancedPage } }
@@ -274,6 +278,19 @@ Item {
             }
         }
     }
+    // A link written before a topic got its own section (appearance/Accent, lock/Login screen, desktop/Wallpaper gallery)
+    // still lands: a group asked for where it no longer is opens in the section that holds it now.
+    readonly property var renamedGroups: ({ "appearance/wallpaper": "Wallpaper tint" })
+    function followMovedGroup(): void {
+        let wanted = root.requestedGroup.toLowerCase()
+        if (wanted.length === 0) return
+        const holds = (section, name) => root.specifications.some(spec => spec.section === section && String(spec.group ?? "").toLowerCase() === name)
+        if (holds(root.requestedSection, wanted)) return
+        const renamed = String(root.renamedGroups[root.requestedSection + "/" + wanted] ?? "")
+        if (renamed.length > 0) { root.requestedGroup = renamed; wanted = renamed.toLowerCase() }
+        const home = root.specifications.find(spec => String(spec.group ?? "").toLowerCase() === wanted)
+        if (home) root.requestedSection = home.section
+    }
     function runCommand(verb: string): bool {
         if (verb === "back") root.goBack()
         else if (verb === "forward") root.goForward()
@@ -298,8 +315,13 @@ Item {
         if (request.length > 1) {
             root.requestedGroup = request.slice(1).join("/")
             groupRequest.restart()
+        } else if (request[0].length > 0) {
+            // A new place without a group drops a group still waiting from the last request.
+            groupRequest.stop()
+            root.requestedGroup = ""
         }
         GlobalStates.settingsOverlayRequestedSection = ""
+        root.followMovedGroup()
         const page = GlobalStates.settingsOverlayRequestedPage
         if (page >= 0) {
             const irisPage = page === root.irisPageIndex
@@ -326,7 +348,7 @@ Item {
             root.applyRequest()
         }
     }
-    onSectionChanged: pageEnter.restart()
+    onSectionChanged: { settingsFlick.contentY = 0; pageEnter.restart() }
     onOpenGroupChanged: { settingsFlick.contentY = 0; pageEnter.restart() }
     onAdvancedPageChanged: pageEnter.restart()
 
@@ -812,9 +834,74 @@ Item {
                     }
                     transform: Translate { id: pageShift }
 
+                    // A head that carries a scene stays in view while its rows scroll under it: every change is seen as it
+                    // lands, however far down the row is. One head, moved between this slot and the top of the rows.
+                    Item {
+                        id: heroPinSlot
+                        visible: settingsFlick.visible && root.heroPinned
+                        x: Math.round((pageArea.width - width) / 2)
+                        y: Math.round(6 * root.d)
+                        width: settingsRows.width
+                        height: visible ? pageHero.implicitHeight : 0
+                        // The head is part of the page: the wheel over it scrolls the rows, as it would if it scrolled too.
+                        WheelHandler {
+                            acceptedDevices: PointerDevice.Mouse | PointerDevice.TouchPad
+                            onWheel: event => {
+                                const step = event.pixelDelta.y !== 0 ? event.pixelDelta.y : event.angleDelta.y / 120 * 64 * root.d
+                                const end = Math.max(0, settingsFlick.contentHeight - settingsFlick.height)
+                                settingsFlick.contentY = Math.max(0, Math.min(end, settingsFlick.contentY - step))
+                            }
+                        }
+                    }
+
+                    StageHero {
+                        id: pageHero
+                        readonly property bool groupPage: !root.searching && root.openGroup.length > 0 && root.advancedPage < 0
+                        readonly property bool sectionPage: root.browsing && root.section !== "system" && root.section !== "general" && root.section !== "gaming"
+                        readonly property string key: String(root.shownGroups[0]?.key ?? "")
+                        // A group with no scene has no head: the toolbar already names it.
+                        readonly property bool shown: pageHero.sectionPage || (pageHero.groupPage && pageHero.stageAvailable)
+                        parent: root.heroPinned ? heroPinSlot : heroFlowSlot
+                        width: settingsRows.width
+                        visible: pageHero.shown
+                        tint: pageHero.groupPage ? (IrisOptions.groupTints[pageHero.key] ?? root.currentSection.tint) : root.currentSection.tint
+                        glyph: pageHero.groupPage ? (IrisOptions.groupGlyphs[pageHero.key] ?? root.currentSection.icon) : root.currentSection.icon
+                        title: !pageHero.groupPage ? Translation.tr(root.currentSection.subtitle)
+                            : pageHero.caption.length > 0 ? pageHero.caption : root.openGroup
+                        text: Translation.tr(root.currentSection.tip ?? "")
+                        sceneSection: pageHero.sectionPage || pageHero.groupPage ? root.section : ""
+                        sceneGroup: pageHero.groupPage ? pageHero.key : ""
+                    }
+
                     Flickable {
                         id: settingsFlick
                         anchors.fill: parent
+                        anchors.topMargin: root.heroPinned ? heroPinSlot.y + heroPinSlot.height + Math.round(12 * root.d) : 0
+                        // Rows pass under the pinned head, never over it.
+                        clip: root.heroPinned
+                        // and fade into the air under it instead of ending on a cut, as the sidebar's list does at its foot.
+                        layer.enabled: root.heroPinned && settingsFlick.contentY > 1
+                        layer.effect: MultiEffect {
+                            maskEnabled: true
+                            maskSource: rowsFade
+                            maskThresholdMin: 0.5
+                            maskSpreadAtMin: 1
+                        }
+                        Item {
+                            id: rowsFade
+                            parent: settingsFlick
+                            anchors.fill: parent
+                            visible: false
+                            layer.enabled: true
+                            Rectangle {
+                                anchors.fill: parent
+                                gradient: Gradient {
+                                    GradientStop { position: 0; color: "transparent" }
+                                    GradientStop { position: Math.min(1, 18 * root.d / Math.max(1, rowsFade.height)); color: "white" }
+                                    GradientStop { position: 1; color: "white" }
+                                }
+                            }
+                        }
                         visible: root.advancedPage < 0 && !root.atHome
                         contentHeight: settingsRows.implicitHeight + 32 * root.d
                         boundsBehavior: Flickable.StopAtBounds
@@ -827,14 +914,12 @@ Item {
                             x: Math.round((settingsFlick.width - width) / 2)
                             spacing: 18 * root.d
 
-                            StageHero {
-                                visible: root.browsing && root.section !== "system" && root.section !== "general" && root.section !== "gaming"
-                                tint: root.currentSection.tint
-                                glyph: root.currentSection.icon
-                                title: Translation.tr(root.currentSection.subtitle)
-                                text: Translation.tr(root.currentSection.tip ?? "")
-                                sceneSection: root.browsing ? root.section : ""
-                                sceneGroup: ""
+                            // The head reads here only when it carries no scene, or the window is too short to keep one in view.
+                            Item {
+                                id: heroFlowSlot
+                                Layout.fillWidth: true
+                                visible: pageHero.shown && !root.heroPinned
+                                implicitHeight: visible ? pageHero.implicitHeight : 0
                             }
 
                             IrisGameModeCard {
@@ -844,18 +929,6 @@ Item {
                             IrisWallpaperCard {
                                 screen: root.screen
                                 visible: root.browsing && root.section === "general"
-                            }
-
-                            StageHero {
-                                id: groupHero
-                                readonly property string key: String(root.shownGroups[0]?.key ?? "")
-                                visible: !root.searching && root.openGroup.length > 0 && root.advancedPage < 0 && stageAvailable
-                                tint: IrisOptions.groupTints[groupHero.key] ?? root.currentSection.tint
-                                glyph: IrisOptions.groupGlyphs[groupHero.key] ?? root.currentSection.icon
-                                title: groupHero.caption.length > 0 ? groupHero.caption : root.openGroup
-                                text: Translation.tr(root.currentSection.tip ?? "")
-                                sceneSection: !root.searching && root.openGroup.length > 0 && root.advancedPage < 0 ? root.section : ""
-                                sceneGroup: groupHero.key
                             }
 
                             IrisText {

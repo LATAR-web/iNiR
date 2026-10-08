@@ -29,16 +29,20 @@ ClippingRectangle {
     function sceneFor(section: string, group: string): string {
         if (group.length === 0)
             return ({ dock: "dock", player: "player", desktop: "widgets", sidebars: "panels", controlCenter: "controlCenter", spotlight: "spotlight", bubbles: "bubbles",
-                bar: "islandEdge", appearance: "palette", motion: "motion", lock: "lock", frameMusic: "frame", notifications: "feedback", sound: "feedback" })[section] ?? ""
+                bar: "islandEdge", appearance: "fusion", colour: "palette", wallpaper: "gallery", login: "login", motion: "motion", lock: "lock", frameMusic: "frame", notifications: "feedback", sound: "feedback" })[section] ?? ""
         const key = section + "/" + group
         return ({
             "bar/Visibility": "islandReserve", "bar/Interaction": "islandInteraction",
             "bar/Shape": "shapes", "bar/Layout": "islandEdge", "bar/Bar": "barZones",
-            "appearance/Light": "light", "appearance/Shape": "shapes", "appearance/Colour theme": "palette", "appearance/Scheme": "palette", "appearance/Dark look": "palette", "appearance/Ink look": "palette", "appearance/Light look": "palette", "appearance/App colours": "palette", "appearance/Wallpaper": "palette", "appearance/Corners per surface": "fusion", "appearance/Glass": "glass", "appearance/Edges": "glass",
+            "appearance/Light": "light", "appearance/Shape": "shapes", "appearance/Corners per surface": "surfaces", "appearance/Glass": "glass", "appearance/Edges": "glass",
             "appearance/Menus": "menus", "appearance/Settings": "settings",
-            "appearance/Material": "glass", "appearance/Material per surface": "glass", "appearance/Look": "fusion",
-            "appearance/Adaptive": "fusion", "appearance/Accent": "palette", "appearance/Highlight": "palette",
+            "appearance/Texture": "texture", "appearance/Material": "material", "appearance/Material per surface": "surfaces", "appearance/Look": "fusion",
+            "appearance/Adaptive": "fusion",
             "appearance/Faces": "typography", "appearance/Text": "typography", "appearance/Frame": "frame",
+            "colour/Colour theme": "palette", "colour/Scheme": "palette", "colour/Accent": "palette", "colour/Highlight": "highlight",
+            "colour/App colours": "palette", "colour/Dark look": "palette", "colour/Ink look": "palette", "colour/Light look": "palette",
+            "colour/Wallpaper tint": "palette",
+            "login/Login Screen": "login",
             "desktop/Desktop menu": "menus",
             "motion/Motion": "motion", "motion/Curve": "motion", "motion/Timing": "motion",
             "motion/Per surface": "motion", "motion/Style per surface": "motion", "motion/Touch": "motion",
@@ -49,10 +53,10 @@ ClippingRectangle {
             "bubbles/Behaviour": "bubbles", "bubbles/Floating": "bubbles", "bubbles/On the contour": "bubbles", "bubbles/Size": "bubbles",
             "bubbles/Cards": "cards", "bubbles/Card contents": "cards", "bubbles/Joining": "joining", "bubbles/Tray": "tray",
             "dock/Visibility": "dock", "dock/Icons": "dock", "dock/Look": "dock",
-            "desktop/Widgets": "widgets", "desktop/Overview backdrop": "backdrop", "desktop/Wallpaper gallery": "gallery",
+            "desktop/Widgets": "widgets", "wallpaper/Overview backdrop": "backdrop", "wallpaper/Wallpaper gallery": "gallery",
             "spotlight/Spotlight": "spotlight", "controlCenter/Control Center": "controlCenter",
             "sidebars/Panel look": "panels",
-            "notifications/Banners": "feedback", "notifications/Notifications": "feedback", "sound/Feedback": "feedback",
+            "notifications/Banners": "feedback", "sound/Feedback": "feedback",
             "player/Player": "player", "player/Bubble": "player"
         })[key] ?? ""
     }
@@ -91,12 +95,13 @@ ClippingRectangle {
             active: root.available && root.visible
             sourceComponent: ({
                 typography: typographyScene, frame: frameScene, lock: lockScene, motion: motionScene,
-                dock: dockScene, widgets: widgetsScene, backdrop: backdropScene, gallery: galleryScene,
+                texture: textureScene, dock: dockScene, widgets: widgetsScene, backdrop: backdropScene, gallery: galleryScene,
                 spotlight: spotlightScene, controlCenter: controlCenterScene, cards: cardsScene, menus: menusScene,
                 settings: settingsScene, panels: panelsScene, joining: joiningScene, feedback: feedbackScene,
                 tray: trayScene, player: playerScene, islandReserve: islandReserveScene, islandEdge: islandEdgeScene, barZones: barZonesScene,
                 light: lightScene, palette: paletteScene, fusion: fusionScene, shapes: shapesScene, glass: glassScene,
-                islandInteraction: islandInteractionScene, islandPage: islandPageScene, bubbles: bubblesScene
+                islandInteraction: islandInteractionScene, islandPage: islandPageScene, bubbles: bubblesScene,
+                highlight: highlightScene, login: loginScene, material: materialScene, surfaces: surfacesScene
             })[root.scene] ?? null
         }
     }
@@ -120,6 +125,7 @@ ClippingRectangle {
     Component { id: fusionScene; FusionScene { preview: root } }
     Component { id: galleryScene; GalleryScene { preview: root } }
     Component { id: glassScene; GlassScene { preview: root } }
+    Component { id: highlightScene; HighlightScene { preview: root } }
     Component { id: islandEdgeScene; IslandEdgeScene { preview: root } }
     Component { id: islandInteractionScene; IslandInteractionScene { preview: root } }
     Component { id: islandPageScene; IslandPageScene { preview: root } }
@@ -127,6 +133,8 @@ ClippingRectangle {
     Component { id: joiningScene; JoiningScene { preview: root } }
     Component { id: lightScene; LightScene { preview: root } }
     Component { id: lockScene; LockScene { preview: root } }
+    Component { id: loginScene; LoginScene { preview: root } }
+    Component { id: materialScene; MaterialScene { preview: root } }
     Component { id: menusScene; MenusScene { preview: root } }
     Component { id: motionScene; MotionScene { preview: root } }
     Component { id: paletteScene; PaletteScene { preview: root } }
@@ -135,6 +143,8 @@ ClippingRectangle {
     Component { id: settingsScene; SettingsScene { preview: root } }
     Component { id: shapesScene; ShapesScene { preview: root } }
     Component { id: spotlightScene; SpotlightScene { preview: root } }
+    Component { id: surfacesScene; SurfacesScene { preview: root } }
+    Component { id: textureScene; TextureScene { preview: root } }
     Component { id: trayScene; TrayScene { preview: root } }
     Component { id: typographyScene; TypographyScene { preview: root } }
     Component { id: widgetsScene; WidgetsScene { preview: root } }

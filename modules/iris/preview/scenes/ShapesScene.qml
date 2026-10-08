@@ -26,7 +26,7 @@ PreviewScene {
     readonly property var docked: ({ x: Math.round(width / 2 - 120 * shapeRoot.d), y: height - shapeRoot.dockThick - shapeRoot.dockGap,
         width: Math.round(240 * shapeRoot.d), height: shapeRoot.dockThick })
     readonly property real openCorner: Math.min(shapeRoot.opened.height / 2,
-        IrisStyle.openedRadius(IrisStyle.barShape, Math.max(IrisStyle.radius, 30 * shapeRoot.d)))
+        IrisStyle.openedRadius(IrisStyle.barShape, IrisStyle.radius))
     function shapeName(shape: string): string {
         return Translation.tr(({ round: "Round", squircle: "Squircle", square: "Square" })[shape] ?? "Auto")
     }
@@ -82,6 +82,6 @@ PreviewScene {
     }
     Caption {
         glyph: "rounded_corner"
-        text: Translation.tr("Island shape") + " · " + shapeRoot.shapeName(IrisStyle.barShape) + "   " + Translation.tr("Dock shape") + " · " + shapeRoot.shapeName(IrisStyle.dockShape)
+        text: Translation.tr("Corners %1 px").arg(Math.round(IrisStyle.radius)) + " · " + Translation.tr("Island shape") + " " + shapeRoot.shapeName(IrisStyle.barShape)
     }
 }

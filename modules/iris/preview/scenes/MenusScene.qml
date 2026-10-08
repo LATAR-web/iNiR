@@ -14,13 +14,21 @@ PreviewScene {
     id: menuRoot
     readonly property real naturalWidth: Math.round(480 * menuRoot.d)
     readonly property real naturalHeight: Math.round(300 * menuRoot.d)
-    readonly property int pad: Math.round(6 * menuRoot.d)
+    // The real menu's numbers (IrisDesktopMenu): Menus › Size moves every one of them.
+    readonly property bool compact: IrisStyle.menuCompact
+    readonly property int pad: Math.round((menuRoot.compact ? 4 : 6) * menuRoot.d)
+    readonly property real rowHeight: Math.round((menuRoot.compact ? 28 : 34) * menuRoot.d)
+    readonly property real sepHeight: Math.round((menuRoot.compact ? 9 : 13) * menuRoot.d)
+    readonly property real markSize: Math.round((menuRoot.compact ? 18 : 20) * menuRoot.d)
+    readonly property real glyphSize: Math.round((menuRoot.compact ? 15 : 17) * menuRoot.d)
+    readonly property int textSize: menuRoot.compact ? IrisStyle.typeLabel : IrisStyle.typeBody
     Plate {
         id: menuPlate
         surface: "menus"
-        fallbackRadius: IrisStyle.radiusTile
+        // IrisDesktopMenu's own fallback: tile corners when compact, card corners when regular.
+        fallbackRadius: menuRoot.compact ? IrisStyle.radiusTile : IrisStyle.radiusCard
         anchors.centerIn: parent
-        width: Math.round(236 * menuRoot.d)
+        width: Math.round(224 * menuRoot.d)
         height: menuColumn.implicitHeight + 2 * menuRoot.pad
         ColumnLayout {
             id: menuColumn
@@ -29,7 +37,7 @@ PreviewScene {
             spacing: 0
             ClippingRectangle {
                 Layout.fillWidth: true
-                Layout.preferredHeight: Math.round(width * 9 / 16)
+                Layout.preferredHeight: Math.round(width * 0.48)
                 radius: Math.max(IrisStyle.radiusMicro, menuPlate.radius - menuRoot.pad)
                 color: IrisStyle.fillQuiet
                 ShaderEffectSource {
@@ -73,7 +81,7 @@ PreviewScene {
                     required property var modelData
                     readonly property color tint: IrisStyle.identityColor(String(menuRow.modelData.tint ?? "gray"))
                     Layout.fillWidth: true
-                    implicitHeight: menuRow.modelData.sep ? Math.round(9 * menuRoot.d) : Math.round(28 * menuRoot.d)
+                    implicitHeight: menuRow.modelData.sep ? menuRoot.sepHeight : menuRoot.rowHeight
                     Rectangle {
                         visible: menuRow.modelData.sep === true
                         anchors.verticalCenter: parent.verticalCenter
@@ -83,27 +91,32 @@ PreviewScene {
                     Rectangle {
                         visible: menuRow.modelData.sep !== true
                         anchors.fill: parent
-                        radius: Math.max(IrisStyle.radiusMicro, menuPlate.radius - menuRoot.pad)
+                        radius: IrisStyle.radiusRow
                         color: menuRow.modelData.lit ? IrisStyle.fillHover : "transparent"
                         RowLayout {
                             anchors.fill: parent
-                            anchors.leftMargin: Math.round(8 * menuRoot.d)
-                            spacing: Math.round(8 * menuRoot.d)
+                            anchors.leftMargin: Math.round((menuRoot.compact ? 8 : 10) * menuRoot.d)
+                            anchors.rightMargin: Math.round((menuRoot.compact ? 10 : 12) * menuRoot.d)
+                            spacing: Math.round((menuRoot.compact ? 8 : 10) * menuRoot.d)
                             Rectangle {
-                                Layout.preferredWidth: Math.round(18 * menuRoot.d)
+                                Layout.preferredWidth: menuRoot.markSize
                                 Layout.preferredHeight: Layout.preferredWidth
                                 radius: IrisStyle.iconRadius(width)
                                 gradient: Gradient {
                                     GradientStop { position: 0; color: IrisStyle.tileTop(menuRow.tint) }
                                     GradientStop { position: 1; color: menuRow.tint }
                                 }
-                                MaterialSymbol { anchors.centerIn: parent; text: String(menuRow.modelData.glyph ?? ""); fill: 1; iconSize: Math.round(13 * menuRoot.d); color: IrisStyle.onTint }
+                                MaterialSymbol { anchors.centerIn: parent; text: String(menuRow.modelData.glyph ?? ""); fill: 1; iconSize: Math.round(menuRoot.glyphSize * 0.82); color: IrisStyle.onTint }
                             }
-                            IrisText { Layout.fillWidth: true; text: String(menuRow.modelData.text ?? ""); font.pixelSize: IrisStyle.typeLabel }
+                            IrisText { Layout.fillWidth: true; text: String(menuRow.modelData.text ?? ""); font.pixelSize: menuRoot.textSize; font.weight: IrisStyle.weight(Font.Medium) }
                         }
                     }
                 }
             }
         }
+    }
+    Caption {
+        glyph: "menu_open"
+        text: menuRoot.compact ? Translation.tr("Compact menus") : Translation.tr("Regular menus")
     }
 }
