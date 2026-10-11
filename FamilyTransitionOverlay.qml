@@ -81,8 +81,6 @@ Scope {
     // no timer starts, fadeOut never runs, enterComplete never fires, and a
     // fullscreen WlrKeyboardFocus.Exclusive window stays up forever. That is the
     // freeze that forces a TTY. Arm on construction too.
-    Component.onCompleted: if (GlobalStates.familyTransitionActive) root._beginTransition()
-
     // Nothing may hold exclusive keyboard focus on a timer chain alone. If the
     // choreography has not finished well past its own worst case, tear the
     // overlay down and hand input back rather than trap the session.
@@ -95,6 +93,37 @@ Scope {
             console.warn("[FamilyTransition] watchdog fired — releasing the overlay")
             root._forceFinish()
         }
+    }
+
+    // A reload rebuilds this object mid-transition (the family write lands while
+    // the choreography runs), and the replacement arm is the constructor: with
+    // familyTransitionActive already true it never sees the change signal. If
+    // the panels were already swapped (target still set in the singleton),
+    // replaying the entry chain only delays the exit and stretches the hold, so
+    // resume straight into it.
+    Component.onCompleted: {
+        if (!GlobalStates.familyTransitionActive) return
+        if (GlobalStates.familyTransitionTarget.length > 0)
+            root._resumeIntoExit()
+        else
+            root._beginTransition()
+    }
+
+    // Once the panels are already swapped and the hold has passed, replaying
+    // the entry chain only delays the exit and leaves the exclusive-keyboard
+    // window up for another worst-case interval. Resume straight into the exit.
+    function _resumeIntoExit(): void {
+        if (root._phase) return
+        root._targetFamily = GlobalStates.familyTransitionTarget || "ii"
+        root._isWaffle = root._targetFamily === "waffle"
+        root._isIris = root._targetFamily === "iris"
+        enterTimer.stop(); holdTimer.stop(); contentExitTimer.stop()
+        fadeIn.stop(); bgScaleIn.stop(); blurIn.stop()
+        root._phase = true
+        root._active = true
+        fadeOut.restart()
+        bgScaleOut.restart()
+        watchdog.restart()
     }
 
     function _forceFinish(): void {
