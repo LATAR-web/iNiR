@@ -25,9 +25,18 @@ Singleton {
     }
     
     onQueryChanged: {
-        // Immediate update for empty query (instant clear)
-        if (query === "") {
-            _debouncedQuery = ""
+        // Immediate update for empty query or single prefix char (instant mode switch)
+        const prefixes = [
+            Config.options?.search?.prefix?.action ?? "/",
+            Config.options?.search?.prefix?.app ?? ">",
+            Config.options?.search?.prefix?.clipboard ?? ";",
+            Config.options?.search?.prefix?.emojis ?? ":",
+            Config.options?.search?.prefix?.math ?? "=",
+            Config.options?.search?.prefix?.shellCommand ?? "$",
+            Config.options?.search?.prefix?.webSearch ?? "?",
+        ]
+        if (query === "" || (query.length === 1 && prefixes.includes(query))) {
+            _debouncedQuery = query
             debounceTimer.stop()
         } else {
             debounceTimer.restart()
@@ -49,6 +58,8 @@ Singleton {
         } else {
             root.query = prefix + root.query
         }
+        root._debouncedQuery = root.query
+        debounceTimer.stop()
     }
 
     // All actions are now centralized in GlobalActions service.

@@ -24,8 +24,8 @@ Item {
     property color light: "transparent"
     property string lightFrom: "top"
     property real contentScaleFrom: 0.965
-    property real contentFadeStart: IrisStyle.contentRise
-    property real contentFadeSpan: IrisStyle.contentSpan
+    property real contentFadeStart: root.settles ? 0.0 : IrisStyle.contentRise
+    property real contentFadeSpan: root.settles ? 0.6 : IrisStyle.contentSpan
     property int animationDuration: 0
     property bool contentTravels: false
     property real originShare: IrisStyle.absorbShare
@@ -91,8 +91,8 @@ Item {
     // Settles in place: it arrives at 95 % of itself on its own centre, never from its origin, and
     // leaves at 97 %, so a blurred body only ever changes size, never fades.
     property bool settles: false
-    readonly property real settleShare: 0.95
-    readonly property real settleCut: 0.4
+    readonly property real settleShare: 0.92
+    readonly property real settleCut: 0.04
 
     property var originScene: null
     property string originOwner: ""
@@ -140,7 +140,7 @@ Item {
         // one, so waiting for two always fell through to the timer (90 ms of nothing).
         function onFrameSwapped(): void { if (++root.launchFrames >= 1) root.launched = true }
     }
-    Timer { interval: 90; running: root.armed && !root.launched; onTriggered: root.launched = true }
+    Timer { interval: 16; running: root.armed && !root.launched; onTriggered: root.launched = true }
     onLaunchedChanged: if (root.launched && IrisMotionMeter.watching(root.motionSurface)) IrisMotionMeter.mark("launched")
     readonly property alias presentation: presentationSpring.value
     IrisSpring {
@@ -215,6 +215,7 @@ Item {
             root.captureOrigin()
             root.launched = false
             root.launchFrames = 0
+            Qt.callLater(() => { if (root.armed && !root.launched) root.launched = true })
         }
         root.armed = true
         if (IrisMotionMeter.watching(root.motionSurface)) IrisMotionMeter.mark("armed")
@@ -266,7 +267,7 @@ Item {
         ? root.restY + (root.restHeight - root.height) / 2
         : (root.originBefore ? root.restY + root.restHeight - root.height : root.restY)
 
-    readonly property bool drops: IrisStyle.revealDrops && !root.contentTravels
+    readonly property bool drops: IrisStyle.revealDrops && !root.contentTravels && !root.settles
     readonly property bool dropping: root.drops && root.presentation < 1
     readonly property real snapX: Math.round(root.x) - root.x
     readonly property real snapY: Math.round(root.y) - root.y

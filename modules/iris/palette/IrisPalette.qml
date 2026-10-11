@@ -108,7 +108,7 @@ Item {
     // "/" lists what iRiS can flip, apply or run from here, grouped by area; typed words narrow it the forgiving
     // way IrisSearch matches. A switch stays open to show its new state; the rest run and close.
     readonly property string actionPrefix: Config.options?.search?.prefix?.action ?? "/"
-    readonly property bool actionMode: root.settled.startsWith(root.actionPrefix)
+    readonly property bool actionMode: (root.settled.length > 0 ? root.settled : LauncherSearch.query).startsWith(root.actionPrefix)
     // One header per area: areas follow their best row, rows keep their rank inside the area.
     function byArea(entries: var): var {
         const order = [], groups = ({})
@@ -141,7 +141,7 @@ Item {
     readonly property bool joinsEdge: root.fromIsland && IrisFrame.notch
     readonly property bool joinsFrame: root.joinsEdge && IrisFrame.framed
 
-    readonly property bool browsing: root.settled.length === 0
+    readonly property bool browsing: (LauncherSearch.query.length === 0)
     readonly property var suggestions: {
         return IrisDockOrder.entries.filter(app => app.appId !== "SEPARATOR").slice(0, 8).map(app => {
             const entry = AppSearch.lookupDesktopEntry(app.appId)
@@ -179,7 +179,7 @@ Item {
         })
     }
     readonly property string clipboardPrefix: Config.options?.search?.prefix?.clipboard ?? ";"
-    readonly property bool clipboardMode: root.settled.startsWith(root.clipboardPrefix)
+    readonly property bool clipboardMode: (root.settled.length > 0 ? root.settled : LauncherSearch.query).startsWith(root.clipboardPrefix)
     onClipboardModeChanged: if (root.clipboardMode) Cliphist.refresh()
     property int selectedIndex: 0
     property bool pointerSelectionArmed: false
@@ -373,13 +373,13 @@ Item {
                 spread: -6 * stage.d
                 color: IrisStyle.shadow
                 visible: !root.fromIsland
-                opacity: IrisStyle.shadowAt(surface.progress)
+                opacity: Math.pow(Math.max(0, Math.min(1, surface.progress)), 1.8)
             }
             IrisMorphSurface {
                 id: surface
                 compositorBlurred: true
                 open: root.here && GlobalStates.searchOpen
-                settles: true
+                settles: !root.fromIsland
                 motionSurface: "spotlight"
                 fieldBacked: true
                 chassisKey: "spotlight"
@@ -422,7 +422,7 @@ Item {
                 onClosed: LauncherSearch.query = ""
                 onSettledChanged: if (surface.settled && surface.open) stage.focusInput()
                 Behavior on height {
-                    enabled: surface.settled
+                    enabled: surface.open
                     NumberAnimation { duration: IrisStyle.duration(150); easing.type: Easing.BezierSpline; easing.bezierCurve: IrisStyle.morphCurve }
                 }
 
