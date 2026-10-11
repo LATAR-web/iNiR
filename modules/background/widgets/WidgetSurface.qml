@@ -218,10 +218,7 @@ Rectangle {
         enabled: (root._iris ? IrisStyle.motionEnabled : Appearance.animationsEnabled)
         ColorAnimation { duration: root._iris ? IrisStyle.revealDuration : Appearance.animation.elementMoveFast.duration; easing.type: root._iris ? Easing.BezierSpline : Appearance.animation.elementMoveFast.type; easing.bezierCurve: root._iris ? IrisStyle.morphCurve : Appearance.animation.elementMoveFast.bezierCurve }
     }
-    Behavior on border.width {
-        enabled: (root._iris ? IrisStyle.motionEnabled : Appearance.animationsEnabled)
-        NumberAnimation { duration: root._iris ? IrisStyle.revealDuration : Appearance.animation.elementMoveFast.duration; easing.type: root._iris ? Easing.BezierSpline : Appearance.animation.elementMoveFast.type; easing.bezierCurve: root._iris ? IrisStyle.morphCurve : Appearance.animation.elementMoveFast.bezierCurve }
-    }
+
     Behavior on border.color {
         enabled: (root._iris ? IrisStyle.motionEnabled : Appearance.animationsEnabled)
         ColorAnimation { duration: root._iris ? IrisStyle.revealDuration : Appearance.animation.elementMoveFast.duration; easing.type: root._iris ? Easing.BezierSpline : Appearance.animation.elementMoveFast.type; easing.bezierCurve: root._iris ? IrisStyle.morphCurve : Appearance.animation.elementMoveFast.bezierCurve }
@@ -233,10 +230,10 @@ Rectangle {
         radius: root.radius
         color: "transparent"
         visible: !root._editorialStack && !root._zzz && !root._cookie && !root._regalia && !root._island && !root._angel
-            && !root._irisRimHidden && root.surfaceBorderWidth > 0 && root.surfaceBorderOpacity > 0
+            && !root._irisRimHidden && root.surfaceBorderWidth > 0.01 && root.surfaceBorderOpacity > 0.001
         border.width: root.surfaceBorderWidth
         border.color: root._inir
-            ? ColorUtils.applyAlpha(Appearance.inir.colBorder, root.surfaceBorderOpacity * 3)
+            ? ColorUtils.applyAlpha(Appearance.inir.colBorder, root.surfaceBorderOpacity)
             : root._aurora
                 ? ColorUtils.applyAlpha(Appearance.aurora.colTooltipBorder,
                     root.surfaceBorderOpacity)
@@ -252,8 +249,8 @@ Rectangle {
 
     Rectangle {
         anchors.fill: parent
-        visible: root._regalia && root.surfaceBorderWidth > 0
-            && root.surfaceBorderOpacity > 0
+        visible: root._regalia && root.surfaceBorderWidth > 0.01
+            && root.surfaceBorderOpacity > 0.001
         radius: root.radius
         color: "transparent"
         border.width: root.surfaceBorderWidth
@@ -358,7 +355,7 @@ Rectangle {
 
     // Partial border — angel only
     AngelPartialBorder {
-        visible: root._angel && root.surfaceBorderWidth > 0 && root.surfaceBorderOpacity > 0
+        visible: root._angel && root.surfaceBorderWidth > 0.01 && root.surfaceBorderOpacity > 0.001
         targetRadius: root.radius
         borderWidth: Math.max(1, root.surfaceBorderWidth)
         borderColor: ColorUtils.applyAlpha(Appearance.angel.colBorder,
