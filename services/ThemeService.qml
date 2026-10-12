@@ -240,6 +240,13 @@ Singleton {
 
     function regenerateAutoTheme(): void {
         root._log("[ThemeService] regenerateAutoTheme called");
+        if (Wallpapers._applyInProgress) {
+            root._log("[ThemeService] regenerateAutoTheme deferred — Wallpapers apply in progress");
+            root._regenPending = true
+            regenCooldownTimer.interval = Math.max(80, root._regenCooldownMs)
+            regenCooldownTimer.restart()
+            return
+        }
         const now = Date.now()
         const elapsed = now - root._lastRegenTimestamp
         if (elapsed < root._regenCooldownMs) {

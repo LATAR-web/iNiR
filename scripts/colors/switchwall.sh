@@ -609,16 +609,16 @@ switch() {
     _ii_python="$_ii_venv/bin/python3"
     [[ ! -x "$_ii_python" ]] && _ii_python="python3"
 
-    _scss_tmp="$STATE_DIR/user/generated/material_colors.scss.tmp"
-    _json_tmp="$STATE_DIR/user/generated/colors.json.tmp"
+    _scss_tmp="$STATE_DIR/user/generated/material_colors.scss.tmp.$$"
+    _json_tmp="$STATE_DIR/user/generated/colors.json.tmp.$$"
     _json_out="$STATE_DIR/user/generated/colors.json"
-    _palette_tmp="$STATE_DIR/user/generated/palette.json.tmp"
+    _palette_tmp="$STATE_DIR/user/generated/palette.json.tmp.$$"
     _palette_out="$STATE_DIR/user/generated/palette.json"
-    _app_palette_tmp="$STATE_DIR/user/generated/app-palette.json.tmp"
+    _app_palette_tmp="$STATE_DIR/user/generated/app-palette.json.tmp.$$"
     _app_palette_out="$STATE_DIR/user/generated/app-palette.json"
-    _terminal_tmp="$STATE_DIR/user/generated/terminal.json.tmp"
+    _terminal_tmp="$STATE_DIR/user/generated/terminal.json.tmp.$$"
     _terminal_out="$STATE_DIR/user/generated/terminal.json"
-    _meta_tmp="$STATE_DIR/user/generated/theme-meta.json.tmp"
+    _meta_tmp="$STATE_DIR/user/generated/theme-meta.json.tmp.$$"
     _meta_out="$STATE_DIR/user/generated/theme-meta.json"
     force_dark_terminal="$cfg_force_dark_terminal"
 
@@ -662,7 +662,7 @@ switch() {
                 break
             fi
         done
-        _terminal_force_tmp="$STATE_DIR/user/generated/terminal.json.force.tmp"
+        _terminal_force_tmp="$STATE_DIR/user/generated/terminal.json.force.tmp.$$"
 
         scss_cmd=("$_ii_python" "$SCRIPT_DIR/generate_colors_material.py" "${scss_generate_args[@]}")
         scss_cmd+=(--terminal-output "$_terminal_force_tmp")
@@ -703,6 +703,12 @@ switch() {
 }
 
 main() {
+    # Serialize switchwall execution — prevent concurrent switchwall runs from colliding
+    mkdir -p "$STATE_DIR/user/generated"
+    local _sw_lock="$STATE_DIR/user/generated/switchwall.lock"
+    exec 201>"$_sw_lock"
+    flock -w 10 201 || { echo "[switchwall.sh] lock timeout waiting for running switchwall" >&2; return 0; }
+
     imgpath=""
     mode_flag=""
     type_flag=""

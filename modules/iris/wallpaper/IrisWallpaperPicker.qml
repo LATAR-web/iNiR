@@ -987,7 +987,11 @@ Item {
                     enabled: root.libraryCount > 0
                     Accessible.name: Translation.tr("Random wallpaper")
                     onClicked: {
-                        const pick = root.visibleFiles[Math.floor(Math.random() * root.visibleFiles.length)]
+                        const current = FileUtils.trimFileProtocol(String(root.currentPath ?? ""))
+                        let candidates = (root.visibleFiles ?? []).filter(entry => entry && entry.path !== current)
+                        if (candidates.length === 0) candidates = root.visibleFiles ?? []
+                        if (candidates.length === 0) return
+                        const pick = candidates[Math.floor(Math.random() * candidates.length)]
                         if (pick) root.apply(pick.path, false)
                     }
                 }

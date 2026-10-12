@@ -756,6 +756,7 @@ Singleton {
 
         root._applyInProgress = true
         _applySuppressTimer.restart()
+        ThemeService._lastRegenTimestamp = Date.now()
         applyProc.activeRequestKey = root._applyRequestKey(normalizedPath, darkMode, noSwitch)
         const command = [
             Directories.wallpaperSwitchScriptPath,
@@ -921,8 +922,7 @@ Singleton {
         if (root.awwwBackendEnabled && AwwwBackend.supportsMainWallpaper(normalizedPath)) {
             Config.setNestedValue("background.wallpaperPath", normalizedPath)
             Config.setNestedValue("background.thumbnailPath", "")
-            if (adoptedPreview)
-                root._clearInternalPreview()
+            root._clearInternalPreview()
             root._queueWallpaperScript(normalizedPath, darkMode, false)
             root.changed()
             return
@@ -931,8 +931,7 @@ Singleton {
         // Always set wallpaper path from QML to avoid race condition with Config write timer
         Config.setNestedValue("background.wallpaperPath", normalizedPath)
         Config.setNestedValue("background.thumbnailPath", "")
-        if (adoptedPreview)
-            root._clearInternalPreview()
+        root._clearInternalPreview()
         root._queueWallpaperScript(normalizedPath, darkMode, false)
         root.changed()
     }
@@ -1067,11 +1066,18 @@ Singleton {
 
     function randomFromCurrentFolder(darkMode = Appearance.m3colors.darkmode, monitorName = "", target = "") {
         const currentPath = Config.options?.background?.wallpaperPath ?? ""
-        const files = []
+        let files = []
         for (let i = 0; i < folderModel.count; ++i) {
             if (folderModel.get(i, "fileIsDir")) continue
             const path = folderModel.get(i, "filePath")
             if (path && path !== currentPath) files.push(path)
+        }
+        if (files.length === 0) {
+            for (let i = 0; i < folderModel.count; ++i) {
+                if (folderModel.get(i, "fileIsDir")) continue
+                const path = folderModel.get(i, "filePath")
+                if (path) files.push(path)
+            }
         }
         if (files.length === 0) return
         root.select(files[Math.floor(Math.random() * files.length)], darkMode, monitorName, target)
