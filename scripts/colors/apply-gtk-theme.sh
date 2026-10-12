@@ -245,201 +245,7 @@ generate_pywalfox() {
 EOF
 }
 
-generate_kdeglobals() {
-    local icon_theme font_raw mono_raw font_name font_size mono_name mono_size
-    icon_theme=$(gsettings get org.gnome.desktop.interface icon-theme 2>/dev/null | tr -d "'")
 
-    # Read current GTK fonts so wallpaper theme changes don't reset user fonts
-    font_raw=$(gsettings get org.gnome.desktop.interface font-name 2>/dev/null | tr -d "'")
-    mono_raw=$(gsettings get org.gnome.desktop.interface monospace-font-name 2>/dev/null | tr -d "'")
-    if [[ -n "$font_raw" ]]; then
-        font_size="${font_raw##* }"
-        font_name="${font_raw% *}"
-        font_name="${font_name%"${font_name##*[![:space:]]}"}"
-    fi
-    if [[ -n "$mono_raw" ]]; then
-        mono_size="${mono_raw##* }"
-        mono_name="${mono_raw% *}"
-        mono_name="${mono_name%"${mono_name##*[![:space:]]}"}"
-    fi
-    if [[ -z "$icon_theme" ]]; then
-        if [[ -d "$HOME/.local/share/icons/WhiteSur-dark" || -d "/usr/share/icons/WhiteSur-dark" ]]; then
-            icon_theme=$("$SCRIPT_DIR/icon-theme-for-mode.sh" WhiteSur-dark "$THEME_MODE")
-        else
-            icon_theme="Adwaita"
-        fi
-    fi
-    
-    cat << EOF
-[ColorEffects:Disabled]
-Color=${BG}
-ColorAmount=0
-ColorEffect=0
-ContrastAmount=0.65
-ContrastEffect=1
-IntensityAmount=0.1
-IntensityEffect=2
-
-[ColorEffects:Inactive]
-ChangeSelectionColor=true
-Color=${BG_DARK}
-ColorAmount=0.025
-ColorEffect=2
-ContrastAmount=0.1
-ContrastEffect=2
-Enable=false
-IntensityAmount=0
-IntensityEffect=0
-
-[Colors:Button]
-BackgroundAlternate=${KDE_BUTTON_ALT}
-BackgroundNormal=${KDE_BUTTON_BG}
-DecorationFocus=${KDE_DECORATION_FOCUS}
-DecorationHover=${KDE_DECORATION_HOVER}
-ForegroundActive=${KDE_ACTIVE_FG}
-ForegroundInactive=${FG_INACTIVE}
-ForegroundLink=${PRIMARY}
-ForegroundNegative=${FG_NEGATIVE}
-ForegroundNeutral=${FG_NEUTRAL}
-ForegroundNormal=${FG}
-ForegroundPositive=${FG_POSITIVE}
-ForegroundVisited=${PRIMARY}
-
-[Colors:Selection]
-BackgroundAlternate=${KDE_SELECTION_ALT}
-BackgroundNormal=${KDE_SELECTION_BG}
-DecorationFocus=${KDE_DECORATION_FOCUS}
-DecorationHover=${KDE_DECORATION_HOVER}
-ForegroundActive=${KDE_SELECTION_FG}
-ForegroundInactive=${KDE_SELECTION_FG_INACTIVE}
-ForegroundLink=${KDE_SELECTION_FG}
-ForegroundNegative=${FG_NEGATIVE}
-ForegroundNeutral=${FG_NEUTRAL}
-ForegroundNormal=${KDE_SELECTION_FG}
-ForegroundPositive=${FG_POSITIVE}
-ForegroundVisited=${KDE_SELECTION_FG}
-
-[Colors:Tooltip]
-BackgroundAlternate=${KDE_TOOLTIP_ALT}
-BackgroundNormal=${KDE_TOOLTIP_BG}
-DecorationFocus=${KDE_DECORATION_FOCUS}
-DecorationHover=${KDE_DECORATION_HOVER}
-ForegroundActive=${KDE_ACTIVE_FG}
-ForegroundInactive=${FG_INACTIVE}
-ForegroundLink=${PRIMARY}
-ForegroundNegative=${FG_NEGATIVE}
-ForegroundNeutral=${FG_NEUTRAL}
-ForegroundNormal=${FG}
-ForegroundPositive=${FG_POSITIVE}
-ForegroundVisited=${PRIMARY}
-
-[Colors:View]
-BackgroundAlternate=${KDE_VIEW_ALT}
-BackgroundNormal=${KDE_VIEW_BG}
-DecorationFocus=${KDE_DECORATION_FOCUS}
-DecorationHover=${KDE_DECORATION_HOVER}
-ForegroundActive=${KDE_ACTIVE_FG}
-ForegroundInactive=${FG_INACTIVE}
-ForegroundLink=${PRIMARY}
-ForegroundNegative=${FG_NEGATIVE}
-ForegroundNeutral=${FG_NEUTRAL}
-ForegroundNormal=${FG}
-ForegroundPositive=${FG_POSITIVE}
-ForegroundVisited=${PRIMARY}
-
-[Colors:Window]
-BackgroundAlternate=${KDE_WINDOW_ALT}
-BackgroundNormal=${KDE_WINDOW_BG}
-DecorationFocus=${KDE_DECORATION_FOCUS}
-DecorationHover=${KDE_DECORATION_HOVER}
-ForegroundActive=${KDE_ACTIVE_FG}
-ForegroundInactive=${FG_INACTIVE}
-ForegroundLink=${PRIMARY}
-ForegroundNegative=${FG_NEGATIVE}
-ForegroundNeutral=${FG_NEUTRAL}
-ForegroundNormal=${FG}
-ForegroundPositive=${FG_POSITIVE}
-ForegroundVisited=${PRIMARY}
-
-[Colors:Complementary]
-BackgroundAlternate=${KDE_COMPLEMENTARY_ALT}
-BackgroundNormal=${KDE_COMPLEMENTARY_BG}
-DecorationFocus=${KDE_DECORATION_FOCUS}
-DecorationHover=${KDE_DECORATION_HOVER}
-ForegroundActive=${KDE_ACTIVE_FG}
-ForegroundInactive=${FG_INACTIVE}
-ForegroundLink=${PRIMARY}
-ForegroundNegative=${FG_NEGATIVE}
-ForegroundNeutral=${FG_NEUTRAL}
-ForegroundNormal=${FG}
-ForegroundPositive=${FG_POSITIVE}
-ForegroundVisited=${PRIMARY}
-
-[Colors:Header]
-BackgroundAlternate=${KDE_HEADER_ALT}
-BackgroundNormal=${KDE_HEADER_BG}
-DecorationFocus=${KDE_DECORATION_FOCUS}
-DecorationHover=${KDE_DECORATION_HOVER}
-ForegroundActive=${KDE_ACTIVE_FG}
-ForegroundInactive=${FG_INACTIVE}
-ForegroundLink=${PRIMARY}
-ForegroundNegative=${FG_NEGATIVE}
-ForegroundNeutral=${FG_NEUTRAL}
-ForegroundNormal=${FG}
-ForegroundPositive=${FG_POSITIVE}
-ForegroundVisited=${PRIMARY}
-
-[Colors:Header][Inactive]
-BackgroundAlternate=${KDE_HEADER_BG}
-BackgroundNormal=${KDE_HEADER_ALT}
-DecorationFocus=${KDE_DECORATION_FOCUS}
-DecorationHover=${KDE_DECORATION_HOVER}
-ForegroundActive=${KDE_ACTIVE_FG}
-ForegroundInactive=${FG_INACTIVE}
-ForegroundLink=${PRIMARY}
-ForegroundNegative=${FG_NEGATIVE}
-ForegroundNeutral=${FG_NEUTRAL}
-ForegroundNormal=${FG}
-ForegroundPositive=${FG_POSITIVE}
-ForegroundVisited=${PRIMARY}
-
-[Colors:Menu]
-BackgroundAlternate=${KDE_MENU_ALT}
-BackgroundNormal=${KDE_MENU_BG}
-DecorationFocus=${KDE_DECORATION_FOCUS}
-DecorationHover=${KDE_DECORATION_HOVER}
-ForegroundActive=${KDE_ACTIVE_FG}
-ForegroundInactive=${FG_INACTIVE}
-ForegroundLink=${PRIMARY}
-ForegroundNegative=${FG_NEGATIVE}
-ForegroundNeutral=${FG_NEUTRAL}
-ForegroundNormal=${FG}
-ForegroundPositive=${FG_POSITIVE}
-ForegroundVisited=${PRIMARY}
-
-[General]
-ColorScheme=Darkly
-${font_name:+fixed=${mono_name:-$font_name},${mono_size:-$font_size},-1,5,50,0,0,0,0,0}
-${font_name:+font=${font_name},${font_size},-1,5,50,0,0,0,0,0}
-${font_name:+menuFont=${font_name},${font_size},-1,5,50,0,0,0,0,0}
-${font_name:+toolBarFont=${font_name},${font_size},-1,5,50,0,0,0,0,0}
-
-[Icons]
-Theme=${icon_theme}
-
-[KDE]
-contrast=0
-widgetStyle=Darkly
-
-[WM]
-activeBackground=${KDE_WINDOW_BG}
-activeBlend=${PRIMARY}
-activeForeground=${FG}
-inactiveBackground=${KDE_WINDOW_BG}
-inactiveBlend=${FG_INACTIVE}
-inactiveForeground=${FG_INACTIVE}
-EOF
-}
 
 # Helper to convert hex to RGB
 hex_to_rgb() {
@@ -521,8 +327,8 @@ KDE_DECORATION_HOVER="${APP_SELECTION:-$ROW_ACTIVE_BG}"
 KDE_DECORATION_FOCUS="${APP_SELECTION_HOVER:-$ROW_ACTIVE_HOVER_BG}"
 KDE_ACTIVE_FG="$PRIMARY"
 
-# Generate Darkly.colors for Qt style override
-generate_darkly_colors() {
+# Generate KDE/Qt color palette body with decimal RGB for Qt apps
+generate_kde_colors_body() {
     local bg_rgb=$(hex_to_rgb "$BG")
     local bg_dark_rgb=$(hex_to_rgb "$BG_DARK")
     local fg_rgb=$(hex_to_rgb "$FG")
@@ -698,6 +504,14 @@ ForegroundNormal=${fg_rgb}
 ForegroundPositive=${positive_rgb}
 ForegroundVisited=${primary_rgb}
 
+EOF
+}
+
+# Generate Darkly.colors for Qt style override
+generate_darkly_colors() {
+    generate_kde_colors_body
+    cat << EOF
+
 [General]
 ColorScheme=Darkly
 Name=Darkly
@@ -707,12 +521,67 @@ shadeSortColumn=true
 contrast=0
 
 [WM]
-activeBackground=${window_bg_rgb}
-activeBlend=${primary_rgb}
-activeForeground=${fg_rgb}
-inactiveBackground=${window_bg_rgb}
-inactiveBlend=${fg_inactive_rgb}
-inactiveForeground=${fg_inactive_rgb}
+activeBackground=$(hex_to_rgb "${KDE_WINDOW_BG}")
+activeBlend=$(hex_to_rgb "${PRIMARY}")
+activeForeground=$(hex_to_rgb "${FG}")
+inactiveBackground=$(hex_to_rgb "${KDE_WINDOW_BG}")
+inactiveBlend=$(hex_to_rgb "${FG_INACTIVE}")
+inactiveForeground=$(hex_to_rgb "${FG_INACTIVE}")
+EOF
+}
+
+# Generate kdeglobals with proper decimal RGB values for KDE/Qt apps
+generate_kdeglobals() {
+    local icon_theme font_raw mono_raw font_name font_size mono_name mono_size
+    icon_theme=$(gsettings get org.gnome.desktop.interface icon-theme 2>/dev/null | tr -d "'")
+
+    # Read current GTK fonts so wallpaper theme changes don't reset user fonts
+    font_raw=$(gsettings get org.gnome.desktop.interface font-name 2>/dev/null | tr -d "'")
+    mono_raw=$(gsettings get org.gnome.desktop.interface monospace-font-name 2>/dev/null | tr -d "'")
+    if [[ -n "$font_raw" ]]; then
+        font_size="${font_raw##* }"
+        font_name="${font_raw% *}"
+        font_name="${font_name%"${font_name##*[![:space:]]}"}"
+    fi
+    if [[ -n "$mono_raw" ]]; then
+        mono_size="${mono_raw##* }"
+        mono_name="${mono_raw% *}"
+        mono_name="${mono_name%"${mono_name##*[![:space:]]}"}"
+    fi
+    if [[ -z "$icon_theme" ]]; then
+        if [[ -d "$HOME/.local/share/icons/WhiteSur-dark" || -d "/usr/share/icons/WhiteSur-dark" ]]; then
+            icon_theme=$("$SCRIPT_DIR/icon-theme-for-mode.sh" WhiteSur-dark "$THEME_MODE")
+        else
+            icon_theme="Adwaita"
+        fi
+    fi
+
+    generate_kde_colors_body
+    cat << EOF
+
+[General]
+ColorScheme=Darkly
+Name=Darkly
+shadeSortColumn=true
+${font_name:+fixed=${mono_name:-$font_name},${mono_size:-$font_size},-1,5,50,0,0,0,0,0}
+${font_name:+font=${font_name},${font_size},-1,5,50,0,0,0,0,0}
+${font_name:+menuFont=${font_name},${font_size},-1,5,50,0,0,0,0,0}
+${font_name:+toolBarFont=${font_name},${font_size},-1,5,50,0,0,0,0,0}
+
+[Icons]
+Theme=${icon_theme}
+
+[KDE]
+contrast=0
+widgetStyle=Darkly
+
+[WM]
+activeBackground=$(hex_to_rgb "${KDE_WINDOW_BG}")
+activeBlend=$(hex_to_rgb "${PRIMARY}")
+activeForeground=$(hex_to_rgb "${FG}")
+inactiveBackground=$(hex_to_rgb "${KDE_WINDOW_BG}")
+inactiveBlend=$(hex_to_rgb "${FG_INACTIVE}")
+inactiveForeground=$(hex_to_rgb "${FG_INACTIVE}")
 EOF
 }
 
@@ -743,6 +612,22 @@ if write_if_changed "$GTK3_CSS" << EOF
 @define-color accent_color ${PRIMARY};
 @define-color accent_fg_color ${ON_PRIMARY};
 @define-color accent_bg_color ${PRIMARY};
+
+/* Standard GTK theme color aliases (used by GTK3 apps, Flutter, LocalSend, etc.) */
+@define-color theme_selected_bg_color ${PRIMARY};
+@define-color theme_selected_fg_color ${ON_PRIMARY};
+@define-color theme_bg_color ${BG};
+@define-color theme_fg_color ${FG};
+@define-color theme_base_color ${BG};
+@define-color theme_text_color ${FG};
+@define-color theme_view_bg_color ${BG};
+@define-color theme_view_fg_color ${FG};
+@define-color theme_unfocused_selected_bg_color ${PRIMARY};
+@define-color theme_unfocused_selected_fg_color ${ON_PRIMARY};
+@define-color theme_unfocused_bg_color ${BG};
+@define-color theme_unfocused_fg_color ${FG};
+@define-color theme_unfocused_base_color ${BG};
+@define-color theme_unfocused_text_color ${FG};
 
 @define-color window_bg_color ${BG};
 @define-color window_fg_color ${FG};
@@ -909,12 +794,30 @@ if write_if_changed "$GTK4_CSS" << EOF
  * which libadwaita widgets read from :root. Priority USER (800) > theme (200).
  */
 
+@define-color accent_color ${PRIMARY};
+@define-color accent_fg_color ${ON_PRIMARY};
+@define-color accent_bg_color ${PRIMARY};
+@define-color theme_selected_bg_color ${PRIMARY};
+@define-color theme_selected_fg_color ${ON_PRIMARY};
+@define-color theme_bg_color ${BG};
+@define-color theme_fg_color ${FG};
+@define-color theme_base_color ${BG};
+@define-color theme_text_color ${FG};
+@define-color theme_view_bg_color ${BG};
+@define-color theme_view_fg_color ${FG};
+
 /* CSS custom properties for libadwaita color overrides */
 :root {
     /* Accent */
     --accent-bg-color: ${PRIMARY};
     --accent-fg-color: ${ON_PRIMARY};
     --accent-color: ${PRIMARY};
+    --theme-selected-bg-color: ${PRIMARY};
+    --theme-selected-fg-color: ${ON_PRIMARY};
+    --theme-bg-color: ${BG};
+    --theme-fg-color: ${FG};
+    --theme-base-color: ${BG};
+    --theme-text-color: ${FG};
 
     /* Window */
     --window-bg-color: ${BG};
