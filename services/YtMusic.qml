@@ -893,7 +893,7 @@ Singleton {
         const body = artist.length > 0 ? `${title} - ${artist}` : title
 
         Quickshell.execDetached([
-            "/usr/bin/notify-send",
+            "notify-send",
             Translation.tr("Up Next"),
             body,
             "-a", "YtMusic",
@@ -1621,7 +1621,7 @@ Singleton {
 
     Process {
         id: _detectDefaultBrowserProc
-        command: ["/usr/bin/xdg-settings", "get", "default-web-browser"]
+        command: ["xdg-settings", "get", "default-web-browser"]
         stdout: SplitParser {
             onRead: line => {
                 const desktop = line.trim().toLowerCase()
@@ -1645,10 +1645,11 @@ Singleton {
 
     Process {
         id: _detectBrowsersProc
-        command: ["/bin/bash", "-c", `
+        command: ["/bin/sh", "-c", `
             for path in ~/.mozilla/firefox ~/.config/google-chrome ~/.config/chromium ~/.config/BraveSoftware ~/.config/vivaldi ~/.config/opera ~/.config/microsoft-edge ~/.zen ~/.librewolf ~/.floorp ~/.waterfox; do
                 [ -d "$path" ] && echo "$path"
             done
+            exit 0
         `]
         stdout: SplitParser {
             onRead: line => {
@@ -1779,7 +1780,7 @@ print("")
         id: _checkAvailability
         // Playback owns yt-dlp + mpv + a supported JS runtime. socat is the IPC
         // fallback when MPRIS is absent. Setup/Doctor own installation/repair.
-        command: ["/bin/bash", "-c", "missing=''; \"$1\" --help 2>/dev/null | grep -q -- '--js-runtimes' || missing=\"$missing yt-dlp>=2025.11.12\"; command -v mpv >/dev/null || missing=\"$missing mpv\"; command -v socat >/dev/null || missing=\"$missing socat\"; command -v deno >/dev/null || missing=\"$missing deno\"; [ -z \"$missing\" ] && exit 0 || { echo \"$missing\"; exit 1; }", "_", root._ytDlpRunner]
+        command: ["/bin/sh", "-c", "missing=''; \"$1\" --help 2>/dev/null | grep -q -- '--js-runtimes' || missing=\"$missing yt-dlp>=2025.11.12\"; command -v mpv >/dev/null || missing=\"$missing mpv\"; command -v socat >/dev/null || missing=\"$missing socat\"; command -v deno >/dev/null || missing=\"$missing deno\"; [ -z \"$missing\" ] && exit 0 || { echo \"$missing\"; exit 1; }", "_", root._ytDlpRunner]
         stdout: SplitParser {
             onRead: line => {
                 if (line.trim()) {
@@ -1822,7 +1823,7 @@ print("")
 
     Process {
         id: _deleteCookiesProc
-        command: ["/bin/rm", "-f", "--", root._cookiesFilePath, root._playbackCookiesFile]
+        command: ["rm", "-f", "--", root._cookiesFilePath, root._playbackCookiesFile]
     }
 
     Process {
@@ -2112,7 +2113,7 @@ print("")
             // and Quickshell still supervises the final mpv process directly after shell `exec`.
             return [
                 "/bin/sh", "-c",
-                "/usr/bin/install -Dm600 -- \"$1\" \"$2\" && shift 2 && exec \"$@\"",
+                "install -Dm600 -- \"$1\" \"$2\" && shift 2 && exec \"$@\"",
                 "_", root._mpvCookiesFile, root._playbackCookiesFile,
                 ...args
             ]
