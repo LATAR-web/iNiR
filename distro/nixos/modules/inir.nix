@@ -96,8 +96,8 @@ let
       paths = [ inirPatched mascotPackage ];
       meta = (inirPatched.meta or { }) // {
         description = "iNiR desktop shell with the official Kira mascot art pack integrated";
-        homepage = "https://github.com/LATAR-web/inir-nixos";
-        license = pkgs.lib.licenses.mit;
+        homepage = "https://github.com/snowarch/inir";
+        license = pkgs.lib.licenses.gpl3Only;
         mainProgram = "inir";
       };
     }

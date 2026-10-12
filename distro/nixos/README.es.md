@@ -36,19 +36,19 @@ En tu `/etc/nixos/flake.nix`:
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
-    inir-nixos = {
-      url = "github:LATAR-web/inir-nixos";
+    inir = {
+      url = "github:snowarch/inir";
       inputs.nixpkgs.follows = "nixpkgs";
     };
   };
 
-  outputs = { self, nixpkgs, inir-nixos, ... }: {
+  outputs = { self, nixpkgs, inir, ... }: {
     nixosConfigurations.<tu_hostname> = nixpkgs.lib.nixosSystem {
       system = "x86_64-linux";
       modules = [
         ./hardware-configuration.nix
         ./configuration.nix
-        inir-nixos.nixosModules.default
+        inir.nixosModules.default
       ];
     };
   };
