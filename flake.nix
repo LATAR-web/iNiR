@@ -253,13 +253,7 @@
           _module.args.inir = self;
         };
 
-        inir = { ... }: {
-          imports = [
-            ./nix/nixos-module.nix
-            ./distro/nixos/modules/inir.nix
-          ];
-          _module.args.inir = self;
-        };
+        inir = ./nix/nixos-module.nix;
 
         desktop = ./distro/nixos/modules/desktop.nix;
         audio = ./distro/nixos/modules/audio.nix;
