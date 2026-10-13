@@ -5,6 +5,7 @@ import QtQuick
 import Quickshell
 import Quickshell.Io
 import qs.modules.common
+import qs.services
 
 // InnerTube browsing engine — wraps scripts/innertube.py (ytmusicapi).
 // Public browsing needs NO cookies; replaces the flaky yt-dlp + browser-cookie path.
@@ -306,7 +307,6 @@ Singleton {
         }
         root.error = "";
         root.searching = true;
-        root.searchResults = [];
         _searchProc.exec([root._runner, "search", query, filter || "songs"]);
     }
     Process {
@@ -318,7 +318,7 @@ Singleton {
             }
         }
         onExited: (code) => {
-            if (code !== 0) {
+            if (code !== 0 && root.searching) {
                 root.searching = false;
                 if (root.searchResults.length === 0 && !root.error) {
                     root.error = Translation.tr("Search failed. Check your connection.");

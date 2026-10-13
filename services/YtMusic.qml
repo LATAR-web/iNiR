@@ -605,14 +605,18 @@ Singleton {
         function onSearchResultsChanged() {
             if (!root._searchViaInnerTube) return
             root.searchResults = InnerTube.searchResults
-            root.searching = false
-            root._searchViaInnerTube = false
-        }
-        function onSearchingChanged() {
-            if (root._searchViaInnerTube && !InnerTube.searching) {
-                root.searchResults = InnerTube.searchResults
+            if (!InnerTube.searching) {
                 root.searching = false
                 root._searchViaInnerTube = false
+            }
+        }
+        function onSearchingChanged() {
+            if (root._searchViaInnerTube) {
+                root.searching = InnerTube.searching
+                if (!InnerTube.searching) {
+                    root.searchResults = InnerTube.searchResults
+                    root._searchViaInnerTube = false
+                }
             }
         }
         function onRadioTracksChanged() { root._onRadioTracks() }
